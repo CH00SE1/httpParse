@@ -1,7 +1,6 @@
 package main
 
 import (
-	"fmt"
 	"httpParse/li5apuu7"
 	"time"
 )
@@ -20,9 +19,9 @@ func TimeTask() {
 	<-ch
 }
 
+// 启动
 func main() {
-	for i := 02; i < 61; i++ {
-		fmt.Println(i)
-		li5apuu7.ExampleScrape(28, i)
+	for i := 41; i < 61; i++ {
+		li5apuu7.ExampleScrape(29, i)
 	}
 }
