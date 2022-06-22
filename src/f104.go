@@ -21,8 +21,8 @@ func TimeTask() {
 }
 
 func main() {
-	for i := 36; i < 61; i++ {
+	for i := 02; i < 61; i++ {
 		fmt.Println(i)
-		li5apuu7.ExampleScrape(27, i)
+		li5apuu7.ExampleScrape(28, i)
 	}
 }
