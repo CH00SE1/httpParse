@@ -21,6 +21,9 @@ func StringStrip(input string) string {
 	return strings.Join(strings.Fields(input), "")
 }
 
+// 数据库url
+const dsn = "root:xiAtiAn@djwk@tcp(192.168.10.142:3306)/djwk_test?charset=utf8mb4&parseTime=True&loc=Local"
+
 // 文件创建
 // 创建测试数据
 func CreateFile(text *string, fileName string, fileType string) {
@@ -46,7 +49,6 @@ func CreateFile(text *string, fileName string, fileType string) {
 // mysql数据库连接访问
 // 夏添 - 主机
 func DB() (*gorm.DB, error) {
-	dsn := "root:xiAtiAn@djwk@tcp(192.168.10.142:3306)/djwk_test?charset=utf8mb4&parseTime=True&loc=Local"
 	return gorm.Open(mysql.Open(dsn), &gorm.Config{
 		// 打印执行日志
 		Logger: logger.Default.LogMode(logger.Info),
@@ -68,8 +70,7 @@ func Bytes2String(b []byte) string {
 }
 
 // 结构体生成器
-func MysqlGen(TableName string)  {
-	dsn := "root:xiAtiAn@djwk@tcp(192.168.10.142:3306)/djwk_test?charset=utf8mb4&parseTime=True&loc=Local"
+func MysqlGen(TableName string) {
 	gen.GenerateOne(gen.GenConf{
 		Dsn:       dsn,
 		WritePath: "./model",

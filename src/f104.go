@@ -31,6 +31,7 @@ type Player_aaaa struct {
 	Nid      int    `json:"nid"`
 }
 
+// 目前网页解析获取方法
 func M3u8UrlParse(url string) string {
 	// 1.把\/转为/
 	str1 := strings.Replace(url, "\\/", "/", -1)
@@ -93,8 +94,9 @@ func ExampleScrape(page int) string {
 			// 插入数据
 			db.Create(&ths.THs{Title: utils.StringStrip(title), Url: utils.StringStrip(url), M3u8Url: utils.StringStrip(m3u8url)})
 		}
-
 	})
+	// 每页停止6秒
+	time.Sleep(6 * 1e9)
 	return str
 }
 
@@ -113,7 +115,7 @@ func TimeTask() {
 }
 
 func main() {
-	for i := 3; i < 30; i++ {
+	for i := 30; i < 80; i++ {
 		ExampleScrape(i)
 	}
 }
