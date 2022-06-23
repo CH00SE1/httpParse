@@ -1,4 +1,4 @@
-package main
+package src
 
 import (
 	"fmt"
@@ -23,7 +23,7 @@ func TimeTask() {
 	<-ch
 }
 
-func saveInfo(c *gin.Context) {
+func SaveInfo(c *gin.Context) {
 	page, _ := strconv.Atoi(c.Param("page"))
 	start, _ := strconv.Atoi(c.Param("start"))
 	for i := start; i < start+5; i++ {
