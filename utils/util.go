@@ -2,14 +2,17 @@ package utils
 
 import (
 	"fmt"
+	"github.com/mattn/go-colorable"
 	"github.com/qmhball/db2gorm/gen"
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
 	"gorm.io/gorm/logger"
+	"log"
 	"os"
 	"reflect"
 	"strconv"
 	"strings"
+	"time"
 	"unsafe"
 )
 
@@ -51,7 +54,13 @@ func CreateFile(text *string, fileName string, fileType string) {
 func DB() (*gorm.DB, error) {
 	return gorm.Open(mysql.Open(dsn), &gorm.Config{
 		// 打印执行日志
-		Logger: logger.Default.LogMode(logger.Info),
+		Logger: logger.New(
+			log.New(colorable.NewColorableStdout(), "\r\n", log.LstdFlags),
+			logger.Config{
+				SlowThreshold: time.Second, // 慢 SQL 阈值
+				LogLevel:      logger.Info, // Log level
+				Colorful:      true,        // 开启彩色打印
+			}),
 	})
 }
 

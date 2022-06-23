@@ -9,7 +9,6 @@ import (
 	"net/http"
 	"strconv"
 	"strings"
-	"time"
 )
 
 /**
@@ -68,7 +67,7 @@ func M3u8UrlParse(url string) string {
 	return player_aaaa.Url
 }
 
-func ExampleScrape(tag int, page int) string {
+func ExampleScrape(tag int, page int) (string, int) {
 	// Request the HTML page.
 	// http://li5.apuu7.top/index.php/vod/type/id/20/page/2.html
 	res, err := http.Get("http://li5.apuu7.top/index.php/vod/type/id/" + strconv.Itoa(tag) + "/page/" + strconv.Itoa(page) + ".html")
@@ -109,6 +108,6 @@ func ExampleScrape(tag int, page int) string {
 		}
 	})
 	// 每页停止6秒
-	time.Sleep(5 * 1e9)
-	return str
+	//time.Sleep(2 * 1e9)
+	return str, page
 }
