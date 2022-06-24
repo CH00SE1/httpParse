@@ -13,6 +13,7 @@ import (
 
 func main() {
 	gin := gin.Default()
-	gin.PUT("/getData/:page/:start", src.SaveInfo)
+	gin.GET("/getData/:page/:start", src.SaveInfo)
 	gin.Run(":8500")
+	//db.AutoCreateTable(&li5apuu7.HsInfo{})
 }

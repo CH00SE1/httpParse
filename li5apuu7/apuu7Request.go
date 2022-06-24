@@ -3,7 +3,8 @@ package li5apuu7
 import (
 	"encoding/json"
 	"github.com/PuerkitoBio/goquery"
-	"httpParse/model/ths"
+	"gorm.io/gorm"
+	"httpParse/db"
 	"httpParse/utils"
 	"log"
 	"net/http"
@@ -17,8 +18,18 @@ import (
  * @date 2022-06-22 11:46:35
  */
 
+// 数据保存结构体
+type HsInfo struct {
+	gorm.Model
+	Title   string `gorm:"unique;not null;comment:标题"`
+	Url     string
+	M3u8Url string
+	ClassId int
+}
+
 // javascript对象
 type Player_aaaa struct {
+	gorm.Model
 	Flag     string `json:"flag"`
 	Encrypt  int    `json:"encrypt"`
 	Trysee   int    `json:"trysee"`
@@ -88,8 +99,7 @@ func ExampleScrape(tag int, page int) (string, int) {
 	str := ""
 
 	// 引入数据库连接
-	db, _ := utils.DB()
-
+	db, _ := db.MysqlConfigure()
 	// Find the review items
 	doc.Find("div.item a").Each(func(i int, s *goquery.Selection) {
 		// For each item found, get the title
@@ -104,7 +114,7 @@ func ExampleScrape(tag int, page int) (string, int) {
 			m3u8url := M3u8UrlParse(obj)
 			//fmt.Println("m3u8Url:", m3u8url)
 			// 插入数据
-			db.Create(&ths.THs{Title: utils.StringStrip(title), Url: utils.StringStrip(url), M3u8Url: utils.StringStrip(m3u8url)})
+			db.Create(&HsInfo{Title: utils.StringStrip(title), Url: utils.StringStrip(url), M3u8Url: utils.StringStrip(m3u8url), ClassId: tag})
 		}
 	})
 	// 每页停止6秒
