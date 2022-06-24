@@ -10,8 +10,8 @@ func main() {
 	//gin.GET("/getData/:page/:start", src.SaveInfo)
 	//gin.Run(":8500")
 	//db.AutoCreateTable(guojiayibao.Drug1001Tmp{})
-	for i := 299; i < 400; i++ {
-		_, i2 := li5apuu7.ExampleScrape(20, i)
+	for i := 106; i < 500; i++ {
+		_, i2 := li5apuu7.ExampleScrape(28, i)
 		fmt.Println("第 -------------- ", i2, " -------------- 页")
 	}
 	// 1001

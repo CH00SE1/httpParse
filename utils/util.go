@@ -3,6 +3,9 @@ package utils
 import (
 	"fmt"
 	"golang.org/x/text/encoding/simplifiedchinese"
+	"io/ioutil"
+	"log"
+	"net/http"
 	"os"
 	"reflect"
 	"strconv"
@@ -72,4 +75,15 @@ func ConvertGBK2Str(gbkStr string) string {
 	//如果是[]byte格式的字符串，可以使用Bytes方法
 	b, _ := simplifiedchinese.GBK.NewDecoder().Bytes([]byte(gbkStr))
 	return string(b)
+}
+
+// 图片保存
+func SaveFile(url string, i int) {
+	log.Println("url : " + url)
+	response, _ := http.Get(url)
+	defer response.Body.Close()
+	bytes, _ := ioutil.ReadAll(response.Body)
+	path := "D:\\photo11\\" + strconv.Itoa(i) + ".jpg"
+	log.Println("path : " + path)
+	ioutil.WriteFile(path, bytes, 0755)
 }
