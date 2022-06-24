@@ -4,6 +4,7 @@ import (
 	"github.com/qmhball/db2gorm/gen"
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
+	"gorm.io/gorm/logger"
 	"gorm.io/gorm/schema"
 	"time"
 )
@@ -13,8 +14,11 @@ import (
  * @author xiongshao
  * @date 2022-06-24 10:15:21
  */
-// 数据库路径
-const dsn = "root:xiAtiAn@djwk@tcp(192.168.10.142:3306)/djwk_test?charset=utf8mb4&parseTime=True&loc=Local"
+// 数据库夏添
+const dsn1 = "root:xiAtiAn@djwk@tcp(192.168.10.142:3306)/djwk_test?charset=utf8mb4&parseTime=True&loc=Local"
+
+// localhost
+const dsn = "root:11098319@tcp(192.168.10.87:3306)/djwk_test?charset=utf8mb4&parseTime=True&loc=Local"
 
 // MySQL驱动高级配置
 func MysqlConfigure() (*gorm.DB, error) {
@@ -46,6 +50,7 @@ func MysqlConfigure() (*gorm.DB, error) {
 		NowFunc: func() time.Time {
 			return time.Now().Local()
 		},
+		Logger: logger.Default.LogMode(logger.Info),
 	})
 }
 
