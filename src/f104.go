@@ -34,6 +34,6 @@ func SaveInfo(c *gin.Context) {
 		"page":  page,
 		"start": start,
 		"msg":   "操作成功",
-		"url":   "http://localhost:8500/apuu7/" + strconv.Itoa(page) + "/" + strconv.Itoa(start+5),
+		"url":   "http://localhost:8500/getData/" + strconv.Itoa(page) + "/" + strconv.Itoa(start+5),
 	})
 }
