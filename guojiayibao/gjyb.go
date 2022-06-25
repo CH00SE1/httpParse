@@ -128,6 +128,90 @@ type Drug1001 struct {
 	Orderby   interface{} `json:"orderby"`
 }
 
+type DurgInfo1002 struct {
+	Records int `json:"records"`
+	Total   int `json:"total"`
+	Rows    []struct {
+		PreparationId                    string     `json:"preparationId"`
+		PreparationCode                  string     `json:"preparationCode"`
+		PreparationType                  string     `json:"preparationType"`
+		PreparationPrename               string     `json:"preparationPrename"`
+		PreparationMedicinemodel         string     `json:"preparationMedicinemodel"`
+		PreparationOutlook               string     `json:"preparationOutlook"`
+		PreparationFactor                string     `json:"preparationFactor"`
+		PreparationPacknuit              string     `json:"preparationPacknuit"`
+		PreparationNuit                  string     `json:"preparationNuit"`
+		PreparationMaterialname          string     `json:"preparationMaterialname"`
+		PreparationName                  string     `json:"preparationName"`
+		PreparationAddress               string     `json:"preparationAddress"`
+		PreparationCommissionname        string     `json:"preparationCommissionname"`
+		PreparationCommissionaddress     string     `json:"preparationCommissionaddress"`
+		PreparationApprovalcode          string     `json:"preparationApprovalcode"`
+		PreparationValiditydate          *time.Time `json:"preparationValiditydate"`
+		PreparationPermitnumber          string     `json:"preparationPermitnumber"`
+		PreparationExestandard           string     `json:"preparationExestandard"`
+		PreparationApplicabledisease     string     `json:"preparationApplicabledisease"`
+		PreparationDosage                string     `json:"preparationDosage"`
+		PreparationChildmedication       string     `json:"preparationChildmedication"`
+		PreparationOldatientmedication   string     `json:"preparationOldatientmedication"`
+		PreparationContactname           string     `json:"preparationContactname"`
+		PreparationContactnumber         string     `json:"preparationContactnumber"`
+		PreparationPerdocattachment      string     `json:"preparationPerdocattachment"`
+		PreparationApprovaldocattachment string     `json:"preparationApprovaldocattachment"`
+		PreparationDesdocattachment      string     `json:"preparationDesdocattachment"`
+		AreaName                         string     `json:"areaName"`
+		AreaId                           string     `json:"areaId"`
+		HosId                            string     `json:"hosId"`
+		HosName                          string     `json:"hosName"`
+		InitializationState              int        `json:"initializationState"`
+		SubmitTime                       time.Time  `json:"submitTime"`
+		ReauditUserId                    string     `json:"reauditUserId"`
+		ReauditUserName                  string     `json:"reauditUserName"`
+		ReauditAddTime                   time.Time  `json:"reauditAddTime"`
+		ReauditRemark                    string     `json:"reauditRemark"`
+		AuditUserId                      string     `json:"auditUserId"`
+		AuditUserName                    string     `json:"auditUserName"`
+		AuditAddTime                     time.Time  `json:"auditAddTime"`
+		AuditRemark                      string     `json:"auditRemark"`
+		AddUserId                        string     `json:"addUserId"`
+		AddUserName                      string     `json:"addUserName"`
+		AddTime                          time.Time  `json:"addTime"`
+		LastUpdateUserId                 string     `json:"lastUpdateUserId"`
+		LastUpdateUserName               string     `json:"lastUpdateUserName"`
+		LastUpdateTime                   time.Time  `json:"lastUpdateTime"`
+		RkFlag                           bool       `json:"rkFlag"`
+		RkkFlag                          bool       `json:"rkkFlag"`
+		FinalPushStatus                  int        `json:"finalPushStatus"`
+		PushVersion                      string     `json:"pushVersion"`
+		Message                          string     `json:"message"`
+		DataType                         int        `json:"dataType"`
+		IsuFlag                          int        `json:"isuFlag"`
+		RkTime                           time.Time  `json:"rkTime"`
+		PushTime                         time.Time  `json:"pushTime"`
+		ProductInsuranceType             int        `json:"productInsuranceType"`
+		ProductName                      string     `json:"productName"`
+		ProductMedicineModel             string     `json:"productMedicineModel"`
+		ProductRemark                    string     `json:"productRemark"`
+		ProductCode                      string     `json:"productCode"`
+		PayStandard                      string     `json:"payStandard"`
+	} `json:"rows"`
+	Page        int         `json:"page"`
+	Count       int         `json:"count"`
+	FirstResult int         `json:"firstResult"`
+	MaxResults  int         `json:"maxResults"`
+	Success     bool        `json:"success"`
+	Result      interface{} `json:"result"`
+	Conditions  struct {
+	} `json:"conditions"`
+	Msg       interface{} `json:"msg"`
+	Form      interface{} `json:"form"`
+	Code      int         `json:"code"`
+	OperCount int         `json:"operCount"`
+	Sord      string      `json:"sord"`
+	Sidx      string      `json:"sidx"`
+	Orderby   interface{} `json:"orderby"`
+}
+
 func GetData1003(page int) GjybInfo {
 
 	url := "https://code.nhsa.gov.cn/yp/stdGoodsPublic/getStdGoodsPublicData.html"
@@ -183,7 +267,7 @@ func GetData1001(page int) Drug1001 {
 	url := "https://code.nhsa.gov.cn/yp/stdChineseMedicinalDecoctionPieces/getPiecesRkData.html"
 	method := "POST"
 
-	text := "piecesCode=&piecesName=&_search=false&nd=1656053601177&rows=1000&page=" + strconv.Itoa(page) + "&sidx=&sord=asc"
+	text := "piecesCode=&piecesName=&_search=false&nd=1656053601177&rows=10000&page=" + strconv.Itoa(page) + "&sidx=&sord=asc"
 
 	payload := strings.NewReader(text)
 
@@ -226,4 +310,54 @@ func GetData1001(page int) Drug1001 {
 	json.Unmarshal(body, &drug1001)
 	fmt.Println(page, "------", text)
 	return drug1001
+}
+
+func GetData1002(page int) DurgInfo1002 {
+
+	url := "https://code.nhsa.gov.cn/yp/stdChineseMedicinalDecoctionPieces/getYnzjHospreparationRkData.html"
+	method := "POST"
+
+	text := "hosName=&preparationCode=&preparationPrename=&preparationApprovalcode=&_search=false&nd=1656137002632&rows=10000&page=" + strconv.Itoa(page) + "&sidx=&sord=asc"
+
+	payload := strings.NewReader(text)
+
+	client := &http.Client{}
+	req, err := http.NewRequest(method, url, payload)
+
+	if err != nil {
+		fmt.Println(err)
+		return DurgInfo1002{}
+	}
+	req.Header.Add("Accept", "application/json, text/javascript, */*; q=0.01")
+	req.Header.Add("Accept-Language", "zh-CN,zh;q=0.9")
+	req.Header.Add("Connection", "keep-alive")
+	req.Header.Add("Content-Type", "application/x-www-form-urlencoded; charset=UTF-8")
+	req.Header.Add("Cookie", "__jsluid_s=432f80e073d0ca463ea5c40138b6347d; pageSelect=0651c039aeb194b9cc7f459fd752d7f1%3D1; queryCondition=17fdc4365e50daabc7f92a2a05ee0ed0%3D%7B%22hosName%22%3A%22%E6%B9%98%E9%9B%85%22%2C%22preparationCode%22%3A%22%22%2C%22preparationPrename%22%3A%22%22%2C%22preparationApprovalcode%22%3A%22%22%7D; JSESSIONID=29F03F078AD61679A8EBE5E98761CE87; JSESSIONID=2B9DF6843058E832395D7084B337B1D1")
+	req.Header.Add("Origin", "https://code.nhsa.gov.cn")
+	req.Header.Add("Referer", "https://code.nhsa.gov.cn/yp/toRkList2.html")
+	req.Header.Add("Sec-Fetch-Dest", "empty")
+	req.Header.Add("Sec-Fetch-Mode", "cors")
+	req.Header.Add("Sec-Fetch-Site", "same-origin")
+	req.Header.Add("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/103.0.0.0 Safari/537.36")
+	req.Header.Add("X-Requested-With", "XMLHttpRequest")
+	req.Header.Add("sec-ch-ua", "\".Not/A)Brand\";v=\"99\", \"Google Chrome\";v=\"103\", \"Chromium\";v=\"103\"")
+	req.Header.Add("sec-ch-ua-mobile", "?0")
+	req.Header.Add("sec-ch-ua-platform", "\"Windows\"")
+
+	res, err := client.Do(req)
+	if err != nil {
+		fmt.Println(err)
+		return DurgInfo1002{}
+	}
+	defer res.Body.Close()
+
+	body, err := ioutil.ReadAll(res.Body)
+	if err != nil {
+		fmt.Println(err)
+		return DurgInfo1002{}
+	}
+	var durgInfo1002 DurgInfo1002
+	json.Unmarshal(body, &durgInfo1002)
+	fmt.Println(page, "------", text)
+	return durgInfo1002
 }
