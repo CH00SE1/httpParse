@@ -48,7 +48,7 @@ func Hs() {
 }
 
 func Tpaoyou() {
-	for i := 1; i < 100; i++ {
+	for i := 10; i <= 100; i++ {
 		yellow.Paoyou(1, i)
 	}
 

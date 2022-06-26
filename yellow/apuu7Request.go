@@ -213,7 +213,7 @@ func Paoyou(tag int, page int) {
 		jid := GetDataJid(initial_url + href)
 		m3u8_url := GetM3U8URl(jid)
 		// 获取输出
-		fmt.Printf("%d.href:%s , title:%s , m3u8_url:%s\n", i+1, href, title, m3u8_url)
+		fmt.Printf("\n[第%d页 第%d个] -> [href:%s , title:%s , m3u8_url:%s]\n", page, i+1, href, title, m3u8_url)
 		// 插入数据
 		db.Create(&HsInfo{Title: utils.StringStrip(title), Url: utils.StringStrip(initial_url + href), M3u8Url: utils.StringStrip(m3u8_url), ClassId: tag, Platform: "paoyou"})
 	})
