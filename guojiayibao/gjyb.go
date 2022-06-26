@@ -317,7 +317,7 @@ func GetData1002(page int) DurgInfo1002 {
 	url := "https://code.nhsa.gov.cn/yp/stdChineseMedicinalDecoctionPieces/getYnzjHospreparationRkData.html"
 	method := "POST"
 
-	text := "hosName=&preparationCode=&preparationPrename=&preparationApprovalcode=&_search=false&nd=1656137002632&rows=10000&page=" + strconv.Itoa(page) + "&sidx=&sord=asc"
+	text := "hosName=&preparationCode=&preparationPrename=&preparationApprovalcode=&_search=false&nd=1656137002632&rows=1000&page=" + strconv.Itoa(page) + "&sidx=&sord=asc"
 
 	payload := strings.NewReader(text)
 

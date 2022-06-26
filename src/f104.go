@@ -3,7 +3,7 @@ package src
 import (
 	"fmt"
 	"github.com/gin-gonic/gin"
-	"httpParse/li5apuu7"
+	"httpParse/yellow"
 	"net/http"
 	"strconv"
 	"time"
@@ -27,7 +27,7 @@ func SaveInfo(c *gin.Context) {
 	page, _ := strconv.Atoi(c.Param("page"))
 	start, _ := strconv.Atoi(c.Param("start"))
 	for i := start; i < start+5; i++ {
-		_, i2 := li5apuu7.ExampleScrape(page, i)
+		_, i2 := yellow.ExampleScrape(page, i)
 		fmt.Printf("第%d页", i2)
 	}
 	c.JSON(http.StatusOK, gin.H{
