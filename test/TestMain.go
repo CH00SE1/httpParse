@@ -1,7 +1,7 @@
 package main
 
 import (
-	"httpParse/yellow"
+	"httpParse/hs"
 	"sync"
 )
 
@@ -15,7 +15,7 @@ var wg sync.WaitGroup
 
 func TE1(tag int) {
 	for i := 2; i < 20; i++ {
-		yellow.ExampleScrape(tag, i)
+		hs.ExampleScrape(tag, i)
 	}
 }
 

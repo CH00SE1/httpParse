@@ -3,7 +3,7 @@ package main
 import (
 	"httpParse/db"
 	"httpParse/guojiayibao"
-	"httpParse/yellow"
+	"httpParse/hs"
 	"sync"
 	"time"
 )
@@ -43,7 +43,7 @@ func T1003() {
 
 func Hs() {
 	for i := 2; i < 10; i++ {
-		yellow.ExampleScrape(28, i)
+		hs.ExampleScrape(28, i)
 	}
 }
 
@@ -54,21 +54,21 @@ var tag = 1
 func Tpaoyou0() {
 	defer wg.Done()
 	for i := 200; i < 230; i++ {
-		yellow.Paoyou(tag, i)
+		hs.Paoyou(tag, i)
 	}
 }
 
 func Tpaoyou1() {
 	defer wg.Done()
 	for i := 230; i < 260; i++ {
-		yellow.Paoyou(tag, i)
+		hs.Paoyou(tag, i)
 	}
 }
 
 func Tpaoyou2() {
 	defer wg.Done()
 	for i := 260; i < 300; i++ {
-		yellow.Paoyou(tag, i)
+		hs.Paoyou(tag, i)
 	}
 }
 
