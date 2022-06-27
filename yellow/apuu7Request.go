@@ -210,8 +210,8 @@ func Paoyou(tag int, page int) {
 	doc.Find("ul.fed-list-info li a.fed-list-pics").Each(func(i int, s *goquery.Selection) {
 		href, _ := s.Attr("href")
 		title, _ := s.Attr("title")
-		jid := GetDataJid(initial_url + href)
-		m3u8_url := GetM3U8URl(jid)
+		jid := getDataJid(initial_url + href)
+		m3u8_url := getM3U8URl(jid)
 		// 获取输出
 		fmt.Printf("\n[第%d页 第%d个] -> [href:%s , title:%s , m3u8_url:%s]\n", page, i+1, href, title, m3u8_url)
 		// 插入数据
@@ -221,7 +221,7 @@ func Paoyou(tag int, page int) {
 }
 
 // 请求播放页面拿去视频jid
-func GetDataJid(url string) string {
+func getDataJid(url string) string {
 	method := "GET"
 	client := &http.Client{}
 	req, err := http.NewRequest(method, url, nil)
@@ -263,7 +263,7 @@ func GetDataJid(url string) string {
 }
 
 // 根据视频jid获取m3u8地址
-func GetM3U8URl(jid string) string {
+func getM3U8URl(jid string) string {
 
 	url := "https://paoyou.ml/index.php/ajax/vodurl"
 	method := "POST"
