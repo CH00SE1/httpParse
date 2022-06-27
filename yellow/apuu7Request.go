@@ -15,7 +15,7 @@ import (
 )
 
 /**
- * @title li5apuu7 网页解析
+ * @title hs 网页解析
  * @author xiongshao
  * @date 2022-06-22 11:46:35
  */
@@ -284,7 +284,6 @@ func GetM3U8URl(jid string) string {
 	req.Header.Add("content-type", "application/x-www-form-urlencoded; charset=UTF-8")
 	req.Header.Add("cookie", "Hm_lvt_c0b6c8564ce67088dca63919bcc664b9=1655732450,1655990235,1656234817; Hm_lpvt_c0b6c8564ce67088dca63919bcc664b9=1656240892")
 	req.Header.Add("origin", "https://paoyou.ml")
-	req.Header.Add("referer", "https://paoyou.ml/play/422100.html")
 	req.Header.Add("sec-ch-ua", "\".Not/A)Brand\";v=\"99\", \"Google Chrome\";v=\"103\", \"Chromium\";v=\"103\"")
 	req.Header.Add("sec-ch-ua-mobile", "?0")
 	req.Header.Add("sec-ch-ua-platform", "\"Windows\"")

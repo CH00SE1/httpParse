@@ -49,25 +49,31 @@ func Hs() {
 
 var wg sync.WaitGroup
 
+func Tpaoyou0() {
+	defer wg.Done()
+	for i := 1; i < 30; i++ {
+		yellow.Paoyou(3, i)
+	}
+}
+
 func Tpaoyou1() {
 	defer wg.Done()
 	for i := 30; i < 60; i++ {
-		yellow.Paoyou(2, i)
-		//time.Sleep(time.Millisecond * 30)
+		yellow.Paoyou(3, i)
 	}
 }
 
 func Tpaoyou2() {
 	defer wg.Done()
 	for i := 60; i < 101; i++ {
-		yellow.Paoyou(2, i)
-		//time.Sleep(time.Millisecond * 30)
+		yellow.Paoyou(3, i)
 	}
 }
 
 func SyncTpaoyou() {
 	for i := 0; i < 3; i++ {
 		wg.Add(1)
+		go Tpaoyou0()
 		go Tpaoyou1()
 		go Tpaoyou2()
 	}
