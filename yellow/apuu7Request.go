@@ -1,6 +1,7 @@
 package yellow
 
 import (
+	"database/sql"
 	"encoding/json"
 	"fmt"
 	"github.com/PuerkitoBio/goquery"
@@ -28,6 +29,8 @@ type HsInfo struct {
 	M3u8Url  string
 	Platform string
 	ClassId  int
+	Page     int
+	Location string
 }
 
 // javascript对象
@@ -141,12 +144,15 @@ func ExampleScrape(tag int, page int) (string, int) {
 		url := "http://li5.apuu7.top" + utils.StringStrip(href)
 		str += "\"title\":\"" + utils.StringStrip(title) + "\" ,\"url\":\"" + url + "\"},\n"
 		//fmt.Println("title:", title, "url:", url)
-		if strings.Contains(url, "http://li5.apuu7.top/index.php/vod/play") {
-			obj := getM3u8Obj(url)
-			m3u8url := M3u8UrlParse(obj)
-			//fmt.Println("m3u8Url:", m3u8url)
-			// 插入数据
-			db.Create(&HsInfo{Title: utils.StringStrip(title), Url: utils.StringStrip(url), M3u8Url: utils.StringStrip(m3u8url), ClassId: tag, Platform: "li5apuu7"})
+		row := db.Where("(title) = @title", sql.Named("title", utils.StringStrip(title))).Find(&HsInfo{}).RowsAffected
+		if row != 1 {
+			if strings.Contains(url, "http://li5.apuu7.top/index.php/vod/play") {
+				obj := getM3u8Obj(url)
+				m3u8url := M3u8UrlParse(obj)
+				//fmt.Println("m3u8Url:", m3u8url)
+				// 插入数据
+				db.Create(&HsInfo{Title: utils.StringStrip(title), Url: utils.StringStrip(url), M3u8Url: utils.StringStrip(m3u8url), ClassId: tag, Platform: "li5apuu7", Page: page, Location: strconv.Itoa(i) + "-[" + strconv.Itoa(i/6+1) + "," + strconv.Itoa(i%6) + "]"})
+			}
 		}
 	})
 	// 每页停止6秒
@@ -161,7 +167,7 @@ func Paoyou(tag int, page int) {
 
 	url := initial_url + "lists/" + strconv.Itoa(tag) + "/" + strconv.Itoa(page) + ".html"
 
-	fmt.Println("请求 url : ", url)
+	fmt.Println("\n请求 url : ", url)
 
 	method := "GET"
 
@@ -210,12 +216,18 @@ func Paoyou(tag int, page int) {
 	doc.Find("ul.fed-list-info li a.fed-list-pics").Each(func(i int, s *goquery.Selection) {
 		href, _ := s.Attr("href")
 		title, _ := s.Attr("title")
-		jid := getDataJid(initial_url + href)
-		m3u8_url := getM3U8URl(jid)
-		// 获取输出
-		fmt.Printf("\n[第%d页 第%d个] -> [href:%s , title:%s , m3u8_url:%s]\n", page, i+1, href, title, m3u8_url)
-		// 插入数据
-		db.Create(&HsInfo{Title: utils.StringStrip(title), Url: utils.StringStrip(initial_url + href), M3u8Url: utils.StringStrip(m3u8_url), ClassId: tag, Platform: "paoyou"})
+		row := db.Where("(title) = @title", sql.Named("title", utils.StringStrip(title))).Find(&HsInfo{}).RowsAffected
+		if row != 1 {
+			jid := getDataJid(initial_url + href)
+			m3u8_url := getM3U8URl(jid)
+			// 获取输出
+			fmt.Printf("\n[第%d页 第%d个] -> [href:%s , title:%s , m3u8_url:%s]\n", page, i+1, href, title, m3u8_url)
+			// 插入数据
+			db.Create(&HsInfo{Title: utils.StringStrip(title), Url: utils.StringStrip(initial_url + href), M3u8Url: utils.StringStrip(m3u8_url), ClassId: tag, Platform: "paoyou", Page: page, Location: strconv.Itoa(i) + "-[" + strconv.Itoa(i/6+1) + "," + strconv.Itoa(i%6) + "]"})
+		} else {
+			fmt.Printf("\n[第%d页 第%d个] -> [href:%s , title:%s , row:%d]\n", page, i+1, href, title, row)
+		}
+
 	})
 
 }

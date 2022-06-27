@@ -47,30 +47,32 @@ func Hs() {
 	}
 }
 
+// 全局变量
 var wg sync.WaitGroup
+var tag = 2
 
 func Tpaoyou0() {
 	defer wg.Done()
-	for i := 17; i < 30; i++ {
-		yellow.Paoyou(3, i)
+	for i := 100; i < 130; i++ {
+		yellow.Paoyou(tag, i)
 	}
 }
 
 func Tpaoyou1() {
 	defer wg.Done()
-	for i := 47; i < 60; i++ {
-		yellow.Paoyou(3, i)
+	for i := 130; i < 160; i++ {
+		yellow.Paoyou(tag, i)
 	}
 }
 
 func Tpaoyou2() {
 	defer wg.Done()
-	for i := 77; i < 101; i++ {
-		yellow.Paoyou(3, i)
+	for i := 160; i < 200; i++ {
+		yellow.Paoyou(tag, i)
 	}
 }
 
-func SyncTpaoyou() {
+func syncTpaoyou() {
 	wg.Add(1)
 	go Tpaoyou0()
 	go Tpaoyou1()
@@ -84,6 +86,5 @@ func main() {
 	//gin.Run(":8500")
 	//db.AutoCreateTable(xml.XmlInfo{})
 	//T1002()
-	//TGetM3U8URl()
-	SyncTpaoyou()
+	syncTpaoyou()
 }
