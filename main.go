@@ -1,10 +1,10 @@
 package main
 
 import (
-	"fmt"
 	"httpParse/db"
 	"httpParse/guojiayibao"
 	"httpParse/yellow"
+	"sync"
 	"time"
 )
 
@@ -47,28 +47,39 @@ func Hs() {
 	}
 }
 
-func Tpaoyou() {
-	for i := 10; i <= 100; i++ {
-		yellow.Paoyou(1, i)
+var wg sync.WaitGroup
+
+func Tpaoyou1() {
+	defer wg.Done()
+	for i := 30; i < 60; i++ {
+		yellow.Paoyou(2, i)
+		//time.Sleep(time.Millisecond * 30)
 	}
-
 }
 
-func TdataJid() {
-	yellow.GetDataJid("https://paoyou.ml/play/422100.html")
+func Tpaoyou2() {
+	defer wg.Done()
+	for i := 60; i < 101; i++ {
+		yellow.Paoyou(2, i)
+		//time.Sleep(time.Millisecond * 30)
+	}
 }
 
-func TGetM3U8URl() {
-	rl := yellow.GetM3U8URl("425326")
-	fmt.Println(rl)
+func SyncTpaoyou() {
+	for i := 0; i < 3; i++ {
+		wg.Add(1)
+		go Tpaoyou1()
+		go Tpaoyou2()
+	}
+	wg.Wait()
 }
 
 func main() {
 	//gin := gin.Default()
 	//gin.GET("/getData/:page/:start", src.SaveInfo)
 	//gin.Run(":8500")
-	//db.AutoCreateTable(guojiayibao.DrugInfo1002Tmp{})
+	//db.AutoCreateTable(xml.XmlInfo{})
 	//T1002()
 	//TGetM3U8URl()
-	Tpaoyou()
+	SyncTpaoyou()
 }
