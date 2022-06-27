@@ -49,25 +49,25 @@ func Hs() {
 
 // 全局变量
 var wg sync.WaitGroup
-var tag = 2
+var tag = 1
 
 func Tpaoyou0() {
 	defer wg.Done()
-	for i := 100; i < 130; i++ {
+	for i := 200; i < 230; i++ {
 		yellow.Paoyou(tag, i)
 	}
 }
 
 func Tpaoyou1() {
 	defer wg.Done()
-	for i := 130; i < 160; i++ {
+	for i := 230; i < 260; i++ {
 		yellow.Paoyou(tag, i)
 	}
 }
 
 func Tpaoyou2() {
 	defer wg.Done()
-	for i := 160; i < 200; i++ {
+	for i := 260; i < 300; i++ {
 		yellow.Paoyou(tag, i)
 	}
 }

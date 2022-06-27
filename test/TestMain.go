@@ -20,5 +20,5 @@ func TE1(tag int) {
 }
 
 func main() {
-	TE1(24)
+	TE1(26)
 }
