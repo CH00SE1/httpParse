@@ -1,9 +1,12 @@
 package main
 
 import (
+	"fmt"
+	"github.com/golang/protobuf/proto"
 	"httpParse/db"
 	"httpParse/guojiayibao"
 	"httpParse/hs"
+	"httpParse/protos"
 	"sync"
 	"time"
 )
@@ -43,7 +46,7 @@ func T1003() {
 
 func Hs() {
 	for i := 2; i < 10; i++ {
-		hs.ExampleScrape(28, i)
+		hs.ExampleScrape(30, i)
 	}
 }
 
@@ -53,7 +56,7 @@ var tag = 1
 
 func Tpaoyou0() {
 	defer wg.Done()
-	for i := 200; i < 230; i++ {
+	for i := 1; i < 10; i++ {
 		hs.Paoyou(tag, i)
 	}
 }
@@ -80,11 +83,39 @@ func syncTpaoyou() {
 	wg.Wait()
 }
 
+// protobuf 测试
+func protobufTest() {
+	s1 := &protos.Student{} // 第一个测试
+	s1.Name = "jz01"
+	s1.Age = 23
+	s1.Address = "cq"
+	s1.Cn = protos.ClassName_class2 //枚举类型赋值
+	ss := &protos.Students{}
+	ss.Person = append(ss.Person, s1) //将第一个学生信息添加到Students对应的切片中
+	s2 := &protos.Student{}           //第二个学生信息
+	s2.Name = "jz02"
+	s2.Age = 25
+	s2.Address = "cd"
+	s2.Cn = protos.ClassName_class3
+	ss.Person = append(ss.Person, s2) //将第二个学生信息添加到Students对应的切片中
+	ss.School = "cqu"
+	fmt.Println("Students信息为：", ss)
+	// Marshal takes a protocol buffer message
+	// and encodes it into the wire format, returning the data.
+	buffer, _ := proto.Marshal(ss)
+	fmt.Println("序列化之后的信息为：", buffer)
+	// Use UnmarshalMerge to preserve and append to existing data.
+	data := &protos.Students{}
+	proto.Unmarshal(buffer, data)
+	fmt.Println("反序列化之后的信息为：", data)
+}
+
 func main() {
 	//gin := gin.Default()
 	//gin.GET("/getData/:page/:start", src.SaveInfo)
 	//gin.Run(":8500")
 	//db.AutoCreateTable(xml.XmlInfo{})
 	//T1002()
-	syncTpaoyou()
+	//protobufTest()
+	Hs()
 }

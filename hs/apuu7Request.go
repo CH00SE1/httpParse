@@ -33,6 +33,11 @@ type HsInfo struct {
 	Location string
 }
 
+// HsInfo 切片
+type HsInfos struct {
+	hsInfo []*HsInfo
+}
+
 // javascript对象
 type Player_aaaa struct {
 	gorm.Model
@@ -135,6 +140,10 @@ func ExampleScrape(tag int, page int) (string, int) {
 
 	// 引入数据库连接
 	db, _ := db.MysqlConfigure()
+
+	// 结构体切片
+	infos := HsInfos{}
+
 	// Find the review items
 	doc.Find("div.item a").Each(func(i int, s *goquery.Selection) {
 		// For each item found, get the title
@@ -149,14 +158,15 @@ func ExampleScrape(tag int, page int) (string, int) {
 			if strings.Contains(url, "http://li5.apuu7.top/index.php/vod/play") {
 				obj := getM3u8Obj(url)
 				m3u8url := M3u8UrlParse(obj)
-				//fmt.Println("m3u8Url:", m3u8url)
-				// 插入数据
-				db.Create(&HsInfo{Title: utils.StringStrip(title), Url: utils.StringStrip(url), M3u8Url: utils.StringStrip(m3u8url), ClassId: tag, Platform: "li5apuu7", Page: page, Location: strconv.Itoa(i) + "-[" + strconv.Itoa(i/6+1) + "," + strconv.Itoa(i%6) + "]"})
+				infos.hsInfo = append(infos.hsInfo, &HsInfo{Title: utils.StringStrip(title),
+					Url:     utils.StringStrip(url),
+					M3u8Url: utils.StringStrip(m3u8url),
+					ClassId: tag, Platform: "li5apuu7",
+					Page: page, Location: strconv.Itoa(i) + "-[" + strconv.Itoa(i/6+1) + "," + strconv.Itoa(i%6) + "]"})
 			}
 		}
 	})
-	// 每页停止6秒
-	//time.Sleep(2 * 1e9)
+	db.CreateInBatches(infos.hsInfo, 50)
 	return str, page
 }
 
@@ -213,6 +223,9 @@ func Paoyou(tag int, page int) {
 	// 引入数据库连接
 	db, _ := db.MysqlConfigure()
 
+	// 结构体切片
+	infos := HsInfos{}
+
 	doc.Find("ul.fed-list-info li a.fed-list-pics").Each(func(i int, s *goquery.Selection) {
 		href, _ := s.Attr("href")
 		title, _ := s.Attr("title")
@@ -223,13 +236,19 @@ func Paoyou(tag int, page int) {
 			// 获取输出
 			fmt.Printf("\n[第%d页 第%d个] -> [href:%s , title:%s , m3u8_url:%s]\n", page, i+1, href, title, m3u8_url)
 			// 插入数据
-			db.Create(&HsInfo{Title: utils.StringStrip(title), Url: utils.StringStrip(initial_url + href), M3u8Url: utils.StringStrip(m3u8_url), ClassId: tag, Platform: "paoyou", Page: page, Location: strconv.Itoa(i) + "-[" + strconv.Itoa(i/6+1) + "," + strconv.Itoa(i%6) + "]"})
+			infos.hsInfo = append(infos.hsInfo, &HsInfo{Title: utils.StringStrip(title),
+				Url:     utils.StringStrip(initial_url + href),
+				M3u8Url: utils.StringStrip(m3u8_url),
+				ClassId: tag, Platform: "paoyou",
+				Page:     page,
+				Location: strconv.Itoa(i) + "-[" + strconv.Itoa(i/6+1) + "," + strconv.Itoa(i%6) + "]"})
 		} else {
 			fmt.Printf("\n[第%d页 第%d个] -> [href:%s , title:%s , row:%d]\n", page, i+1, href, title, row)
 		}
 
 	})
-
+	// 批量保存数据
+	db.CreateInBatches(infos.hsInfo, 50)
 }
 
 // 请求播放页面拿去视频jid

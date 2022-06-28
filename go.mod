@@ -6,6 +6,7 @@ require (
 	github.com/PuerkitoBio/goquery v1.8.0
 	github.com/gin-gonic/gin v1.8.1
 	github.com/go-redis/redis v6.15.9+incompatible
+	github.com/golang/protobuf v1.5.2
 	github.com/qmhball/db2gorm v0.1.0
 	golang.org/x/text v0.3.7
 	gorm.io/driver/mysql v1.3.4
