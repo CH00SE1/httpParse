@@ -1,6 +1,7 @@
 package utils
 
 import (
+	"encoding/base64"
 	"fmt"
 	"golang.org/x/text/encoding/simplifiedchinese"
 	"io/ioutil"
@@ -33,7 +34,7 @@ func CreateFile(text *string, fileName string, fileType string) {
 
 	defer create.Close()
 
-	writeString, err := create.WriteString("[" + *text + "]")
+	writeString, err := create.WriteString(*text)
 
 	if err != nil {
 		fmt.Println(err)
@@ -86,4 +87,16 @@ func SaveFile(url string, i int) {
 	path := "D:\\photo11\\" + strconv.Itoa(i) + ".jpg"
 	log.Println("path : " + path)
 	ioutil.WriteFile(path, bytes, 0755)
+}
+
+// 解密base64str
+func Base64ToStr(str string) {
+	var text *string
+	decodeString, err := base64.StdEncoding.DecodeString(str)
+	bytes2String := Bytes2String(decodeString)
+	text = &bytes2String
+	if err != nil {
+		fmt.Println("Error", err)
+	}
+	CreateFile(text, "login", ".txt")
 }

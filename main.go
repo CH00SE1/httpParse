@@ -44,9 +44,9 @@ func T1003() {
 	}
 }
 
-func Hs() {
-	for i := 2; i < 10; i++ {
-		hs.ExampleScrape(30, i)
+func Hs(tag int) {
+	for i := 2; i < 30; i++ {
+		hs.ExampleScrape(tag, i)
 	}
 }
 
@@ -56,21 +56,21 @@ var tag = 1
 
 func Tpaoyou0() {
 	defer wg.Done()
-	for i := 1; i < 10; i++ {
+	for i := 1; i < 30; i++ {
 		hs.Paoyou(tag, i)
 	}
 }
 
 func Tpaoyou1() {
 	defer wg.Done()
-	for i := 230; i < 260; i++ {
+	for i := 330; i < 360; i++ {
 		hs.Paoyou(tag, i)
 	}
 }
 
 func Tpaoyou2() {
 	defer wg.Done()
-	for i := 260; i < 300; i++ {
+	for i := 360; i < 400; i++ {
 		hs.Paoyou(tag, i)
 	}
 }
@@ -78,8 +78,8 @@ func Tpaoyou2() {
 func syncTpaoyou() {
 	wg.Add(1)
 	go Tpaoyou0()
-	go Tpaoyou1()
-	go Tpaoyou2()
+	//go Tpaoyou1()
+	//go Tpaoyou2()
 	wg.Wait()
 }
 
@@ -117,5 +117,6 @@ func main() {
 	//db.AutoCreateTable(xml.XmlInfo{})
 	//T1002()
 	//protobufTest()
-	Hs()
+	//Hs(30)
+	syncTpaoyou()
 }

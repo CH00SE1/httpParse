@@ -33,11 +33,6 @@ type HsInfo struct {
 	Location string
 }
 
-// HsInfo 切片
-type HsInfos struct {
-	hsInfo []*HsInfo
-}
-
 // javascript对象
 type Player_aaaa struct {
 	gorm.Model
@@ -141,8 +136,8 @@ func ExampleScrape(tag int, page int) (string, int) {
 	// 引入数据库连接
 	db, _ := db.MysqlConfigure()
 
-	// 结构体切片
-	infos := HsInfos{}
+	// 结构体指针切片
+	infos := []*HsInfo{}
 
 	// Find the review items
 	doc.Find("div.item a").Each(func(i int, s *goquery.Selection) {
@@ -152,21 +147,23 @@ func ExampleScrape(tag int, page int) (string, int) {
 		href, _ := s.Attr("href")
 		url := "http://li5.apuu7.top" + utils.StringStrip(href)
 		str += "\"title\":\"" + utils.StringStrip(title) + "\" ,\"url\":\"" + url + "\"},\n"
-		//fmt.Println("title:", title, "url:", url)
 		row := db.Where("(title) = @title", sql.Named("title", utils.StringStrip(title))).Find(&HsInfo{}).RowsAffected
 		if row != 1 {
 			if strings.Contains(url, "http://li5.apuu7.top/index.php/vod/play") {
 				obj := getM3u8Obj(url)
 				m3u8url := M3u8UrlParse(obj)
-				infos.hsInfo = append(infos.hsInfo, &HsInfo{Title: utils.StringStrip(title),
+				fmt.Printf("\n[第%d页 第%d个] -> [href:%s , title:%s , m3u8_url:%s]\n", page, i+1, href, title, m3u8url)
+				infos = append(infos, &HsInfo{Title: utils.StringStrip(title),
 					Url:     utils.StringStrip(url),
 					M3u8Url: utils.StringStrip(m3u8url),
 					ClassId: tag, Platform: "li5apuu7",
 					Page: page, Location: strconv.Itoa(i) + "-[" + strconv.Itoa(i/6+1) + "," + strconv.Itoa(i%6) + "]"})
 			}
+		} else {
+			fmt.Printf("\n[第%d页 第%d个] -> [href:%s , title:%s , row:%d]\n", page, i+1, href, title, row)
 		}
 	})
-	db.CreateInBatches(infos.hsInfo, 50)
+	db.CreateInBatches(infos, 50)
 	return str, page
 }
 
@@ -223,8 +220,8 @@ func Paoyou(tag int, page int) {
 	// 引入数据库连接
 	db, _ := db.MysqlConfigure()
 
-	// 结构体切片
-	infos := HsInfos{}
+	// 结构体指针切片
+	infos := []*HsInfo{}
 
 	doc.Find("ul.fed-list-info li a.fed-list-pics").Each(func(i int, s *goquery.Selection) {
 		href, _ := s.Attr("href")
@@ -235,8 +232,8 @@ func Paoyou(tag int, page int) {
 			m3u8_url := getM3U8URl(jid)
 			// 获取输出
 			fmt.Printf("\n[第%d页 第%d个] -> [href:%s , title:%s , m3u8_url:%s]\n", page, i+1, href, title, m3u8_url)
-			// 插入数据
-			infos.hsInfo = append(infos.hsInfo, &HsInfo{Title: utils.StringStrip(title),
+			// 添加数据
+			infos = append(infos, &HsInfo{Title: utils.StringStrip(title),
 				Url:     utils.StringStrip(initial_url + href),
 				M3u8Url: utils.StringStrip(m3u8_url),
 				ClassId: tag, Platform: "paoyou",
@@ -245,10 +242,8 @@ func Paoyou(tag int, page int) {
 		} else {
 			fmt.Printf("\n[第%d页 第%d个] -> [href:%s , title:%s , row:%d]\n", page, i+1, href, title, row)
 		}
-
 	})
-	// 批量保存数据
-	db.CreateInBatches(infos.hsInfo, 50)
+	db.CreateInBatches(infos, 50)
 }
 
 // 请求播放页面拿去视频jid
