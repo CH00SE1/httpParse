@@ -14,27 +14,40 @@ import (
 var wg sync.WaitGroup
 
 func TE1(tag int) {
-	for i := 20; i < 100; i++ {
+	defer wg.Done()
+	for i := 400; i < 500; i++ {
 		hs.ExampleScrape(tag, i)
 	}
 }
 
 func TE2(tag int) {
-	for i := 100; i < 150; i++ {
+	defer wg.Done()
+	for i := 240; i < 260; i++ {
 		hs.ExampleScrape(tag, i)
 	}
 }
 
 func TE3(tag int) {
-	for i := 150; i < 200; i++ {
+	defer wg.Done()
+	for i := 260; i < 300; i++ {
 		hs.ExampleScrape(tag, i)
 	}
 }
 
-func main() {
+func flush(tag int) {
+	defer wg.Done()
+	for i := 2; i < 20; i++ {
+		hs.ExampleScrape(tag, i)
+	}
+}
+
+func test() {
+	tag := 28
 	wg.Add(1)
-	TE1(32)
-	TE2(32)
-	TE3(32)
+	go flush(tag)
 	wg.Wait()
+}
+
+func main() {
+	test()
 }

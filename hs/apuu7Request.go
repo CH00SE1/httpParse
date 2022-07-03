@@ -136,9 +136,6 @@ func ExampleScrape(tag int, page int) (string, int) {
 	// 引入数据库连接
 	db, _ := db.MysqlConfigure()
 
-	// 结构体指针切片
-	infos := []*HsInfo{}
-
 	// Find the review items
 	doc.Find("div.item a").Each(func(i int, s *goquery.Selection) {
 		// For each item found, get the title
@@ -153,17 +150,16 @@ func ExampleScrape(tag int, page int) (string, int) {
 				obj := getM3u8Obj(url)
 				m3u8url := M3u8UrlParse(obj)
 				fmt.Printf("\n[第%d页 第%d个] -> [href:%s , title:%s , m3u8_url:%s]\n", page, i+1, href, title, m3u8url)
-				infos = append(infos, &HsInfo{Title: utils.StringStrip(title),
+				db.Create(&HsInfo{Title: utils.StringStrip(title),
 					Url:     utils.StringStrip(url),
 					M3u8Url: utils.StringStrip(m3u8url),
 					ClassId: tag, Platform: "li5apuu7",
 					Page: page, Location: strconv.Itoa(i) + "-[" + strconv.Itoa(i/6+1) + "," + strconv.Itoa(i%6) + "]"})
 			}
 		} else {
-			fmt.Printf("\n[第%d页 第%d个] -> [href:%s , title:%s , row:%d]\n", page, i+1, href, title, row)
+			fmt.Printf("\n[第%d页 第%d个] -> [href:%s , title:%s , row:%d] --> 存在记录\n", page, i+1, href, title, row)
 		}
 	})
-	db.CreateInBatches(infos, 50)
 	return str, page
 }
 
