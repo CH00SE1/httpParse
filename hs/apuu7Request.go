@@ -149,7 +149,7 @@ func ExampleScrape(tag int, page int) (string, int) {
 			if strings.Contains(url, "http://li5.apuu7.top/index.php/vod/play") {
 				obj := getM3u8Obj(url)
 				m3u8url := M3u8UrlParse(obj)
-				fmt.Printf("\n[第%d页 第%d个] -> [href:%s , title:%s , m3u8_url:%s]\n", page, i+1, href, title, m3u8url)
+				fmt.Printf("\nli5apuu7-->[第%d页 第%d个] -> [href:%s , title:%s , m3u8_url:%s]\n", page, i+1, href, title, m3u8url)
 				db.Create(&HsInfo{Title: utils.StringStrip(title),
 					Url:     utils.StringStrip(url),
 					M3u8Url: utils.StringStrip(m3u8url),
@@ -157,7 +157,7 @@ func ExampleScrape(tag int, page int) (string, int) {
 					Page: page, Location: strconv.Itoa(i) + "-[" + strconv.Itoa(i/6+1) + "," + strconv.Itoa(i%6) + "]"})
 			}
 		} else {
-			fmt.Printf("\n[第%d页 第%d个] -> [href:%s , title:%s , row:%d] --> 存在记录\n", page, i+1, href, title, row)
+			fmt.Printf("\nli5apuu7-->[第%d页 第%d个] -> [href:%s , title:%s , row:%d] --> 存在记录\n", page, i+1, href, title, row)
 		}
 	})
 	return str, page
@@ -170,7 +170,7 @@ func Paoyou(tag int, page int) {
 
 	url := initial_url + "lists/" + strconv.Itoa(tag) + "/" + strconv.Itoa(page) + ".html"
 
-	fmt.Println("\n请求 url : ", url)
+	fmt.Printf("请求 url : %s\n", url)
 
 	method := "GET"
 
@@ -217,7 +217,7 @@ func Paoyou(tag int, page int) {
 	db, _ := db.MysqlConfigure()
 
 	// 结构体指针切片
-	infos := []*HsInfo{}
+	//infos := []*HsInfo{}
 
 	doc.Find("ul.fed-list-info li a.fed-list-pics").Each(func(i int, s *goquery.Selection) {
 		href, _ := s.Attr("href")
@@ -227,19 +227,19 @@ func Paoyou(tag int, page int) {
 			jid := getDataJid(initial_url + href)
 			m3u8_url := getM3U8URl(jid)
 			// 获取输出
-			fmt.Printf("\n[第%d页 第%d个] -> [href:%s , title:%s , m3u8_url:%s]\n", page, i+1, href, title, m3u8_url)
-			// 添加数据
-			infos = append(infos, &HsInfo{Title: utils.StringStrip(title),
+			fmt.Printf("\npaoyou-->[第%d页 第%d个] -> [href:%s , title:%s , m3u8_url:%s]\n", page, i+1, href, title, m3u8_url)
+			// 添加数据 infos = append(infos,
+			db.Create(&HsInfo{Title: utils.StringStrip(title),
 				Url:     utils.StringStrip(initial_url + href),
 				M3u8Url: utils.StringStrip(m3u8_url),
 				ClassId: tag, Platform: "paoyou",
 				Page:     page,
 				Location: strconv.Itoa(i) + "-[" + strconv.Itoa(i/6+1) + "," + strconv.Itoa(i%6) + "]"})
 		} else {
-			fmt.Printf("\n[第%d页 第%d个] -> [href:%s , title:%s , row:%d]\n", page, i+1, href, title, row)
+			fmt.Printf("\npaoyou-->[第%d页 第%d个] -> [href:%s , title:%s , row:%d] --> 存在记录\n", page, i+1, href, title, row)
 		}
 	})
-	db.CreateInBatches(infos, 50)
+	//db.CreateInBatches(infos, 50)
 }
 
 // 请求播放页面拿去视频jid

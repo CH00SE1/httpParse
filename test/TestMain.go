@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"httpParse/hs"
 	"sync"
 )
@@ -47,7 +48,15 @@ func test() {
 	go flush(tag)
 	wg.Wait()
 }
+func nancy(num1, num2, size int) {
+	var ints []int
+	for i := 1; i <= size; i++ {
+		ints = append(ints, num1+(num2-num1)/size*i)
+		fmt.Printf("[%d,%d]\n", num1+(num2-num1)/size*(i-1), num1+(num2-num1)/size*i)
+	}
+	fmt.Println(ints)
+}
 
 func main() {
-	test()
+	nancy(219, 1000, 20)
 }

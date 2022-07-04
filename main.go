@@ -79,45 +79,37 @@ func Hs(tag int) {
 
 // 全局变量
 var wg sync.WaitGroup
-var tag = 2
+
+// 5203
+var tag = 1
 
 func flush() {
 	defer wg.Done()
-	for i := 206; i < 1917; i++ {
+	for i := 213; i < 1917; i++ {
 		hs.Paoyou(tag, i)
 	}
 }
 
-func Tpaoyou0() {
+func Tpaoyou(num1, num2 int) {
 	defer wg.Done()
-	for i := 400; i < 430; i++ {
+	for i := num1; i < num2; i++ {
 		hs.Paoyou(tag, i)
 	}
 }
 
-func Tpaoyou1() {
-	defer wg.Done()
-	for i := 430; i < 460; i++ {
-		hs.Paoyou(tag, i)
+func newPaoYou(num1, num2, size int) {
+	if num2-num1 > 0 {
+		wg.Add(1)
+		for i := 1; i <= size; i++ {
+			go Tpaoyou(num1+(num2-num1)/size*(i-1), num1+(num2-num1)/size*i)
+		}
+		wg.Wait()
+	} else {
+		fmt.Printf("num2 - num1 > 0 , 修改参数")
 	}
 }
 
-func Tpaoyou2() {
-	defer wg.Done()
-	for i := 460; i < 500; i++ {
-		hs.Paoyou(tag, i)
-	}
-}
-
-func syncTpaoyou() {
-	wg.Add(1)
-	go flush()
-	//go Tpaoyou0()
-	//go Tpaoyou1()
-	//go Tpaoyou2()
-	wg.Wait()
-}
-
+// 1000 - 2000 1000-1333 1333-1666 1666-2000
 func main() {
 	//gin := gin.Default()
 	//gin.GET("/getData/:page/:start", src.SaveInfo)
@@ -126,5 +118,7 @@ func main() {
 	//T1002()
 	//protobufTest()
 	//Hs(30)
-	syncTpaoyou()
+	//syncTpaoyou()
+	// 5203
+	newPaoYou(1, 21, 10)
 }
