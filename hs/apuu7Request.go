@@ -116,7 +116,11 @@ func M3u8UrlParse(url string) string {
 func ExampleScrape(tag int, page int) (string, int) {
 	// Request the HTML page.
 	// http://li5.apuu7.top/index.php/vod/type/id/20/page/2.html
-	res, err := http.Get("http://li5.apuu7.top/index.php/vod/type/id/" + strconv.Itoa(tag) + "/page/" + strconv.Itoa(page) + ".html")
+	url := "http://li5.apuu7.top/index.php/vod/type/id/" + strconv.Itoa(tag) + "/page/" + strconv.Itoa(page) + ".html"
+
+	fmt.Println("请求 url : ", url)
+
+	res, err := http.Get(url)
 	if err != nil {
 		log.Fatal(err)
 	}

@@ -14,9 +14,14 @@ import (
 
 // 全局变量
 var wg sync.WaitGroup
+var lock sync.Mutex
 
 // 1907
-var tag = 3
+var tag = 20
+
+const (
+	platfrom_paoyou, platfrom_li5apuu7 = "paoyou", "li5apuu7"
+)
 
 func flush() {
 	defer wg.Done()
@@ -31,25 +36,43 @@ func syncTpaoyou() {
 	wg.Wait()
 }
 
-func THs(num1, num2 int) {
+func THs1(num1, num2 int) {
 	defer wg.Done()
 	for i := num1; i < num2; i++ {
 		hs.Paoyou(tag, i)
 	}
 }
 
-func newPaoYou(num1, num2, size int) {
-	if num2-num1 > 0 {
+func THs2(num1, num2 int) {
+	defer wg.Done()
+	for i := num1; i < num2; i++ {
+		hs.ExampleScrape(tag, i)
+	}
+}
+
+func newPaoYou(num1, num2, size int, funcName string) {
+	count := num2 - num1
+	if count > 0 {
 		wg.Add(1)
 		for i := 1; i <= size; i++ {
-			go THs(num1+(num2-num1)/size*(i-1), num1+(num2-num1)/size*i)
+			// 加锁
+			lock.Lock()
+			if funcName == platfrom_paoyou {
+				go THs1(num1+count/size*(i-1), num1+count/size*i)
+			}
+			if funcName == platfrom_li5apuu7 {
+				go THs2(num1+count/size*(i-1), num1+count/size*i)
+			}
+			// 解锁
+			lock.Unlock()
 		}
 	} else {
-		fmt.Printf("num2 - num1 > 0 , 修改参数")
+		fmt.Printf("num2 - num1 < 0 , 修改参数")
 	}
 	wg.Wait()
 }
 
 func main() {
-	newPaoYou(1, 11, 5)
+	//flush()
+	newPaoYou(1, 1000, 10, platfrom_li5apuu7)
 }
