@@ -17,7 +17,7 @@ var wg sync.WaitGroup
 var lock sync.Mutex
 
 // 1907
-var tag = 20
+var tag = 1
 
 const (
 	platfrom_paoyou, platfrom_li5apuu7 = "paoyou", "li5apuu7"
@@ -73,6 +73,7 @@ func newPaoYou(num1, num2, size int, funcName string) {
 }
 
 func main() {
-	//flush()
-	newPaoYou(1, 1000, 10, platfrom_li5apuu7)
+	syncTpaoyou()
+	//newPaoYou(100, 4000, 20, platfrom_paoyou)
+	//newPaoYou(1, 1000, 40, platfrom_li5apuu7)
 }

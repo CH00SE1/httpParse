@@ -58,5 +58,6 @@ func nancy(num1, num2, size int) {
 }
 
 func main() {
-	nancy(219, 1000, 20)
+	//nancy(219, 1000, 20)
+	GenTable()
 }

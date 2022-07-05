@@ -1,6 +1,7 @@
 package db
 
 import (
+	"fmt"
 	"github.com/qmhball/db2gorm/gen"
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
@@ -60,13 +61,12 @@ func AutoCreateTable(Table interface{}) {
 	// 创建表
 	//db.Migrator().CreateTable(&Table)
 	// 将 "ENGINE=InnoDB" 添加到创建 的 SQL 里去
-	db.Set("gorm:table_options", "ENGINE=InnoDB").Migrator().CreateTable(&Table)
-	// 检查 对应的表是否存在
-	db.Migrator().HasTable(&Table)
-	//db.Migrator().HasTable(TableName)
-	//如果存在表则删除（删除时会忽略、删除外键约束)
-	//db.Migrator().DropTable(&Table)
-	//db.Migrator().DropTable(TableName)
+	if !db.Migrator().HasTable(&Table) {
+		db.Set("gorm:table_options", "ENGINE=InnoDB DEFAULT CHARSET=utf8mb3").AutoMigrate(&Table)
+		fmt.Println("创建成功")
+	} else {
+		fmt.Println("表已存在")
+	}
 }
 
 // 结构体生成器
