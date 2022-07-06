@@ -17,11 +17,17 @@ var wg sync.WaitGroup
 var lock sync.Mutex
 
 // 1907
-var tag = 1
+var tag = 3
 
 const (
 	platfrom_paoyou, platfrom_li5apuu7 = "paoyou", "li5apuu7"
 )
+
+func main() {
+	//hs.Mysql2Redis();
+	newPaoYou(1, 21, 10, platfrom_paoyou)
+	//newPaoYou(1, 11, 2, platfrom_li5apuu7)
+}
 
 func flush() {
 	defer wg.Done()
@@ -37,43 +43,35 @@ func syncTpaoyou() {
 }
 
 func THs1(num1, num2 int) {
-	defer wg.Done()
 	for i := num1; i < num2; i++ {
 		hs.Paoyou(tag, i)
 	}
+	defer wg.Done()
 }
 
 func THs2(num1, num2 int) {
-	defer wg.Done()
 	for i := num1; i < num2; i++ {
 		hs.ExampleScrape(tag, i)
 	}
+	defer wg.Done()
 }
 
 func newPaoYou(num1, num2, size int, funcName string) {
 	count := num2 - num1
 	if count > 0 {
-		wg.Add(1)
+		wg.Add(size)
 		for i := 1; i <= size; i++ {
-			// 加锁
-			lock.Lock()
 			if funcName == platfrom_paoyou {
 				go THs1(num1+count/size*(i-1), num1+count/size*i)
 			}
 			if funcName == platfrom_li5apuu7 {
 				go THs2(num1+count/size*(i-1), num1+count/size*i)
 			}
-			// 解锁
-			lock.Unlock()
 		}
+		// 等待任务全部结束
+		wg.Wait()
 	} else {
 		fmt.Printf("num2 - num1 < 0 , 修改参数")
 	}
-	wg.Wait()
-}
 
-func main() {
-	syncTpaoyou()
-	//newPaoYou(100, 4000, 20, platfrom_paoyou)
-	//newPaoYou(1, 1000, 40, platfrom_li5apuu7)
 }

@@ -118,7 +118,7 @@ func ExampleScrape(tag int, page int) (string, int) {
 	// http://li5.apuu7.top/index.php/vod/type/id/20/page/2.html
 	url := "http://li5.apuu7.top/index.php/vod/type/id/" + strconv.Itoa(tag) + "/page/" + strconv.Itoa(page) + ".html"
 
-	fmt.Println("请求 url : ", url)
+	fmt.Printf("\n请求 url : %s\n", url)
 
 	res, err := http.Get(url)
 	if err != nil {
@@ -161,8 +161,10 @@ func ExampleScrape(tag int, page int) (string, int) {
 					Url:     utils.StringStrip(url),
 					M3u8Url: utils.StringStrip(m3u8url),
 					ClassId: tag, Platform: "li5apuu7",
-					Page: page, Location: strconv.Itoa(i) + "-[" + strconv.Itoa(i/6+1) + "," + strconv.Itoa(i%6) + "]"}
-				redis.SetKey(newTitle, &hsinfo)
+					Page:     page,
+					Location: "[" + strconv.Itoa(i/6+1) + "," + strconv.Itoa(i%6+1) + "]"}
+				marshal, _ := json.Marshal(hsinfo)
+				redis.SetKey(newTitle, marshal)
 				db.Create(&hsinfo)
 			}
 		} else {
@@ -212,7 +214,7 @@ func Paoyou(tag int, page int) {
 
 	url := initial_url + "lists/" + strconv.Itoa(tag) + "/" + strconv.Itoa(page) + ".html"
 
-	fmt.Printf("请求 url : %s\n", url)
+	fmt.Printf("\n请求 url : %s\n", url)
 
 	method := "GET"
 
@@ -279,8 +281,9 @@ func Paoyou(tag int, page int) {
 				M3u8Url: utils.StringStrip(m3u8_url),
 				ClassId: tag, Platform: "paoyou",
 				Page:     page,
-				Location: strconv.Itoa(i) + "-[" + strconv.Itoa(i/6+1) + "," + strconv.Itoa(i%6) + "]"}
-			redis.SetKey(newTitle, &hsinfo)
+				Location: "[" + strconv.Itoa(i/6+1) + "," + strconv.Itoa(i%6+1) + "]"}
+			marshal, _ := json.Marshal(hsinfo)
+			redis.SetKey(newTitle, marshal)
 			db.Create(&hsinfo)
 		} else {
 			fmt.Printf("\npaoyou-->[第%d页 第%d个] -> [href:%s , title:%s , row:%d] --> 存在记录\n", page, i+1, href, title, row)
