@@ -115,10 +115,9 @@ func main() {
 	//gin.GET("/getData/:page/:start", src.SaveInfo)
 	//gin.Run(":8500")
 	//db.AutoCreateTable(xml.XmlInfo{})
-	//T1002()
-	//protobufTest()
-	//Hs(30)
-	//syncTpaoyou()
-	// 5203
-	newPaoYou(1, 21, 10)
+	//redisSetGet()
+	//for i := 2; i <= 8; i++ {
+	//	hs.RedisLi5apuu7(22, i)
+	//}
+	hs.Redis2Mysql()
 }

@@ -1,12 +1,12 @@
 package hs
 
 import (
-	"database/sql"
 	"encoding/json"
 	"fmt"
 	"github.com/PuerkitoBio/goquery"
 	"gorm.io/gorm"
 	"httpParse/db"
+	"httpParse/redis"
 	"httpParse/utils"
 	"io/ioutil"
 	"log"
@@ -139,6 +139,7 @@ func ExampleScrape(tag int, page int) (string, int) {
 
 	// 引入数据库连接
 	db, _ := db.MysqlConfigure()
+	redis.InitClient()
 
 	// Find the review items
 	doc.Find("div.item a").Each(func(i int, s *goquery.Selection) {
@@ -148,23 +149,60 @@ func ExampleScrape(tag int, page int) (string, int) {
 		href, _ := s.Attr("href")
 		url := "http://li5.apuu7.top" + utils.StringStrip(href)
 		str += "\"title\":\"" + utils.StringStrip(title) + "\" ,\"url\":\"" + url + "\"},\n"
-		row := db.Where("(title) = @title", sql.Named("title", utils.StringStrip(title))).Find(&HsInfo{}).RowsAffected
+		//row := db.Where("(title) = @title", sql.Named("title", utils.StringStrip(title))).Find(&HsInfo{}).RowsAffected
+		newTitle := utils.StringStrip(title)
+		row := redis.KeyExists(newTitle)
 		if row != 1 {
 			if strings.Contains(url, "http://li5.apuu7.top/index.php/vod/play") {
 				obj := getM3u8Obj(url)
 				m3u8url := M3u8UrlParse(obj)
 				fmt.Printf("\nli5apuu7-->[第%d页 第%d个] -> [href:%s , title:%s , m3u8_url:%s]\n", page, i+1, href, title, m3u8url)
-				db.Create(&HsInfo{Title: utils.StringStrip(title),
+				hsinfo := HsInfo{Title: utils.StringStrip(title),
 					Url:     utils.StringStrip(url),
 					M3u8Url: utils.StringStrip(m3u8url),
 					ClassId: tag, Platform: "li5apuu7",
-					Page: page, Location: strconv.Itoa(i) + "-[" + strconv.Itoa(i/6+1) + "," + strconv.Itoa(i%6) + "]"})
+					Page: page, Location: strconv.Itoa(i) + "-[" + strconv.Itoa(i/6+1) + "," + strconv.Itoa(i%6) + "]"}
+				redis.SetKey(newTitle, &hsinfo)
+				db.Create(&hsinfo)
 			}
 		} else {
 			fmt.Printf("\nli5apuu7-->[第%d页 第%d个] -> [href:%s , title:%s , row:%d] --> 存在记录\n", page, i+1, href, title, row)
 		}
 	})
 	return str, page
+}
+
+// 2.1。同步redis数据 遍历redis数据
+func Redis2Mysql() {
+	Mysql2Redis()
+	keys := redis.GetKeyList()
+	mysqlDb, err := db.MysqlConfigure()
+	if err != nil {
+		fmt.Println("connent datebase err:", err)
+	}
+	for _, key := range keys {
+		values, _ := redis.GetKey(key)
+		var hsInfo HsInfo
+		json.Unmarshal(utils.String2Bytes(values), &hsInfo)
+		mysqlDb.Create(&hsInfo)
+	}
+}
+
+// 测试案列 mysql数据同步redis
+func Mysql2Redis() {
+	redis.InitClient()
+	db, err := db.MysqlConfigure()
+	if err != nil {
+		fmt.Println(err)
+	}
+	var infos []HsInfo
+	// 查询数据
+	db.Find(&infos)
+	for _, info := range infos {
+		// 添加序列化后的数据到redis
+		marshal, _ := json.Marshal(info)
+		redis.SetKey(info.Title, marshal)
+	}
 }
 
 // url https://paoyou.ml
@@ -219,6 +257,7 @@ func Paoyou(tag int, page int) {
 
 	// 引入数据库连接
 	db, _ := db.MysqlConfigure()
+	redis.InitClient()
 
 	// 结构体指针切片
 	//infos := []*HsInfo{}
@@ -226,19 +265,23 @@ func Paoyou(tag int, page int) {
 	doc.Find("ul.fed-list-info li a.fed-list-pics").Each(func(i int, s *goquery.Selection) {
 		href, _ := s.Attr("href")
 		title, _ := s.Attr("title")
-		row := db.Where("(title) = @title", sql.Named("title", utils.StringStrip(title))).Find(&HsInfo{}).RowsAffected
+		//row := db.Where("(title) = @title", sql.Named("title", utils.StringStrip(title))).Find(&HsInfo{}).RowsAffected
+		newTitle := utils.StringStrip(title)
+		row := redis.KeyExists(newTitle)
 		if row != 1 {
 			jid := getDataJid(initial_url + href)
 			m3u8_url := getM3U8URl(jid)
 			// 获取输出
 			fmt.Printf("\npaoyou-->[第%d页 第%d个] -> [href:%s , title:%s , m3u8_url:%s]\n", page, i+1, href, title, m3u8_url)
 			// 添加数据 infos = append(infos,
-			db.Create(&HsInfo{Title: utils.StringStrip(title),
+			hsinfo := HsInfo{Title: utils.StringStrip(title),
 				Url:     utils.StringStrip(initial_url + href),
 				M3u8Url: utils.StringStrip(m3u8_url),
 				ClassId: tag, Platform: "paoyou",
 				Page:     page,
-				Location: strconv.Itoa(i) + "-[" + strconv.Itoa(i/6+1) + "," + strconv.Itoa(i%6) + "]"})
+				Location: strconv.Itoa(i) + "-[" + strconv.Itoa(i/6+1) + "," + strconv.Itoa(i%6) + "]"}
+			redis.SetKey(newTitle, &hsinfo)
+			db.Create(&hsinfo)
 		} else {
 			fmt.Printf("\npaoyou-->[第%d页 第%d个] -> [href:%s , title:%s , row:%d] --> 存在记录\n", page, i+1, href, title, row)
 		}
