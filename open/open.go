@@ -17,19 +17,19 @@ var wg sync.WaitGroup
 var lock sync.Mutex
 
 // 1907
-var tag = 1
+var tag = 2
 
 const (
 	platfrom_paoyou, platfrom_li5apuu7 = "paoyou", "li5apuu7"
 )
 
 func main() {
-	//for i := 1; i <= 59; i++ {
+	//for i := 1; i <= 60; i++ {
 	//	maDouDao := hs.MaodouReq(i)
 	//	hs.DataParseSave(maDouDao)
 	//}
 	//hs.Mysql2Redis();
-	getHs(1, 21, 2, platfrom_paoyou)
+	getHs(600, 700, 10, platfrom_paoyou)
 	//getHs(1, 31, 3, platfrom_li5apuu7)
 }
 

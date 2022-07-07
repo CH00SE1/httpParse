@@ -410,7 +410,7 @@ func getM3U8URl(jid string) string {
 // ------------------------------------------------ madou ------------------------------------------------
 func MaodouReq(page int) MaDouDao {
 
-	url := "https://jsonmdtv.md29.tv/upload_json_live/20220707/videolist_20220707_10_2_-_-_100_" + strconv.Itoa(page) + ".json"
+	url := "https://jsonmdtv.md29.tv/upload_json_live/20220707/videolist_20220707_16_2_-_-_100_" + strconv.Itoa(page) + ".json"
 	method := "GET"
 
 	fmt.Printf("\n请求 url : %s\n", url)
@@ -447,7 +447,7 @@ func MaodouReq(page int) MaDouDao {
 	return maDouDao
 }
 
-// 数据妆化存储
+// 数据转化存储
 func DataParseSave(maDouDao MaDouDao) {
 	datas := maDouDao.Data
 	db, _ := db.MysqlConfigure()
@@ -461,7 +461,7 @@ func DataParseSave(maDouDao MaDouDao) {
 				Url:      "https://uh2089he.com" + data.TestVideoUrl,
 				M3u8Url:  strings.Replace(data.VideoUrl, "\\/", "/", -1),
 				ClassId:  maDouDao.CurrentPage,
-				Platform: "madou",
+				Platform: "madou -- " + data.ComefromTitle,
 				Page:     maDouDao.CurrentPage,
 				Location: "[" + strconv.Itoa((i+1)/6+1) + "," + strconv.Itoa((i+1)%6+1) + "]"}
 			marshal, err := json.Marshal(hsInfo)

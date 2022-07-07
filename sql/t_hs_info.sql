@@ -1,42 +1,27 @@
-/*
- Navicat Premium Data Transfer
+create table t_hs_info
+(
+    id         bigint unsigned auto_increment comment '自增id'
+        primary key,
+    created_at datetime     null comment '创建时间',
+    updated_at datetime     null comment '更新时间',
+    deleted_at datetime     null comment '删除时间',
+    title      varchar(256) not null comment '标题',
+    url        varchar(256) null comment '网站url',
+    m3u8_url   varchar(256) null comment '下载url',
+    class_id   bigint       null comment '分类id',
+    platform   varchar(255) null comment '平台名称',
+    page       bigint       null comment '页码',
+    location   varchar(255) null comment '位置',
+    constraint idx_title_unique
+        unique (title)
+);
 
- Source Server         : mysql8
- Source Server Type    : MySQL
- Source Server Version : 80025
- Source Host           : localhost:3306
- Source Schema         : djwk_test
+create index idx_m3u8_url
+    on t_hs_info (m3u8_url);
 
- Target Server Type    : MySQL
- Target Server Version : 80025
- File Encoding         : 65001
+create index idx_t_hs_info_deleted_at
+    on t_hs_info (deleted_at);
 
- Date: 27/06/2022 21:41:28
-*/
+create index sel_title_normal
+    on t_hs_info (title);
 
-SET NAMES utf8mb4;
-SET FOREIGN_KEY_CHECKS = 0;
-
--- ----------------------------
--- Table structure for t_hs_info
--- ----------------------------
-DROP TABLE IF EXISTS `t_hs_info`;
-CREATE TABLE `t_hs_info`  (
-  `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT,
-  `created_at` datetime NULL DEFAULT NULL,
-  `updated_at` datetime NULL DEFAULT NULL,
-  `deleted_at` datetime NULL DEFAULT NULL,
-  `title` varchar(256) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL COMMENT '标题',
-  `url` varchar(256) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL,
-  `m3u8_url` varchar(256) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL,
-  `class_id` bigint NULL DEFAULT NULL,
-  `platform` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '平台',
-  `page` bigint NULL DEFAULT NULL COMMENT '页码',
-  `location` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '位置',
-  PRIMARY KEY (`id`) USING BTREE,
-  UNIQUE INDEX `title`(`title`) USING BTREE,
-  INDEX `idx_t_hs_info_deleted_at`(`deleted_at`) USING BTREE,
-  INDEX `idx_m3u8_url`(`m3u8_url`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 54312 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = Dynamic;
-
-SET FOREIGN_KEY_CHECKS = 1;
