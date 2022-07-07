@@ -23,7 +23,7 @@ func flush(tag int) {
 
 func main() {
 	for i := 0; i < 2; i++ {
-		TestReq()
+		TestReq(100, 200)
 		fmt.Println("--------------------------- 分隔 ---------------------------")
 	}
 }

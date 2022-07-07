@@ -33,6 +33,34 @@ type HsInfo struct {
 	Location string
 }
 
+// madou视频接口返回对象
+type MaDouDao struct {
+	Total       int `json:"total"`
+	PerPage     int `json:"per_page"`
+	CurrentPage int `json:"current_page"`
+	LastPage    int `json:"last_page"`
+	Data        []struct {
+		Id          int    `json:"id"`
+		Title       string `json:"title"`
+		Status      int    `json:"status"`
+		Thumb       string `json:"thumb"`
+		Preview     string `json:"preview"`
+		Panorama    string `json:"panorama"`
+		Description string `json:"description"`
+		VideoUrl    string `json:"video_url"`
+		Comefrom    int    `json:"comefrom"`
+		Tags        []struct {
+			Id   int    `json:"id"`
+			Name string `json:"name"`
+		} `json:"tags"`
+		TestVideoUrl  string `json:"test_video_url"`
+		TrySecond     int    `json:"try_second"`
+		IsBloger      int    `json:"is_bloger"`
+		IsVip         int    `json:"is_vip"`
+		ComefromTitle string `json:"comefrom_title"`
+	} `json:"data"`
+}
+
 // javascript对象
 type Player_aaaa struct {
 	gorm.Model
@@ -113,6 +141,7 @@ func M3u8UrlParse(url string) string {
 	return player_aaaa.Url
 }
 
+// ------------------------------------------------ li5apuu7 ------------------------------------------------
 func ExampleScrape(tag int, page int) (string, int) {
 	// Request the HTML page.
 	// http://li5.apuu7.top/index.php/vod/type/id/20/page/2.html
@@ -207,7 +236,7 @@ func Mysql2Redis() {
 	}
 }
 
-// url https://paoyou.ml
+// ------------------------------------------------ paoyou ------------------------------------------------
 func Paoyou(tag int, page int) {
 
 	initial_url := "https://paoyou.ml/"
@@ -375,4 +404,68 @@ func getM3U8URl(jid string) string {
 	var paoyouvideo PaoYouVideo
 	json.Unmarshal(body, &paoyouvideo)
 	return paoyouvideo.Data.Playurl
+}
+
+// ------------------------------------------------ madou ------------------------------------------------
+func MaodouReq(page int) MaDouDao {
+
+	url := "https://jsonmdtv.md29.tv/upload_json_live/20220706/videolist_20220706_18_2_-_-_100_" + strconv.Itoa(page) + ".json"
+	method := "GET"
+
+	fmt.Printf("\n请求 url : %s\n", url)
+
+	client := &http.Client{}
+	req, err := http.NewRequest(method, url, nil)
+
+	if err != nil {
+		fmt.Println(err)
+	}
+	req.Header.Add("sec-ch-ua", "\" Not;A Brand\";v=\"99\", \"Microsoft Edge\";v=\"103\", \"Chromium\";v=\"103\"")
+	req.Header.Add("Referer", "")
+	req.Header.Add("sec-ch-ua-mobile", "?0")
+	req.Header.Add("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/103.0.5060.66 Safari/537.36 Edg/103.0.1264.44")
+	req.Header.Add("sec-ch-ua-platform", "\"Windows\"")
+
+	res, err := client.Do(req)
+	if err != nil {
+		fmt.Println(err)
+	}
+	defer res.Body.Close()
+
+	body, err := ioutil.ReadAll(res.Body)
+	if err != nil {
+		fmt.Println(err)
+	}
+	var maDouDao MaDouDao
+	json.Unmarshal(body, &maDouDao)
+	return maDouDao
+}
+
+// 数据妆化存储
+func DataParseSave(maDouDao MaDouDao) {
+	datas := maDouDao.Data
+	db, _ := db.MysqlConfigure()
+	redis.InitClient()
+	for i, data := range datas {
+		row := redis.KeyExists(data.Title)
+		if row != 1 {
+			fmt.Printf("\nmadou-->[第%d页 第%d个] -> [href:%s , title:%s , m3u8_url:%s]\n", maDouDao.CurrentPage, i+1, "https://uh2089he.com"+data.TestVideoUrl, data.Title, strings.Replace(data.VideoUrl, "\\/", "/", -1))
+			hsInfo := HsInfo{
+				Title:    data.Title,
+				Url:      "https://uh2089he.com" + data.TestVideoUrl,
+				M3u8Url:  strings.Replace(data.VideoUrl, "\\/", "/", -1),
+				ClassId:  maDouDao.CurrentPage,
+				Platform: "madou",
+				Page:     maDouDao.CurrentPage,
+				Location: "[" + strconv.Itoa((i+1)/6+1) + "," + strconv.Itoa((i+1)%6+1) + "]"}
+			marshal, err := json.Marshal(hsInfo)
+			if err != nil {
+				fmt.Println("hsInfo json 序列化失败")
+			}
+			redis.SetKey(data.Title, marshal)
+			db.Create(&hsInfo)
+		} else {
+			fmt.Printf("\nmadou-->[第%d页 第%d个] -> [href:%s , title:%s , row:%d] --> 存在记录\n", maDouDao.CurrentPage, i+1, "https://uh2089he.com"+data.TestVideoUrl, data.Title, row)
+		}
+	}
 }

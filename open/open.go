@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"httpParse/hs"
 	"sync"
+	"time"
 )
 
 /**
@@ -17,16 +18,22 @@ var wg sync.WaitGroup
 var lock sync.Mutex
 
 // 1907
-var tag = 3
+var tag = 1
 
 const (
 	platfrom_paoyou, platfrom_li5apuu7 = "paoyou", "li5apuu7"
 )
 
 func main() {
+	for i := 13; i <= 58; i++ {
+		maDouDao := hs.MaodouReq(i)
+		hs.DataParseSave(maDouDao)
+		time.Sleep(100000 * 8)
+	}
+
 	//hs.Mysql2Redis();
-	newPaoYou(1, 21, 10, platfrom_paoyou)
-	//newPaoYou(1, 11, 2, platfrom_li5apuu7)
+	//getHs(200, 400, 10, platfrom_paoyou)
+	//getHs(1, 151, 5, platfrom_li5apuu7)
 }
 
 func flush() {
@@ -56,7 +63,7 @@ func THs2(num1, num2 int) {
 	defer wg.Done()
 }
 
-func newPaoYou(num1, num2, size int, funcName string) {
+func getHs(num1, num2, size int, funcName string) {
 	count := num2 - num1
 	if count > 0 {
 		wg.Add(size)

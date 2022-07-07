@@ -37,13 +37,13 @@ func req(num int) string {
 		fmt.Println(err)
 		return "解析错误"
 	}
-	fmt.Printf("[%d] --> res : {test}\n", num)
+	fmt.Printf("[%d] --> res : {%s}\n", num, string(body))
 	return string(body)
 }
 
-func TestReq() {
-	for i := 1000; i < 11200; i++ {
-		wg.Add(1)
+func TestReq(num1, num2 int) {
+	for i := num1; i < num2; i++ {
+		wg.Add(num2 - num1)
 		go req(i)
 	}
 	wg.Wait()
