@@ -4,7 +4,6 @@ import (
 	"fmt"
 	"httpParse/hs"
 	"sync"
-	"time"
 )
 
 /**
@@ -25,15 +24,13 @@ const (
 )
 
 func main() {
-	for i := 13; i <= 58; i++ {
-		maDouDao := hs.MaodouReq(i)
-		hs.DataParseSave(maDouDao)
-		time.Sleep(100000 * 8)
-	}
-
+	//for i := 1; i <= 59; i++ {
+	//	maDouDao := hs.MaodouReq(i)
+	//	hs.DataParseSave(maDouDao)
+	//}
 	//hs.Mysql2Redis();
-	//getHs(200, 400, 10, platfrom_paoyou)
-	//getHs(1, 151, 5, platfrom_li5apuu7)
+	getHs(1, 21, 2, platfrom_paoyou)
+	//getHs(1, 31, 3, platfrom_li5apuu7)
 }
 
 func flush() {

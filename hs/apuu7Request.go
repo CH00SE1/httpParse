@@ -13,6 +13,7 @@ import (
 	"net/http"
 	"strconv"
 	"strings"
+	"time"
 )
 
 /**
@@ -409,7 +410,7 @@ func getM3U8URl(jid string) string {
 // ------------------------------------------------ madou ------------------------------------------------
 func MaodouReq(page int) MaDouDao {
 
-	url := "https://jsonmdtv.md29.tv/upload_json_live/20220706/videolist_20220706_18_2_-_-_100_" + strconv.Itoa(page) + ".json"
+	url := "https://jsonmdtv.md29.tv/upload_json_live/20220707/videolist_20220707_10_2_-_-_100_" + strconv.Itoa(page) + ".json"
 	method := "GET"
 
 	fmt.Printf("\n请求 url : %s\n", url)
@@ -438,6 +439,11 @@ func MaodouReq(page int) MaDouDao {
 	}
 	var maDouDao MaDouDao
 	json.Unmarshal(body, &maDouDao)
+
+	bytes2String := utils.Bytes2String(body)
+
+	utils.CreateFile(&bytes2String, "D:\\MadouData\\response\\", "madou_list_"+time.Now().Format("2006-01-02-15-04-05--")+strconv.Itoa(page), ".json")
+
 	return maDouDao
 }
 

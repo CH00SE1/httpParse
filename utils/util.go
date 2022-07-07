@@ -22,11 +22,26 @@ func StringStrip(input string) string {
 	return strings.Join(strings.Fields(input), "")
 }
 
-// 文件创建
-// 创建测试数据
-func CreateFile(text *string, fileName string, fileType string) {
+// 判断文件是否存在 不存在创建
+func pathExists(path string) (bool, error) {
+	_, err := os.Stat(path)
+	if err == nil {
+		return true, nil
+	}
+	if os.IsNotExist(err) {
+		os.MkdirAll(path, os.ModePerm)
+		return true, nil
+	}
+	return false, err
+}
 
-	create, err := os.Create("C:\\Users\\Administrator\\Desktop\\" + fileName + fileType)
+// 文件创建
+func CreateFile(text *string, path, fileName, fileType string) {
+
+	// 判断文件是否创建
+	pathExists(path)
+
+	create, err := os.Create(path + fileName + fileType)
 
 	if err != nil {
 		fmt.Println(err)
@@ -98,5 +113,5 @@ func Base64ToStr(str string) {
 	if err != nil {
 		fmt.Println("Error", err)
 	}
-	CreateFile(text, "login", ".txt")
+	CreateFile(text, "", "login", ".txt")
 }
