@@ -24,11 +24,10 @@ const (
 )
 
 func main() {
-
 	//hs.Mysql2Redis();
-	//getHs(1, 31, 3, platfrom_paoyou)
+	getHs(1, 31, 3, platfrom_paoyou)
 	//getHs(1, 31, 3, platfrom_li5apuu7)
-	getHs(1, 31, 3, platfrom_madou)
+	//getHs(1, 61, 5, platfrom_madou)
 }
 
 func flush() {
@@ -62,7 +61,7 @@ func THs2(num1, num2 int) {
 
 // <----------------------------------------- madou ----------------------------------------->
 func THs3(num1, num2 int) {
-	for i := num1; i <= num2; i++ {
+	for i := num1; i < num2; i++ {
 		maDouDao := hs.MaodouReq(i)
 		hs.DataParseSave(maDouDao)
 	}

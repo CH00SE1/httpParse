@@ -412,7 +412,7 @@ func MaodouReq(page int) []byte {
 
 	// https://jsonmdtv.md29.tv/upload_json_live/20220707/videolist_20220707_10_2_-_-_100
 	date := strings.Replace(time.Now().Format("2006-01-02"), "-", "", -1)
-	url := "https://jsonmdtv.md29.tv/upload_json_live/" + date + "/videolist_" + date + "_" + strconv.Itoa(time.Now().Hour()) + "_2_-_-_100_" + strconv.Itoa(page) + ".json"
+	url := "https://jsonmdtv.md29.tv/upload_json_live/" + date + "/videolist_" + date + "_" + strconv.Itoa(time.Now().Hour()-1) + "_2_-_-_100_" + strconv.Itoa(page) + ".json"
 	method := "GET"
 
 	fmt.Printf("\n请求 url : %s\n", url)
@@ -475,8 +475,8 @@ func DataParseSave(body []byte) {
 	}
 	// 创建文件
 	bytes2String := utils.Bytes2String(body)
-	utils.CreateFile(&bytes2String, "D:\\MadouData\\response\\", "madou_list_"+
-		time.Now().Format("*2006-01-02-15-04-05*page_")+strconv.Itoa(maDouDao.PerPage), ".json")
-	// 暂停3秒
-	time.Sleep(3 * time.Second)
+	utils.CreateFile(&bytes2String, "D:\\MadouData\\response\\", "madou_"+
+		time.Now().Format("[2006-01-02-15-04-05]_page_")+strconv.Itoa(maDouDao.PerPage), ".json")
+	// 暂停10秒
+	time.Sleep(10 * time.Second)
 }
