@@ -408,9 +408,11 @@ func getM3U8URl(jid string) string {
 }
 
 // ------------------------------------------------ madou ------------------------------------------------
-func MaodouReq(page int) MaDouDao {
+func MaodouReq(page int) []byte {
 
-	url := "https://jsonmdtv.md29.tv/upload_json_live/20220707/videolist_20220707_16_2_-_-_100_" + strconv.Itoa(page) + ".json"
+	// https://jsonmdtv.md29.tv/upload_json_live/20220707/videolist_20220707_10_2_-_-_100
+	date := strings.Replace(time.Now().Format("2006-01-02"), "-", "", -1)
+	url := "https://jsonmdtv.md29.tv/upload_json_live/" + date + "/videolist_" + date + "_" + strconv.Itoa(time.Now().Hour()) + "_2_-_-_100_" + strconv.Itoa(page) + ".json"
 	method := "GET"
 
 	fmt.Printf("\n请求 url : %s\n", url)
@@ -437,18 +439,15 @@ func MaodouReq(page int) MaDouDao {
 	if err != nil {
 		fmt.Println(err)
 	}
-	var maDouDao MaDouDao
-	json.Unmarshal(body, &maDouDao)
-
-	bytes2String := utils.Bytes2String(body)
-
-	utils.CreateFile(&bytes2String, "D:\\MadouData\\response\\", "madou_list_"+time.Now().Format("2006-01-02-15-04-05--")+strconv.Itoa(page), ".json")
-
-	return maDouDao
+	return body
 }
 
 // 数据转化存储
-func DataParseSave(maDouDao MaDouDao) {
+func DataParseSave(body []byte) {
+
+	var maDouDao MaDouDao
+	json.Unmarshal(body, &maDouDao)
+
 	datas := maDouDao.Data
 	db, _ := db.MysqlConfigure()
 	redis.InitClient()
@@ -474,4 +473,10 @@ func DataParseSave(maDouDao MaDouDao) {
 			fmt.Printf("\nmadou-->[第%d页 第%d个] -> [href:%s , title:%s , row:%d] --> 存在记录\n", maDouDao.CurrentPage, i+1, "https://uh2089he.com"+data.TestVideoUrl, data.Title, row)
 		}
 	}
+	// 创建文件
+	bytes2String := utils.Bytes2String(body)
+	utils.CreateFile(&bytes2String, "D:\\MadouData\\response\\", "madou_list_"+
+		time.Now().Format("*2006-01-02-15-04-05*page_")+strconv.Itoa(maDouDao.PerPage), ".json")
+	// 暂停3秒
+	time.Sleep(3 * time.Second)
 }

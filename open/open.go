@@ -17,20 +17,18 @@ var wg sync.WaitGroup
 var lock sync.Mutex
 
 // 1907
-var tag = 2
+var tag = 1
 
 const (
-	platfrom_paoyou, platfrom_li5apuu7 = "paoyou", "li5apuu7"
+	platfrom_paoyou, platfrom_li5apuu7, platfrom_madou = "paoyou", "li5apuu7", "madou"
 )
 
 func main() {
-	//for i := 1; i <= 60; i++ {
-	//	maDouDao := hs.MaodouReq(i)
-	//	hs.DataParseSave(maDouDao)
-	//}
+
 	//hs.Mysql2Redis();
-	getHs(600, 700, 10, platfrom_paoyou)
+	//getHs(1, 31, 3, platfrom_paoyou)
 	//getHs(1, 31, 3, platfrom_li5apuu7)
+	getHs(1, 31, 3, platfrom_madou)
 }
 
 func flush() {
@@ -46,6 +44,7 @@ func syncTpaoyou() {
 	wg.Wait()
 }
 
+// <----------------------------------------- Paoyou ----------------------------------------->
 func THs1(num1, num2 int) {
 	for i := num1; i < num2; i++ {
 		hs.Paoyou(tag, i)
@@ -53,9 +52,19 @@ func THs1(num1, num2 int) {
 	defer wg.Done()
 }
 
+// <----------------------------------------- li5apuu7 ----------------------------------------->
 func THs2(num1, num2 int) {
 	for i := num1; i < num2; i++ {
 		hs.ExampleScrape(tag, i)
+	}
+	defer wg.Done()
+}
+
+// <----------------------------------------- madou ----------------------------------------->
+func THs3(num1, num2 int) {
+	for i := num1; i <= num2; i++ {
+		maDouDao := hs.MaodouReq(i)
+		hs.DataParseSave(maDouDao)
 	}
 	defer wg.Done()
 }
@@ -70,6 +79,9 @@ func getHs(num1, num2, size int, funcName string) {
 			}
 			if funcName == platfrom_li5apuu7 {
 				go THs2(num1+count/size*(i-1), num1+count/size*i)
+			}
+			if funcName == platfrom_madou {
+				go THs3(num1+count/size*(i-1), num1+count/size*i)
 			}
 		}
 		// 等待任务全部结束
