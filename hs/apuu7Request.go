@@ -474,9 +474,7 @@ func DataParseSave(body []byte) {
 		}
 	}
 	// 创建文件
-	bytes2String := utils.Bytes2String(body)
-	utils.CreateFile(&bytes2String, "D:\\MadouData\\response\\", "madou_"+
-		time.Now().Format("[2006-01-02-15-04-05]_page_")+strconv.Itoa(maDouDao.PerPage), ".json")
-	// 暂停10秒
-	time.Sleep(10 * time.Second)
+	//bytes2String := utils.Bytes2String(body)
+	//utils.CreateFile(&bytes2String, "D:\\MadouData\\response\\", "madou_"+
+	//	time.Now().Format("[2006-01-02-15-04-05]_page_")+strconv.Itoa(maDouDao.PerPage), ".json")
 }

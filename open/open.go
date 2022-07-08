@@ -17,7 +17,7 @@ var wg sync.WaitGroup
 var lock sync.Mutex
 
 // 1907
-var tag = 1
+var tag = 2
 
 const (
 	platfrom_paoyou, platfrom_li5apuu7, platfrom_madou = "paoyou", "li5apuu7", "madou"
@@ -25,8 +25,8 @@ const (
 
 func main() {
 	//hs.Mysql2Redis();
-	getHs(1, 31, 3, platfrom_paoyou)
-	//getHs(1, 31, 3, platfrom_li5apuu7)
+	//getHs(13, 17, 1, platfrom_paoyou)
+	//getHs(300, 400, 5, platfrom_li5apuu7)
 	//getHs(1, 61, 5, platfrom_madou)
 }
 
