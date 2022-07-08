@@ -143,7 +143,7 @@ func M3u8UrlParse(url string) string {
 }
 
 // ------------------------------------------------ li5apuu7 ------------------------------------------------
-func ExampleScrape(tag int, page int) (string, int) {
+func ExampleScrape(tag, page int) (string, int) {
 	// Request the HTML page.
 	// http://li5.apuu7.top/index.php/vod/type/id/20/page/2.html
 	url := "http://li5.apuu7.top/index.php/vod/type/id/" + strconv.Itoa(tag) + "/page/" + strconv.Itoa(page) + ".html"
@@ -238,7 +238,7 @@ func Mysql2Redis() {
 }
 
 // ------------------------------------------------ paoyou ------------------------------------------------
-func Paoyou(tag int, page int) {
+func Paoyou(tag, page int, videoName string) {
 
 	initial_url := "https://paoyou.ml/"
 
@@ -287,39 +287,47 @@ func Paoyou(tag int, page int) {
 		log.Fatal(err2)
 	}
 
-	// 引入数据库连接
-	db, _ := db.MysqlConfigure()
-	redis.InitClient()
-
-	// 结构体指针切片
-	//infos := []*HsInfo{}
-
 	doc.Find("ul.fed-list-info li a.fed-list-pics").Each(func(i int, s *goquery.Selection) {
 		href, _ := s.Attr("href")
 		title, _ := s.Attr("title")
 		//row := db.Where("(title) = @title", sql.Named("title", utils.StringStrip(title))).Find(&HsInfo{}).RowsAffected
 		newTitle := utils.StringStrip(title)
-		row := redis.KeyExists(newTitle)
-		if row != 1 {
-			jid := getDataJid(initial_url + href)
-			m3u8_url := getM3U8URl(jid)
-			// 获取输出
-			fmt.Printf("\npaoyou-->[第%d页 第%d个] -> [href:%s , title:%s , m3u8_url:%s]\n", page, i+1, href, title, m3u8_url)
-			// 添加数据 infos = append(infos,
-			hsinfo := HsInfo{Title: utils.StringStrip(title),
-				Url:     utils.StringStrip(initial_url + href),
-				M3u8Url: utils.StringStrip(m3u8_url),
-				ClassId: tag, Platform: "paoyou",
-				Page:     page,
-				Location: "[" + strconv.Itoa(i/6+1) + "," + strconv.Itoa(i%6+1) + "]"}
-			marshal, _ := json.Marshal(hsinfo)
-			redis.SetKey(newTitle, marshal)
-			db.Create(&hsinfo)
-		} else {
-			fmt.Printf("\npaoyou-->[第%d页 第%d个] -> [href:%s , title:%s , row:%d] --> 存在记录\n", page, i+1, href, title, row)
+		// 1.videoName 数量为空字符
+		if strings.Replace(videoName, " ", "", -1) == "" {
+			paoyouDataSave(newTitle, initial_url, href, tag, page, i)
+		}
+		// 获取每页列表信息 保存
+		if strings.Contains(newTitle, videoName) {
+			paoyouDataSave(newTitle, initial_url, href, tag, page, i)
 		}
 	})
-	//db.CreateInBatches(infos, 50)
+}
+
+// <---------------------paoyou数据处理---------------------->
+func paoyouDataSave(newTitle, initial_url, href string, tag, page, i int) {
+	// 引入数据库 mysql + redis
+	db, _ := db.MysqlConfigure()
+	redis.InitClient()
+	row := redis.KeyExists(newTitle)
+	if row != 1 {
+		jid := getDataJid(initial_url + href)
+		m3u8_url := getM3U8URl(jid)
+		// 获取输出
+		fmt.Printf("\npaoyou-->[第%d页 第%d个] -> [href:%s , title:%s , m3u8_url:%s]\n", page, i+1, href, newTitle, m3u8_url)
+		hsinfo := HsInfo{
+			Title:    newTitle,
+			Url:      utils.StringStrip(initial_url + href),
+			M3u8Url:  utils.StringStrip(m3u8_url),
+			ClassId:  tag,
+			Platform: "paoyou",
+			Page:     page,
+			Location: strconv.Itoa(i + 1)}
+		marshal, _ := json.Marshal(hsinfo)
+		redis.SetKey(newTitle, marshal)
+		db.Create(&hsinfo)
+	} else {
+		fmt.Printf("\npaoyou-->[第%d页 第%d个] -> [href:%s , title:%s , row:%d] --> 存在记录\n", page, i+1, href, newTitle, row)
+	}
 }
 
 // 请求播放页面拿去视频jid

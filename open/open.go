@@ -21,32 +21,20 @@ var tag = 2
 
 const (
 	platfrom_paoyou, platfrom_li5apuu7, platfrom_madou = "paoyou", "li5apuu7", "madou"
+	videoName                                          = "string"
 )
 
 func main() {
-	//hs.Mysql2Redis();
-	//getHs(13, 17, 1, platfrom_paoyou)
+	//hs.Mysql2Redis()
+	getHs(1, 501, 10, platfrom_paoyou)
 	//getHs(300, 400, 5, platfrom_li5apuu7)
 	//getHs(1, 61, 5, platfrom_madou)
-}
-
-func flush() {
-	defer wg.Done()
-	for i := 1; i <= 10; i++ {
-		hs.Paoyou(tag, i)
-	}
-}
-
-func syncTpaoyou() {
-	wg.Add(1)
-	go flush()
-	wg.Wait()
 }
 
 // <----------------------------------------- Paoyou ----------------------------------------->
 func THs1(num1, num2 int) {
 	for i := num1; i < num2; i++ {
-		hs.Paoyou(tag, i)
+		hs.Paoyou(tag, i, videoName)
 	}
 	defer wg.Done()
 }
