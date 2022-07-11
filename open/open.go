@@ -21,14 +21,14 @@ var tag = 1
 
 const (
 	platfrom_paoyou, platfrom_li5apuu7, platfrom_madou, platfrom_maomi = "paoyou", "li5apuu7", "madou", "maomi"
-	className                                                          = "强奸乱伦"
+	className                                                          = "中文字幕"
 )
 
 func main() {
 	//hs.Mysql2Redis()
-	getHs(1, 301, 10, platfrom_paoyou)
+	//getHs(1, 11, 2, platfrom_paoyou)
 	//getHs(2, 32, 2, platfrom_li5apuu7)
-	//getHs(1, 101, 5, platfrom_madou)
+	getHs(11, 99, 1, platfrom_madou)
 	//getHs(1, 126, 5, platfrom_maomi)
 }
 
@@ -91,5 +91,4 @@ func getHs(num1, num2, size int, funcName string) {
 	} else {
 		fmt.Printf("num2 - num1 < 0 , 修改参数")
 	}
-
 }

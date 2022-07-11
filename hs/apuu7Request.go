@@ -186,7 +186,7 @@ func ExampleScrape(tag, page int) (string, int) {
 			if strings.Contains(url, "http://li5.apuu7.top/index.php/vod/play") {
 				obj := getM3u8Obj(url)
 				m3u8url := M3u8UrlParse(obj)
-				fmt.Printf("\nli5apuu7-->[第%d页 第%d个] -> [href:%s , title:%s , m3u8_url:%s]\n", page, i+1, href, title, m3u8url)
+				fmt.Printf("\nli5apuu7 [第%d页 第%d个] [href:%s title:%s m3u8_url:%s]\n", page, i+1, href, title, m3u8url)
 				hsinfo := HsInfo{Title: utils.StringStrip(title),
 					Url:     utils.StringStrip(url),
 					M3u8Url: utils.StringStrip(m3u8url),
@@ -198,7 +198,7 @@ func ExampleScrape(tag, page int) (string, int) {
 				db.Create(&hsinfo)
 			}
 		} else {
-			fmt.Printf("\nli5apuu7-->[第%d页 第%d个] -> [href:%s , title:%s , row:%d] --> 存在记录\n", page, i+1, href, title, row)
+			fmt.Printf("\nli5apuu7 [第%d页 第%d个] [href:%s title:%s row:%d]\n", page, i+1, href, title, row)
 		}
 	})
 	return str, page
@@ -304,7 +304,7 @@ func paoyouDataSave(newTitle, initial_url, href, className string, page, i int) 
 		jid := getDataJid(initial_url + href)
 		m3u8_url := getM3U8URl(jid)
 		// 获取输出
-		fmt.Printf("\npaoyou-->[第%d页 第%d个] -> [href:%s , title:%s , m3u8_url:%s]\n", page, i+1, href, newTitle, m3u8_url)
+		fmt.Printf("\npaoyou [第%d页,第%d个] [href:%s title:%s m3u8_url:%s]\n", page, i+1, href, newTitle, m3u8_url)
 		hsinfo := HsInfo{
 			Title:    newTitle,
 			Url:      utils.StringStrip(initial_url + href),
@@ -317,7 +317,7 @@ func paoyouDataSave(newTitle, initial_url, href, className string, page, i int) 
 		redis.SetKey(newTitle, marshal)
 		db.Create(&hsinfo)
 	} else {
-		fmt.Printf("\npaoyou-->[第%d页 第%d个] -> [href:%s , title:%s , row:%d] --> 存在记录\n", page, i+1, href, newTitle, row)
+		fmt.Printf("\npaoyou [第%d页,第%d个] [href:%s title:%s row:%d]\n", page, i+1, href, newTitle, row)
 	}
 }
 
@@ -410,7 +410,13 @@ func getM3U8URl(jid string) string {
 func MaodouReq(page int) []byte {
 
 	date := strings.Replace(time.Now().Format("2006-01-02"), "-", "", -1)
-	url := "https://jsonmdtv.md29.tv/upload_json_live/" + date + "/videolist_" + date + "_" + strconv.Itoa(time.Now().Hour()) + "_2_-_-_100_" + strconv.Itoa(page) + ".json"
+	//nnp35.com
+	//"https://nnp35.com/upload_json_live/" + date + "/videolist_" + date + "_" + strconv.Itoa(time.Now().Hour()) + "_2_-_-_100_" + strconv.Itoa(page) + ".json"
+	//jsonmdtv.md29.tv
+	//"https://jsonmdtv.md29.tv/upload_json_live/" + date + "/videolist_" + date + "_" + strconv.Itoa(time.Now().Hour()) + "_2_-_-_100_" + strconv.Itoa(page) + ".json"
+	//json.wtjfjil.cn
+	//"https://json.wtjfjil.cn/upload_json_live/" + date + "/videolist_zh-cn_" + date + "_" + strconv.Itoa(time.Now().Hour()) + "_2_-_-_100_" + strconv.Itoa(page) + ".json"
+	url := "https://json.wtjfjil.cn/upload_json_live/" + date + "/videolist_zh-cn_" + date + "_" + strconv.Itoa(time.Now().Hour()) + "_2_-_-_100_" + strconv.Itoa(page) + ".json"
 	method := "GET"
 
 	fmt.Printf("\n请求 url : %s\n", url)
@@ -442,7 +448,6 @@ func MaodouReq(page int) []byte {
 
 // 数据转化存储
 func DataParseSave(body []byte) {
-
 	var maDouDao MaDouDao
 	json.Unmarshal(body, &maDouDao)
 
@@ -452,7 +457,7 @@ func DataParseSave(body []byte) {
 	for i, data := range datas {
 		row := redis.KeyExists(data.Title)
 		if row != 1 {
-			fmt.Printf("\nmadou-->[第%d页 第%d个] -> [href:%s , title:%s , m3u8_url:%s]\n", maDouDao.CurrentPage, i+1, "https://uh2089he.com"+data.TestVideoUrl, data.Title, strings.Replace(data.VideoUrl, "\\/", "/", -1))
+			fmt.Printf("\nmadou [第%d页 第%d个] [href:%s title:%s m3u8_url:%s]\n", maDouDao.CurrentPage, i+1, "https://uh2089he.com"+data.TestVideoUrl, data.Title, strings.Replace(data.VideoUrl, "\\/", "/", -1))
 			hsInfo := HsInfo{
 				Title:    data.Title,
 				Url:      "https://uh2089he.com" + data.TestVideoUrl,
@@ -468,13 +473,13 @@ func DataParseSave(body []byte) {
 			redis.SetKey(data.Title, marshal)
 			db.Create(&hsInfo)
 		} else {
-			fmt.Printf("\nmadou-->[第%d页 第%d个] -> [href:%s , title:%s , row:%d] --> 存在记录\n", maDouDao.CurrentPage, i+1, "https://uh2089he.com"+data.TestVideoUrl, data.Title, row)
+			fmt.Printf("\nmadou [第%d页 第%d个] [href:%s title:%s row:%d]\n", maDouDao.CurrentPage, i+1, "https://uh2089he.com"+data.TestVideoUrl, data.Title, row)
 		}
 	}
 	// 创建文件
 	//bytes2String := utils.Bytes2String(body)
 	//utils.CreateFile(&bytes2String, "D:\\MadouData\\response\\", "madou_"+
-	//	time.Now().Format("[2006-01-02-15-04-05]_page_")+strconv.Itoa(maDouDao.PerPage), ".json")
+	//time.Now().Format("[2006-01-02-15-04-05]_page_")+strconv.Itoa(maDouDao.PerPage), ".json")
 }
 
 // ------------------------------------------------ maomi ------------------------------------------------
@@ -547,7 +552,7 @@ func MaomoRequest(page int) {
 			redis.SetKey(title, marshal)
 			db.Create(&hsInfo)
 		} else {
-			fmt.Printf("maomi -> title:%s\thref:%s\trow:%d\n", title, href, row)
+			fmt.Printf("maomi title:%s href:%s row:%d\n", title, href, row)
 		}
 	})
 }
