@@ -238,18 +238,18 @@ func Mysql2Redis() {
 }
 
 // ------------------------------------------------ paoyou ------------------------------------------------
-func Paoyou(tag, page int, videoName string) {
+func Paoyou(page int, videoName string, map1, map2 map[string]string) {
 
-	initial_url := "https://paoyou.ml/"
+	url := "https://paoyou.ml"
 
-	url := initial_url + "lists/" + strconv.Itoa(tag) + "/" + strconv.Itoa(page) + ".html"
+	newUrl, className := PaoyouNewUrl(videoName, page, map1, map2)
 
-	fmt.Printf("\n请求 url : %s\n", url)
+	fmt.Printf("\nurl->\tnewUrl:%s\n", newUrl)
 
 	method := "GET"
 
 	client := &http.Client{}
-	req, err := http.NewRequest(method, url, nil)
+	req, err := http.NewRequest(method, newUrl, nil)
 
 	if err != nil {
 		fmt.Println(err)
@@ -281,30 +281,21 @@ func Paoyou(tag, page int, videoName string) {
 		log.Fatalf("status code error: %d %s", res.StatusCode, res.Status)
 	}
 
-	doc, err2 := goquery.NewDocumentFromReader(res.Body)
+	dom, err2 := goquery.NewDocumentFromReader(res.Body)
 
 	if err2 != nil {
 		log.Fatal(err2)
 	}
-
-	doc.Find("ul.fed-list-info li a.fed-list-pics").Each(func(i int, s *goquery.Selection) {
+	dom.Find("ul.fed-list-info li a.fed-list-pics").Each(func(i int, s *goquery.Selection) {
 		href, _ := s.Attr("href")
 		title, _ := s.Attr("title")
-		//row := db.Where("(title) = @title", sql.Named("title", utils.StringStrip(title))).Find(&HsInfo{}).RowsAffected
 		newTitle := utils.StringStrip(title)
-		// 1.videoName 数量为空字符
-		if strings.Replace(videoName, " ", "", -1) == "" {
-			paoyouDataSave(newTitle, initial_url, href, tag, page, i)
-		}
-		// 获取每页列表信息 保存
-		if strings.Contains(newTitle, videoName) {
-			paoyouDataSave(newTitle, initial_url, href, tag, page, i)
-		}
+		paoyouDataSave(newTitle, url, href, className, page, i)
 	})
 }
 
 // <---------------------paoyou数据处理---------------------->
-func paoyouDataSave(newTitle, initial_url, href string, tag, page, i int) {
+func paoyouDataSave(newTitle, initial_url, href, className string, page, i int) {
 	// 引入数据库 mysql + redis
 	db, _ := db.MysqlConfigure()
 	redis.InitClient()
@@ -318,8 +309,8 @@ func paoyouDataSave(newTitle, initial_url, href string, tag, page, i int) {
 			Title:    newTitle,
 			Url:      utils.StringStrip(initial_url + href),
 			M3u8Url:  utils.StringStrip(m3u8_url),
-			ClassId:  tag,
-			Platform: "paoyou",
+			ClassId:  page,
+			Platform: "paoyou" + " -- " + className,
 			Page:     page,
 			Location: strconv.Itoa(i + 1)}
 		marshal, _ := json.Marshal(hsinfo)
@@ -418,9 +409,8 @@ func getM3U8URl(jid string) string {
 // ------------------------------------------------ madou ------------------------------------------------
 func MaodouReq(page int) []byte {
 
-	// https://jsonmdtv.md29.tv/upload_json_live/20220707/videolist_20220707_10_2_-_-_100
 	date := strings.Replace(time.Now().Format("2006-01-02"), "-", "", -1)
-	url := "https://jsonmdtv.md29.tv/upload_json_live/" + date + "/videolist_" + date + "_" + strconv.Itoa(time.Now().Hour()-1) + "_2_-_-_100_" + strconv.Itoa(page) + ".json"
+	url := "https://jsonmdtv.md29.tv/upload_json_live/" + date + "/videolist_" + date + "_" + strconv.Itoa(time.Now().Hour()) + "_2_-_-_100_" + strconv.Itoa(page) + ".json"
 	method := "GET"
 
 	fmt.Printf("\n请求 url : %s\n", url)
@@ -490,9 +480,9 @@ func DataParseSave(body []byte) {
 // ------------------------------------------------ maomi ------------------------------------------------
 func MaomoRequest(page int) {
 
-	initial_url := "https://www.b2b6w.com/"
+	initial_url := "https://www.b59b00e25385.com/"
 	// "猫咪推荐"
-	// "国产精品"
+	// 国产精品 美女主播 短视频 中文字幕
 	videoTitle := "国产精品"
 
 	url := newUrl(initial_url, videoTitle, page)
@@ -551,7 +541,7 @@ func MaomoRequest(page int) {
 				M3u8Url:  m3u8_url,
 				ClassId:  page,
 				Platform: "maomi -- " + videoTitle,
-				Page:     i + 1,
+				Page:     page,
 				Location: "[" + strconv.Itoa((i+1)/4+1) + "," + strconv.Itoa((i+1)%4+1) + "]"}
 			marshal, _ := json.Marshal(hsInfo)
 			redis.SetKey(title, marshal)

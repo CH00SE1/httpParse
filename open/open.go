@@ -17,25 +17,26 @@ var wg sync.WaitGroup
 var lock sync.Mutex
 
 // 1907
-var tag = 2
+var tag = 1
 
 const (
 	platfrom_paoyou, platfrom_li5apuu7, platfrom_madou, platfrom_maomi = "paoyou", "li5apuu7", "madou", "maomi"
-	videoName                                                          = "string"
+	className                                                          = "强奸乱伦"
 )
 
 func main() {
 	//hs.Mysql2Redis()
-	//getHs(1, 501, 10, platfrom_paoyou)
-	//getHs(300, 400, 5, platfrom_li5apuu7)
-	//getHs(1, 61, 5, platfrom_madou)
-	getHs(76, 534, 2, platfrom_maomi)
+	getHs(1, 301, 10, platfrom_paoyou)
+	//getHs(2, 32, 2, platfrom_li5apuu7)
+	//getHs(1, 101, 5, platfrom_madou)
+	//getHs(1, 126, 5, platfrom_maomi)
 }
 
 // <----------------------------------------- Paoyou ----------------------------------------->
 func THs1(num1, num2 int) {
+	map1, map2 := hs.PaoyouFindClass()
 	for i := num1; i < num2; i++ {
-		hs.Paoyou(tag, i, videoName)
+		hs.Paoyou(num1, className, map1, map2)
 	}
 	defer wg.Done()
 }

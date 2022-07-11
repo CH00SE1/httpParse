@@ -72,9 +72,9 @@ func SetKeyTime(key string, value interface{}, expiration time.Duration) error {
 	return err
 }
 
-// Sey 设置数据 默认时间为24h
+// Sey 设置数据 永久有效
 func SetKey(key string, value interface{}) error {
-	err := rdb.Set(key, value, time.Hour*24).Err()
+	err := rdb.Set(key, value, 0).Err()
 	return err
 }
 
