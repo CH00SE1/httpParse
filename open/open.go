@@ -17,19 +17,19 @@ var wg sync.WaitGroup
 var lock sync.Mutex
 
 // 1907
-var tag = 1
+var tag = 21
 
 const (
 	platfrom_paoyou, platfrom_li5apuu7, platfrom_madou, platfrom_maomi = "paoyou", "li5apuu7", "madou", "maomi"
-	className                                                          = "中文字幕"
+	className                                                          = "国产"
 )
 
 func main() {
 	//hs.Mysql2Redis()
-	//getHs(1, 11, 2, platfrom_paoyou)
+	getHs(1, 21, 2, platfrom_paoyou)
 	//getHs(2, 32, 2, platfrom_li5apuu7)
-	getHs(11, 99, 1, platfrom_madou)
-	//getHs(1, 126, 5, platfrom_maomi)
+	//getHs(1, 61, 2, platfrom_madou)
+	//getHs(1, 127, 5, platfrom_maomi)
 }
 
 // <----------------------------------------- Paoyou ----------------------------------------->

@@ -410,13 +410,24 @@ func getM3U8URl(jid string) string {
 func MaodouReq(page int) []byte {
 
 	date := strings.Replace(time.Now().Format("2006-01-02"), "-", "", -1)
-	//nnp35.com
-	//"https://nnp35.com/upload_json_live/" + date + "/videolist_" + date + "_" + strconv.Itoa(time.Now().Hour()) + "_2_-_-_100_" + strconv.Itoa(page) + ".json"
-	//jsonmdtv.md29.tv
-	//"https://jsonmdtv.md29.tv/upload_json_live/" + date + "/videolist_" + date + "_" + strconv.Itoa(time.Now().Hour()) + "_2_-_-_100_" + strconv.Itoa(page) + ".json"
+
+	hour := time.Now().Hour()
+
+	str_hour := ""
+
+	// 计算时间
+	if hour < 10 {
+		str_hour += "0" + strconv.Itoa(hour)
+	} else {
+		str_hour += strconv.Itoa(hour)
+	}
+
+	//nnp35.com -- 91tv
+	//url := "https://nnp35.com/upload_json_live/" + date + "/videolist_" + date + "_" + str_hour + "_2_-_-_100_" + strconv.Itoa(page) + ".json"
+	//jsonmdtv.md29.tv -- maodou
+	url := "https://jsonmdtv.md29.tv/upload_json_live/" + date + "/videolist_" + date + "_" + str_hour + "_2_-_-_100_" + strconv.Itoa(page) + ".json"
 	//json.wtjfjil.cn
-	//"https://json.wtjfjil.cn/upload_json_live/" + date + "/videolist_zh-cn_" + date + "_" + strconv.Itoa(time.Now().Hour()) + "_2_-_-_100_" + strconv.Itoa(page) + ".json"
-	url := "https://json.wtjfjil.cn/upload_json_live/" + date + "/videolist_zh-cn_" + date + "_" + strconv.Itoa(time.Now().Hour()) + "_2_-_-_100_" + strconv.Itoa(page) + ".json"
+	//url := "https://json.wtjfjil.cn/upload_json_live/" + date + "/videolist_zh-cn_" + date + "_" + str_hour + "_2_-_-_100_" + strconv.Itoa(page) + ".json"
 	method := "GET"
 
 	fmt.Printf("\n请求 url : %s\n", url)
@@ -485,7 +496,7 @@ func DataParseSave(body []byte) {
 // ------------------------------------------------ maomi ------------------------------------------------
 func MaomoRequest(page int) {
 
-	initial_url := "https://www.b59b00e25385.com/"
+	initial_url := "https://www.81339482ad25.com/"
 	// "猫咪推荐"
 	// 国产精品 美女主播 短视频 中文字幕
 	videoTitle := "国产精品"
