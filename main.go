@@ -39,7 +39,7 @@ func protobufTest() {
 }
 
 func T1001() {
-	for i := 1; i < 22; i++ {
+	for i := 1; i < 30; i++ {
 		data := guojiayibao.GetData1001(i)
 		configure, _ := db.MysqlConfigure()
 		for _, row := range data.Rows {
@@ -62,7 +62,7 @@ func T1002() {
 }
 
 func T1003() {
-	for i := 1; i < 30; i++ {
+	for i := 1; i < 25; i++ {
 		data := guojiayibao.GetData1003(i)
 		configure, _ := db.MysqlConfigure()
 		for _, row := range data.Rows {
@@ -77,6 +77,24 @@ func Hs(tag int) {
 	}
 }
 
+// 1000 - 2000 1000-1333 1333-1666 1666-2000
+func main() {
+	//gin := gin.Default()
+	//gin.GET("/getData/:page/:start", src.SaveInfo)
+	//gin.Run(":8500")
+	//db.AutoCreateTable(xml.XmlInfo{})
+	//redisSetGet()
+	//for i := 2; i <= 8; i++ {
+	//	hs.RedisLi5apuu7(22, i)
+	//}
+	//hs.Redis2Mysql()
+	//T1003()
+	// 174
+	for i := 120; i >= 101; i-- {
+		guojiayibao.GetDate1004(i)
+	}
+}
+
 // 全局变量
 var wg sync.WaitGroup
 
@@ -86,14 +104,14 @@ var tag = 1
 func flush() {
 	defer wg.Done()
 	for i := 213; i < 1917; i++ {
-		hs.Paoyou(tag, i)
+		//hs.Paoyou(tag, i)
 	}
 }
 
 func Tpaoyou(num1, num2 int) {
 	defer wg.Done()
 	for i := num1; i < num2; i++ {
-		hs.Paoyou(tag, i)
+		//hs.Paoyou(tag, i)
 	}
 }
 
@@ -107,17 +125,4 @@ func newPaoYou(num1, num2, size int) {
 	} else {
 		fmt.Printf("num2 - num1 > 0 , 修改参数")
 	}
-}
-
-// 1000 - 2000 1000-1333 1333-1666 1666-2000
-func main() {
-	//gin := gin.Default()
-	//gin.GET("/getData/:page/:start", src.SaveInfo)
-	//gin.Run(":8500")
-	//db.AutoCreateTable(xml.XmlInfo{})
-	//redisSetGet()
-	//for i := 2; i <= 8; i++ {
-	//	hs.RedisLi5apuu7(22, i)
-	//}
-	hs.Redis2Mysql()
 }

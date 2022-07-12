@@ -217,7 +217,7 @@ func GetData1003(page int) GjybInfo {
 	url := "https://code.nhsa.gov.cn/yp/stdGoodsPublic/getStdGoodsPublicData.html"
 	method := "POST"
 
-	text := "goodsCode=&companyNameSc=&registeredProductName=&approvalCode=&_search=false&nd=1656043071505&rows=10000&page=" + strconv.Itoa(page) + "&sidx=&sord=asc"
+	text := "goodsCode=&companyNameSc=&registeredProductName=&approvalCode=&_search=false&nd=&rows=10000&page=" + strconv.Itoa(page) + "&sidx=&sord=asc"
 
 	payload := strings.NewReader(text)
 

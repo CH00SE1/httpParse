@@ -26,9 +26,9 @@ const (
 
 func main() {
 	//hs.Mysql2Redis()
-	getHs(1, 21, 2, platfrom_paoyou)
+	//getHs(1, 21, 2, platfrom_paoyou)
 	//getHs(2, 32, 2, platfrom_li5apuu7)
-	//getHs(1, 61, 2, platfrom_madou)
+	getHs(1, 121, 4, platfrom_madou)
 	//getHs(1, 127, 5, platfrom_maomi)
 }
 

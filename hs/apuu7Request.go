@@ -425,9 +425,9 @@ func MaodouReq(page int) []byte {
 	//nnp35.com -- 91tv
 	//url := "https://nnp35.com/upload_json_live/" + date + "/videolist_" + date + "_" + str_hour + "_2_-_-_100_" + strconv.Itoa(page) + ".json"
 	//jsonmdtv.md29.tv -- maodou
-	url := "https://jsonmdtv.md29.tv/upload_json_live/" + date + "/videolist_" + date + "_" + str_hour + "_2_-_-_100_" + strconv.Itoa(page) + ".json"
+	//url := "https://jsonmdtv.md29.tv/upload_json_live/" + date + "/videolist_" + date + "_" + str_hour + "_2_-_-_100_" + strconv.Itoa(page) + ".json"
 	//json.wtjfjil.cn
-	//url := "https://json.wtjfjil.cn/upload_json_live/" + date + "/videolist_zh-cn_" + date + "_" + str_hour + "_2_-_-_100_" + strconv.Itoa(page) + ".json"
+	url := "https://json.wtjfjil.cn/upload_json_live/" + date + "/videolist_zh-cn_" + date + "_" + str_hour + "_2_-_-_100_" + strconv.Itoa(page) + ".json"
 	method := "GET"
 
 	fmt.Printf("\n请求 url : %s\n", url)
