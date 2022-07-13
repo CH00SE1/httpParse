@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
+	"log"
 	"net/http"
 	"strconv"
 	"strings"
@@ -21,22 +22,20 @@ type GjybInfo struct {
 	Records int `json:"records"`
 	Total   int `json:"total"`
 	Rows    []struct {
-		CompanyNameSc           string `json:"companyNameSc"`
-		ApprovalCode            string `json:"approvalCode"`
-		GoodsStandardCode       string `json:"goodsStandardCode"`
-		ProductRemark           string `json:"productRemark"`
-		ProductInsuranceType    string `json:"productInsuranceType"`
-		ProductName             string `json:"productName"`
 		MaterialName            string `json:"materialName"`
+		CompanyNameSc           string `json:"companyNameSc"`
 		RegisteredProductName   string `json:"registeredProductName"`
 		Unit                    string `json:"unit"`
+		ApprovalCode            string `json:"approvalCode"`
 		RegisteredOutlook       string `json:"registeredOutlook"`
-		ProductCode             string `json:"productCode"`
 		RegisteredMedicinemodel string `json:"registeredMedicinemodel"`
+		GoodsStandardCode       string `json:"goodsStandardCode"`
 		GoodsCode               string `json:"goodsCode"`
 		MinUnit                 string `json:"minUnit"`
 		Factor                  int    `json:"factor"`
 		GoodsName               string `json:"goodsName"`
+		ProductRemark           string `json:"productRemark,omitempty"`
+		ProductName             string `json:"productName,omitempty"`
 	} `json:"rows"`
 	Page        int         `json:"page"`
 	Count       int         `json:"count"`
@@ -45,7 +44,6 @@ type GjybInfo struct {
 	Success     bool        `json:"success"`
 	Result      interface{} `json:"result"`
 	Conditions  struct {
-		ApprovalCode string `json:"approvalCode"`
 	} `json:"conditions"`
 	Msg       interface{} `json:"msg"`
 	Form      interface{} `json:"form"`
@@ -217,7 +215,7 @@ func GetData1003(page int) GjybInfo {
 	url := "https://code.nhsa.gov.cn/yp/stdGoodsPublic/getStdGoodsPublicData.html"
 	method := "POST"
 
-	text := "goodsCode=&companyNameSc=&registeredProductName=&approvalCode=&_search=false&nd=&rows=10000&page=" + strconv.Itoa(page) + "&sidx=&sord=asc"
+	text := "goodsCode=&companyNameSc=&registeredProductName=&approvalCode=&_search=false&nd=1657678747531&rows=10000&page=" + strconv.Itoa(page) + "&sidx=&sord=asc"
 
 	payload := strings.NewReader(text)
 
@@ -225,8 +223,7 @@ func GetData1003(page int) GjybInfo {
 	req, err := http.NewRequest(method, url, payload)
 
 	if err != nil {
-		fmt.Println(err)
-		return GjybInfo{}
+		log.Fatal(err)
 	}
 	req.Header.Add("Accept", "application/json, text/javascript, */*; q=0.01")
 	req.Header.Add("Accept-Language", "zh-CN,zh;q=0.9")
@@ -246,19 +243,18 @@ func GetData1003(page int) GjybInfo {
 
 	res, err := client.Do(req)
 	if err != nil {
-		fmt.Println(err)
-		return GjybInfo{}
+		log.Fatal(err)
 	}
 	defer res.Body.Close()
 
 	body, err := ioutil.ReadAll(res.Body)
 	if err != nil {
-		fmt.Println(err)
-		return GjybInfo{}
+		if strings.Contains(err.Error(), "unexpected EOF") && len(body) != 0 {
+			log.Fatal(err, page)
+		}
 	}
 	var gjybInfo GjybInfo
 	json.Unmarshal(body, &gjybInfo)
-	fmt.Println(page, "------", text)
 	return gjybInfo
 }
 
@@ -267,7 +263,7 @@ func GetData1001(page int) Drug1001 {
 	url := "https://code.nhsa.gov.cn/yp/stdChineseMedicinalDecoctionPieces/getPiecesRkData.html"
 	method := "POST"
 
-	text := "piecesCode=&piecesName=&_search=false&nd=1656053601177&rows=10000&page=" + strconv.Itoa(page) + "&sidx=&sord=asc"
+	text := "piecesCode=&piecesName=&_search=false&nd=1657674738005&rows=100&page=" + strconv.Itoa(page) + "&sidx=&sord=asc"
 
 	payload := strings.NewReader(text)
 
@@ -275,14 +271,13 @@ func GetData1001(page int) Drug1001 {
 	req, err := http.NewRequest(method, url, payload)
 
 	if err != nil {
-		fmt.Println(err)
-		return Drug1001{}
+		fmt.Println("request error:", err)
 	}
 	req.Header.Add("Accept", "application/json, text/javascript, */*; q=0.01")
 	req.Header.Add("Accept-Language", "zh-CN,zh;q=0.9")
 	req.Header.Add("Connection", "keep-alive")
 	req.Header.Add("Content-Type", "application/x-www-form-urlencoded; charset=UTF-8")
-	req.Header.Add("Cookie", "__jsluid_s=432f80e073d0ca463ea5c40138b6347d; pageSelect=0651c039aeb194b9cc7f459fd752d7f1%3D1; JSESSIONID=978B6B5A2190B7367D0CD92FE0D6CB24; queryCondition=575f478bdd1b6665386a42ec3cf354b2%3D%7B%22piecesCode%22%3A%22%22%2C%22piecesName%22%3A%22%E9%BB%84%E8%8A%AA%22%7D; JSESSIONID=2B9DF6843058E832395D7084B337B1D1")
+	req.Header.Add("Cookie", "__jsluid_s=9d335ba068cdccfdba87d26868685ddd; pageSelect=40ca710142ff03a3617cc9ff170a5651%3D1; JSESSIONID=1ACDC582854E0787C527E24F496FFF2C; queryCondition=575f478bdd1b6665386a42ec3cf354b2%3D%7B%22piecesCode%22%3A%22%22%2C%22piecesName%22%3A%22%E5%BD%93%E5%BD%92%22%7D; JSESSIONID=BEB1686381D3EC1323765305B5E1785A")
 	req.Header.Add("Origin", "https://code.nhsa.gov.cn")
 	req.Header.Add("Referer", "https://code.nhsa.gov.cn/yp/toRkList.html")
 	req.Header.Add("Sec-Fetch-Dest", "empty")
@@ -296,19 +291,16 @@ func GetData1001(page int) Drug1001 {
 
 	res, err := client.Do(req)
 	if err != nil {
-		fmt.Println(err)
-		return Drug1001{}
+		fmt.Println("response error:", err)
 	}
 	defer res.Body.Close()
 
 	body, err := ioutil.ReadAll(res.Body)
 	if err != nil {
-		fmt.Println(err)
-		return Drug1001{}
+		fmt.Println("ioutil error:", err)
 	}
 	var drug1001 Drug1001
 	json.Unmarshal(body, &drug1001)
-	fmt.Println(page, "------", text)
 	return drug1001
 }
 

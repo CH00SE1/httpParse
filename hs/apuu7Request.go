@@ -146,7 +146,12 @@ func M3u8UrlParse(url string) string {
 func ExampleScrape(tag, page int) (string, int) {
 	// Request the HTML page.
 	// http://li5.apuu7.top/index.php/vod/type/id/20/page/2.html
-	url := "http://li5.apuu7.top/index.php/vod/type/id/" + strconv.Itoa(tag) + "/page/" + strconv.Itoa(page) + ".html"
+	url := ""
+	if page == 1 {
+		url += "http://li5.apuu7.top/index.php/vod/type/id/" + strconv.Itoa(tag) + ".html"
+	} else {
+		url += "http://li5.apuu7.top/index.php/vod/type/id/" + strconv.Itoa(tag) + "/page/" + strconv.Itoa(page) + ".html"
+	}
 
 	fmt.Printf("\n请求 url : %s\n", url)
 
@@ -244,7 +249,7 @@ func Paoyou(page int, videoName string, map1, map2 map[string]string) {
 
 	newUrl, className := PaoyouNewUrl(videoName, page, map1, map2)
 
-	fmt.Printf("\nurl->\tnewUrl:%s\n", newUrl)
+	fmt.Printf("\nurl:%s\tvideoName:%s\n", newUrl, className)
 
 	method := "GET"
 
@@ -411,7 +416,7 @@ func MaodouReq(page int) []byte {
 
 	date := strings.Replace(time.Now().Format("2006-01-02"), "-", "", -1)
 
-	hour := time.Now().Hour()
+	hour := time.Now().Hour() - 1
 
 	str_hour := ""
 
@@ -423,11 +428,11 @@ func MaodouReq(page int) []byte {
 	}
 
 	//nnp35.com -- 91tv
-	//url := "https://nnp35.com/upload_json_live/" + date + "/videolist_" + date + "_" + str_hour + "_2_-_-_100_" + strconv.Itoa(page) + ".json"
+	url := "https://nnp35.com/upload_json_live/" + date + "/videolist_" + date + "_" + str_hour + "_2_-_-_100_" + strconv.Itoa(page) + ".json"
 	//jsonmdtv.md29.tv -- maodou
 	//url := "https://jsonmdtv.md29.tv/upload_json_live/" + date + "/videolist_" + date + "_" + str_hour + "_2_-_-_100_" + strconv.Itoa(page) + ".json"
 	//json.wtjfjil.cn
-	url := "https://json.wtjfjil.cn/upload_json_live/" + date + "/videolist_zh-cn_" + date + "_" + str_hour + "_2_-_-_100_" + strconv.Itoa(page) + ".json"
+	//url := "https://json.wtjfjil.cn/upload_json_live/" + date + "/videolist_zh-cn_" + date + "_" + str_hour + "_-_-_-_50_" + strconv.Itoa(page) + ".json"
 	method := "GET"
 
 	fmt.Printf("\n请求 url : %s\n", url)
@@ -436,7 +441,7 @@ func MaodouReq(page int) []byte {
 	req, err := http.NewRequest(method, url, nil)
 
 	if err != nil {
-		fmt.Println(err)
+		log.Fatal(err, page)
 	}
 	req.Header.Add("sec-ch-ua", "\" Not;A Brand\";v=\"99\", \"Microsoft Edge\";v=\"103\", \"Chromium\";v=\"103\"")
 	req.Header.Add("Referer", "")
@@ -446,13 +451,15 @@ func MaodouReq(page int) []byte {
 
 	res, err := client.Do(req)
 	if err != nil {
-		fmt.Println(err)
+		log.Fatal(err, page)
 	}
 	defer res.Body.Close()
 
 	body, err := ioutil.ReadAll(res.Body)
 	if err != nil {
-		fmt.Println(err)
+		if strings.Contains(err.Error(), "unexpected EOF") && len(body) != 0 {
+			log.Fatal(err, page)
+		}
 	}
 	return body
 }
@@ -496,10 +503,10 @@ func DataParseSave(body []byte) {
 // ------------------------------------------------ maomi ------------------------------------------------
 func MaomoRequest(page int) {
 
-	initial_url := "https://www.81339482ad25.com/"
+	initial_url := "https://www.2b3r3.com/"
 	// "猫咪推荐"
 	// 国产精品 美女主播 短视频 中文字幕
-	videoTitle := "国产精品"
+	videoTitle := "美女主播"
 
 	url := newUrl(initial_url, videoTitle, page)
 
