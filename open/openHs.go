@@ -17,11 +17,11 @@ var wg sync.WaitGroup
 var lock sync.Mutex
 
 // 1907
-var tag = 1
+var tag = 20
 
 const (
 	platfrom_paoyou, platfrom_li5apuu7, platfrom_madou, platfrom_maomi, platfrom_G = "paoyou", "li5apuu7", "madou", "maomi", "G."
-	className                                                                      = "中文字幕"
+	className                                                                      = "制服师生"
 )
 
 // 多线程方法
@@ -58,7 +58,7 @@ func getHs(num1, num2, size int, funcName string) {
 func THs1(num1, num2 int) {
 	map1, map2 := hs.PaoyouFindClass()
 	for i := num1; i < num2; i++ {
-		hs.Paoyou(num1, className, map1, map2)
+		hs.Paoyou(i, className, map1, map2)
 	}
 	defer wg.Done()
 }
@@ -74,8 +74,8 @@ func THs2(num1, num2 int) {
 // <----------------------------------------- madou ----------------------------------------->
 func THs3(num1, num2 int) {
 	for i := num1; i < num2; i++ {
-		maDouDao := hs.MaodouReq(i)
-		hs.DataParseSave(maDouDao)
+		maDouDao, Type := hs.MaodouReq(i)
+		hs.DataParseSave(maDouDao, Type)
 	}
 	defer wg.Done()
 }
@@ -88,6 +88,7 @@ func THs4(num1, num2 int) {
 	defer wg.Done()
 }
 
+// <----------------------------------------- G. ----------------------------------------->
 func THs5(num1, num2 int) {
 	for i := num1; i < num2; i++ {
 		hs.GRequest(i)

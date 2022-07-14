@@ -55,7 +55,7 @@ func CreateFile(text *string, path, fileName, fileType string) {
 		fmt.Println(err)
 	}
 
-	fmt.Println("字节:" + strconv.Itoa(writeString))
+	fmt.Printf("字节:%d - 文件名称:%s\n", writeString, fileName)
 
 }
 

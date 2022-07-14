@@ -19,7 +19,7 @@ import (
  */
 
 // 视频主页
-const org_url = "https://www.gdian169.com"
+const g_url = "https://www.gdian169.com"
 
 type PhotoDao struct {
 	Msg     string `json:"msg"`
@@ -108,7 +108,7 @@ type GM3u8VideoRes struct {
 
 // G.请求url拿到数据
 func GRequest(page int) {
-	url := org_url + "/apiv2/video/search?is_av=0&sort=latest&page=" + strconv.Itoa(page) + "&num=20"
+	url := g_url + "/apiv2/video/search?is_av=0&sort=latest&page=" + strconv.Itoa(page) + "&num=20"
 	method := "GET"
 
 	client := &http.Client{}
@@ -145,37 +145,23 @@ func GRequest(page int) {
 	var photoDao PhotoDao
 	json.Unmarshal(body, &photoDao)
 	mysql, _ := db.MysqlConfigure()
-	redis.InitClient()
-	for num, datum := range photoDao.Data.Data {
-		row := redis.KeyExists(datum.MovieName)
-		if row != 1 {
-			watchUrl, videoInfo := m3u8VideoInfo(datum.MovieId)
-			var m3u8_url string
-			for _, urlDao := range videoInfo.Data.MovieM3U8Url {
-				if urlDao.Name == "普通线路" {
-					m3u8_url = urlDao.Url
-				}
-			}
-			hsInfo := HsInfo{Title: videoInfo.Data.MovieName,
-				Url:      watchUrl,
-				M3u8Url:  org_url + m3u8_url,
-				ClassId:  page,
-				Platform: "G.视频",
-				Page:     page,
-				Location: datum.MovieCover}
-			marshal, _ := json.Marshal(hsInfo)
-			redis.SetKey(videoInfo.Data.MovieName, marshal)
-			mysql.Table("t_hs_info2").Create(&hsInfo)
-			fmt.Printf("页码:%d 第%d个\n", page, num+1)
-		} else {
-			fmt.Printf("G.视频 title:%s row:%d page:%d\n", datum.MovieName, row, page)
+	var hsInfos []*HsInfo
+	for _, datum := range photoDao.Data.Data {
+		// 数据保存
+		hsInfo := resultObejectInfo(datum.MovieName, datum.MovieId, page)
+		if hsInfo != nil {
+			info := hsInfo.(HsInfo)
+			hsInfos = append(hsInfos, &info)
 		}
+		// 图片下载
+		//savePhotoInfo(datum.MovieCover, datum.MovieName, num+1)
 	}
+	mysql.Table("t_hs_info2").CreateInBatches(hsInfos, 50).Callback()
 }
 
 // 获取video信息
 func m3u8VideoInfo(movie_id int) (string, GM3u8VideoRes) {
-	url := org_url + "/apiv2/video/" + strconv.Itoa(movie_id)
+	url := g_url + "/apiv2/video/" + strconv.Itoa(movie_id)
 	method := "GET"
 
 	client := &http.Client{}
@@ -238,7 +224,39 @@ func savePhotoInfo(url, fileName string, num int) {
 		return
 	}
 	bytes2String := utils.Bytes2String(body)
-	utils.CreateFile(&bytes2String, "D:\\photo_G\\",
+	utils.CreateFile(&bytes2String, "C:\\Users\\Administrator\\Desktop\\photo_G\\",
 		"G"+time.Now().Format("[2006-01-02-15-04-05]-")+fileName+strconv.Itoa(num),
 		".jpg")
+}
+
+// 数据保存mysql
+func resultObejectInfo(MovieName string, MovieId, page int) interface{} {
+	redis.InitClient()
+	row := redis.KeyExists(MovieName)
+	if row != 1 {
+		watchUrl, videoInfo := m3u8VideoInfo(MovieId)
+		var m3u8_url string
+		for _, urlDao := range videoInfo.Data.MovieM3U8Url {
+			if urlDao.Name == "普通线路" {
+				m3u8_url = urlDao.Url
+			}
+		}
+		var labels string
+		for _, label := range videoInfo.Data.Labels {
+			labels += ("`" + label + "`")
+		}
+		labels += videoInfo.Data.MovieLong
+		hsInfo := HsInfo{Title: videoInfo.Data.MovieName,
+			Url:      watchUrl,
+			M3u8Url:  g_url + m3u8_url,
+			ClassId:  page,
+			Platform: "G.视频[" + labels + "]",
+			Page:     page,
+			Location: videoInfo.Data.MovieCover}
+		marshal, _ := json.Marshal(hsInfo)
+		redis.SetKey(videoInfo.Data.MovieName, marshal)
+		fmt.Println("set key title:", hsInfo.Title)
+		return hsInfo
+	}
+	return nil
 }
