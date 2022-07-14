@@ -55,8 +55,6 @@ type PaoYouVideo struct {
 // ------------------------------------------------ paoyou ------------------------------------------------
 func Paoyou(page int, videoName string, map1, map2 map[string]string) {
 
-	url := "https://paoyou.ml"
-
 	newUrl, className := PaoyouNewUrl(videoName, page, map1, map2)
 
 	fmt.Printf("\nurl:%s\tvideoName:%s\n", newUrl, className)
@@ -105,32 +103,32 @@ func Paoyou(page int, videoName string, map1, map2 map[string]string) {
 		href, _ := s.Attr("href")
 		title, _ := s.Attr("title")
 		newTitle := utils.StringStrip(title)
-		paoyouDataSave(newTitle, url, href, className, page, i)
+		paoyouDataSave(newTitle, paoyou_url, href, className, page, i)
 	})
 }
 
 // paoyou数据处理
-func paoyouDataSave(newTitle, initial_url, href, className string, page, i int) {
+func paoyouDataSave(newTitle, url, href, className string, page, i int) {
 	// 引入数据库 mysql + redis
 	db, _ := db.MysqlConfigure()
 	redis.InitClient()
 	row := redis.KeyExists(newTitle)
 	if row != 1 {
-		jid := getDataJid(initial_url + href)
+		jid := getDataJid(url + href)
 		m3u8_url := getM3U8URl(jid)
 		// 获取输出
 		fmt.Printf("\npaoyou [第%d页,第%d个] [href:%s title:%s m3u8_url:%s]\n", page, i+1, href, newTitle, m3u8_url)
 		hsinfo := HsInfo{
 			Title:    newTitle,
-			Url:      utils.StringStrip(initial_url + href),
+			Url:      utils.StringStrip(url + href),
 			M3u8Url:  utils.StringStrip(m3u8_url),
 			ClassId:  page,
-			Platform: "paoyou" + " -- " + className,
+			Platform: "paoyou*" + className,
 			Page:     page,
 			Location: strconv.Itoa(i + 1)}
 		marshal, _ := json.Marshal(hsinfo)
 		redis.SetKey(newTitle, marshal)
-		db.Create(&hsinfo)
+		db.Table("t_hs_info2").Create(&hsinfo)
 	} else {
 		fmt.Printf("\npaoyou [第%d页,第%d个] [href:%s title:%s row:%d]\n", page, i+1, href, newTitle, row)
 	}

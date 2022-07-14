@@ -85,7 +85,7 @@ func MaomoRequest(page int) {
 				Url:      maomi_url + href,
 				M3u8Url:  m3u8_url,
 				ClassId:  page,
-				Platform: "maomi -- " + videoTitle,
+				Platform: "maomi*" + videoTitle,
 				Page:     page,
 				Location: "[" + strconv.Itoa((i+1)/4+1) + "," + strconv.Itoa((i+1)%4+1) + "]"}
 			marshal, _ := json.Marshal(hsInfo)
