@@ -128,7 +128,7 @@ func paoyouDataSave(newTitle, url, href, className string, page, i int) {
 			Location: strconv.Itoa(i + 1)}
 		marshal, _ := json.Marshal(hsinfo)
 		redis.SetKey(newTitle, marshal)
-		db.Table("t_hs_info2").Create(&hsinfo)
+		db.Create(&hsinfo)
 	} else {
 		fmt.Printf("\npaoyou [第%d页,第%d个] [href:%s title:%s row:%d]\n", page, i+1, href, newTitle, row)
 	}

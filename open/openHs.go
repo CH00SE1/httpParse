@@ -17,11 +17,11 @@ var wg sync.WaitGroup
 var lock sync.Mutex
 
 // 1907
-var tag = 20
+var tag = 32
 
 const (
 	platfrom_paoyou, platfrom_li5apuu7, platfrom_madou, platfrom_maomi, platfrom_G = "paoyou", "li5apuu7", "madou", "maomi", "G."
-	className                                                                      = "制服师生"
+	className                                                                      = "丝袜美腿"
 )
 
 // 多线程方法
@@ -83,7 +83,7 @@ func THs3(num1, num2 int) {
 // <----------------------------------------- maomi ----------------------------------------->
 func THs4(num1, num2 int) {
 	for i := num1; i <= num2; i++ {
-		hs.MaomoRequest(i)
+		hs.MaomiRequest(i)
 	}
 	defer wg.Done()
 }

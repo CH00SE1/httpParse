@@ -51,10 +51,53 @@ type MaDouDao struct {
 	} `json:"data"`
 }
 
+// 根据平台转发请求xxx.json
+func convertThreeUrl(urlType string, page int) (string, string) {
+
+	date := strings.Replace(time.Now().Format("2006-01-02"), "-", "", -1)
+
+	hour := time.Now().Hour() - 2
+
+	str_hour := ""
+
+	if hour < 10 {
+		str_hour += "0" + strconv.Itoa(hour)
+	} else {
+		str_hour += strconv.Itoa(hour)
+	}
+
+	var url string
+
+	switch urlType {
+	case Tv91_url:
+		url = Tv91_url + date + "/videolist_" + date + "_" + str_hour + "_2_-_-_100_" + strconv.Itoa(page) + ".json"
+	case maodou_url:
+		url = maodou_url + date + "/videolist_" + date + "_" + str_hour + "_2_-_-_100_" + strconv.Itoa(page) + ".json"
+	case quanyuan_url:
+		url = quanyuan_url + date + "/videolist_zh-cn_" + date + "_" + str_hour + "_-_-_-_50_" + strconv.Itoa(page) + ".json"
+	}
+
+	return url, urlType
+}
+
+// 区分平台
+func platform(Type string) string {
+	var platfrom string
+	switch Type {
+	case Tv91_url:
+		platfrom = "91视频"
+	case maodou_url:
+		platfrom = "麻豆视频"
+	case quanyuan_url:
+		platfrom = "A1LT1N"
+	}
+	return platfrom
+}
+
 // ------------------------------------------------ madou ------------------------------------------------
 func MaodouReq(page int) ([]byte, string) {
 
-	url, Type := convertThreeUrl(Tv91_url, page)
+	url, Type := convertThreeUrl(maodou_url, page)
 
 	method := "GET"
 
@@ -121,47 +164,4 @@ func DataParseSave(body []byte, Type string) {
 	//bytes2String := utils.Bytes2String(body)
 	//utils.CreateFile(&bytes2String, "D:\\MadouData\\response\\", "madou_"+
 	//time.Now().Format("[2006-01-02-15-04-05]_page_")+strconv.Itoa(maDouDao.PerPage), ".json")
-}
-
-// 根据平台转发请求xxx.json
-func convertThreeUrl(urlType string, page int) (string, string) {
-
-	date := strings.Replace(time.Now().Format("2006-01-02"), "-", "", -1)
-
-	hour := time.Now().Hour() - 2
-
-	str_hour := ""
-
-	if hour < 10 {
-		str_hour += "0" + strconv.Itoa(hour)
-	} else {
-		str_hour += strconv.Itoa(hour)
-	}
-
-	var url string
-
-	switch urlType {
-	case Tv91_url:
-		url = Tv91_url + date + "/videolist_" + date + "_" + str_hour + "_2_-_-_100_" + strconv.Itoa(page) + ".json"
-	case maodou_url:
-		url = maodou_url + date + "/videolist_" + date + "_" + str_hour + "_2_-_-_100_" + strconv.Itoa(page) + ".json"
-	case quanyuan_url:
-		url = quanyuan_url + date + "/videolist_zh-cn_" + date + "_" + str_hour + "_-_-_-_50_" + strconv.Itoa(page) + ".json"
-	}
-
-	return url, urlType
-}
-
-// 区分平台
-func platform(Type string) string {
-	var platfrom string
-	switch Type {
-	case Tv91_url:
-		platfrom = "91视频"
-	case maodou_url:
-		platfrom = "麻豆视频"
-	case quanyuan_url:
-		platfrom = "A1LT1N"
-	}
-	return platfrom
 }

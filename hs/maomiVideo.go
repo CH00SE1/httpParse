@@ -24,11 +24,11 @@ const (
 )
 
 // ------------------------------------------------ maomi ------------------------------------------------
-func MaomoRequest(page int) {
+func MaomiRequest(page int) {
 
 	initial_url := "https://www.2b2h9.com/"
 
-	videoTitle := guochanjingpin
+	videoTitle := meinvzhubo
 
 	url := convertUrl(maomi_url, videoTitle, page)
 
