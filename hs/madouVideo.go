@@ -97,7 +97,7 @@ func platform(Type string) string {
 // ------------------------------------------------ madou ------------------------------------------------
 func MaodouReq(page int) ([]byte, string) {
 
-	url, Type := convertThreeUrl(maodou_url, page)
+	url, Type := convertThreeUrl(quanyuan_url, page)
 
 	method := "GET"
 
@@ -155,7 +155,7 @@ func DataParseSave(body []byte, Type string) {
 				fmt.Println("hsInfo json 序列化失败")
 			}
 			redis.SetKey(data.Title, marshal)
-			db.Table("t_hs_info2").Create(&hsInfo)
+			db.Create(&hsInfo)
 		} else {
 			fmt.Printf("\nmadou [第%d页 第%d个] [href:%s title:%s row:%d]\n", maDouDao.CurrentPage, i+1, "https://uh2089he.com"+data.TestVideoUrl, data.Title, row)
 		}
