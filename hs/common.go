@@ -27,23 +27,38 @@ type HsInfo struct {
 	Location string
 }
 
-// 2.1。同步redis数据 遍历redis数据
-func Redis2Mysql() {
-	Mysql2Redis()
-	keys := redis.GetKeyList()
-	mysqlDb, err := db.MysqlConfigure()
+type Title struct {
+	title string
+}
+
+func FindTitleList() {
+	mysql, err := db.MysqlConfigure()
 	if err != nil {
 		fmt.Println("connent datebase err:", err)
 	}
+	titles := make([]Title, 3)
+	mysql.Table("t_hs_info").Select([]string{"title"}).Scan(&titles)
+	fmt.Println(titles)
+}
+
+// 同步redis数据 遍历redis数据
+func Redis2Mysql() {
+	keys := redis.GetKeyList()
+	mysql, err := db.MysqlConfigure()
+	if err != nil {
+		fmt.Println("connent datebase err:", err)
+	}
+	infos := []*HsInfo{}
 	for _, key := range keys {
 		values, _ := redis.GetKey(key)
 		var hsInfo HsInfo
 		json.Unmarshal(utils.String2Bytes(values), &hsInfo)
-		mysqlDb.Create(&hsInfo)
+		infos = append(infos, &hsInfo)
 	}
+	mysql.CreateInBatches(infos, 15).Callback()
 }
 
-// 测试案列 mysql数据同步redis
+// mysql数据同步redis
 func Mysql2Redis() {
 	redis.InitClient()
 	db, err := db.MysqlConfigure()

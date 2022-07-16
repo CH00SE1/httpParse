@@ -17,11 +17,11 @@ var wg sync.WaitGroup
 var lock sync.Mutex
 
 // 1907
-var tag = 32
+var tag = 21
 
 const (
 	platfrom_paoyou, platfrom_li5apuu7, platfrom_madou, platfrom_maomi, platfrom_G = "paoyou", "li5apuu7", "madou", "maomi", "G."
-	className                                                                      = "丝袜美腿"
+	className                                                                      = "热门"
 )
 
 // 多线程方法

@@ -19,14 +19,12 @@ import (
  */
 
 const (
-	maomi_url                                             = "https://www.223bc.com"
+	maomi_url                                             = "https://www.70dcb2adce4a.com"
 	guochanjingpin, meinvzhubo, duanshipin, zhongwenzhimu = "国产精品", "美女主播", "短视频", "中文字幕"
 )
 
 // ------------------------------------------------ maomi ------------------------------------------------
 func MaomiRequest(page int) {
-
-	initial_url := "https://www.2b2h9.com/"
 
 	videoTitle := meinvzhubo
 
@@ -79,7 +77,7 @@ func MaomiRequest(page int) {
 		row := redis.KeyExists(title)
 		if row != 1 {
 			m3u8_url := parseMaomiViderPlay(maomi_url + href)
-			fmt.Printf("herf,title,m3u8_url = %s , %s , %s\n", initial_url+href, title, m3u8_url)
+			fmt.Printf("herf,title,m3u8_url = %s , %s , %s\n", maomi_url+href, title, m3u8_url)
 			hsInfo := HsInfo{
 				Title:    title,
 				Url:      maomi_url + href,
