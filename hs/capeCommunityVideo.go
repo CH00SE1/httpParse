@@ -169,10 +169,14 @@ type CapePageByIdInfo struct {
 
 // 主页 url
 const cape_url = "https://hjf2d1.com/api/topic/"
-const hot, news = "hot/topics", "node/news"
+const hot, news = "hot/topics?", "node/news?"
+const dashiji = "node/topics?type=1&nodeId=258&"
+const yuanchuan = "node/topics?type=7&"
+const jinghua = "node/topics?type=3&nodeId=0&"
+const new = "node/topics?type=1&nodeId=0&"
 
 func RequestPageInfo(page int) {
-	url := cape_url + news + "?page=" + strconv.Itoa(page)
+	url := cape_url + dashiji + "page=" + strconv.Itoa(page)
 	method := "GET"
 
 	fmt.Printf("\nurl : %s\n", url)
@@ -277,6 +281,6 @@ func requestPageByIdInfo(page_id, page int) {
 			fmt.Printf("page:%d video_id:%d title:%s\n", page, page_id, title)
 		}
 	} else {
-		fmt.Printf("*title:【%s】 未获取到m3u8_url*\n", title)
+		fmt.Printf("<============title:[<%s>] not obtained m3u8_url============>\n", title)
 	}
 }
