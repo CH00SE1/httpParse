@@ -20,8 +20,8 @@ var lock sync.Mutex
 var tag = 21
 
 const (
-	platfrom_paoyou, platfrom_li5apuu7, platfrom_madou, platfrom_maomi, platfrom_G = "paoyou", "li5apuu7", "madou", "maomi", "G."
-	className                                                                      = "热门"
+	platfrom_paoyou, platfrom_li5apuu7, platfrom_madou, platfrom_maomi, platfrom_G, platfrom_cape = "paoyou", "li5apuu7", "madou", "maomi", "G.", "cape"
+	className                                                                                     = "热门"
 )
 
 // 多线程方法
@@ -45,6 +45,9 @@ func getHs(num1, num2, size int, funcName string) {
 			}
 			if funcName == platfrom_G {
 				go THs5(n1, n2)
+			}
+			if funcName == platfrom_cape {
+				go THs6(n1, n2)
 			}
 		}
 		// 等待任务全部结束
@@ -92,6 +95,14 @@ func THs4(num1, num2 int) {
 func THs5(num1, num2 int) {
 	for i := num1; i < num2; i++ {
 		hs.GRequest(i)
+	}
+	defer wg.Done()
+}
+
+// <----------------------------------------- cape ----------------------------------------->
+func THs6(num1, num2 int) {
+	for i := num1; i < num2; i++ {
+		hs.RequestPageInfo(i)
 	}
 	defer wg.Done()
 }

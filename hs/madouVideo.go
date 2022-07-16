@@ -97,7 +97,7 @@ func platform(Type string) string {
 // ------------------------------------------------ madou ------------------------------------------------
 func MaodouReq(page int) ([]byte, string) {
 
-	url, Type := convertThreeUrl(Tv91_url, page)
+	url, Type := convertThreeUrl(quanyuan_url, page)
 
 	method := "GET"
 
