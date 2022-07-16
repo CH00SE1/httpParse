@@ -1,11 +1,15 @@
 package hs
 
 import (
+	"bytes"
 	"encoding/json"
 	"fmt"
+	"github.com/PuerkitoBio/goquery"
 	"httpParse/db"
 	"httpParse/redis"
+	"httpParse/utils"
 	"io/ioutil"
+	"log"
 	"net/http"
 	"strconv"
 )
@@ -176,7 +180,7 @@ const jinghua = "node/topics?type=3&nodeId=0&"
 const new = "node/topics?type=1&nodeId=0&"
 
 func RequestPageInfo(page int) {
-	url := cape_url + dashiji + "page=" + strconv.Itoa(page)
+	url := cape_url + hot + "page=" + strconv.Itoa(page)
 	method := "GET"
 
 	fmt.Printf("\nurl : %s\n", url)
@@ -250,6 +254,11 @@ func requestPageByIdInfo(page_id, page int) {
 	body, err := ioutil.ReadAll(res.Body)
 	var capePageByIdInfo CapePageByIdInfo
 	json.Unmarshal(body, &capePageByIdInfo)
+	dataSave(capePageByIdInfo, url, page)
+}
+
+// 数据保存
+func dataSave(capePageByIdInfo CapePageByIdInfo, url string, page int) {
 	title := capePageByIdInfo.Data.Title
 	var m3u8_url string
 	for _, attachment := range capePageByIdInfo.Data.Attachments {
@@ -278,9 +287,27 @@ func requestPageByIdInfo(page_id, page int) {
 			redis.SetKey(title, marshal)
 			db.Create(&hsInfo).Callback()
 		} else {
-			fmt.Printf("page:%d video_id:%d title:%s\n", page, page_id, title)
+			fmt.Printf("page:%d title:%s\n", page, title)
+
 		}
 	} else {
 		fmt.Printf("<============title:[<%s>] not obtained m3u8_url============>\n", title)
+		content := capePageByIdInfo.Data.Content
+		dom, err := goquery.NewDocumentFromReader(bytes.NewReader([]byte(content)))
+		if err != nil {
+			log.Fatal(err)
+		}
+		var Text string
+		num := 1
+		dom.Find("p").Each(func(i int, selection *goquery.Selection) {
+			text := utils.StringStrip(selection.Text())
+			if len(text) != 0 {
+				Text += strconv.Itoa(num) + "." + text + "\n"
+				num++
+			}
+		})
+		if num != 1 {
+			utils.CreateFile(&Text, "C:\\Users\\Administrator\\Desktop\\海角社区\\", title, ".txt")
+		}
 	}
 }
