@@ -1,4 +1,4 @@
-package main
+package open
 
 import (
 	"fmt"
@@ -20,33 +20,33 @@ var lock sync.Mutex
 var tag = 20
 
 const (
-	platfrom_paoyou, platfrom_li5apuu7, platfrom_madou, platfrom_maomi, platfrom_G, platfrom_cape = "paoyou", "li5apuu7", "madou", "maomi", "G.", "cape"
+	Platfrom_paoyou, Platfrom_li5apuu7, Platfrom_madou, Platfrom_maomi, Platfrom_G, Platfrom_cape = "paoyou", "li5apuu7", "madou", "maomi", "G.", "cape"
 	className                                                                                     = "日本"
 )
 
 // 多线程方法
-func getHs(num1, num2, size int, funcName string) {
+func GetHs(num1, num2, size int, funcName string) {
 	count := num2 - num1
 	if count > 0 {
 		wg.Add(size)
 		for i := 1; i <= size; i++ {
 			n1, n2 := num1+count/size*(i-1), num1+count/size*i
-			if funcName == platfrom_paoyou {
+			if funcName == Platfrom_paoyou {
 				go THs1(n1, n2)
 			}
-			if funcName == platfrom_li5apuu7 {
+			if funcName == Platfrom_li5apuu7 {
 				go THs2(n1, n2)
 			}
-			if funcName == platfrom_madou {
+			if funcName == Platfrom_madou {
 				go THs3(n1, n2)
 			}
-			if funcName == platfrom_maomi {
+			if funcName == Platfrom_maomi {
 				go THs4(n1, n2)
 			}
-			if funcName == platfrom_G {
+			if funcName == Platfrom_G {
 				go THs5(n1, n2)
 			}
-			if funcName == platfrom_cape {
+			if funcName == Platfrom_cape {
 				go THs6(n1, n2)
 			}
 		}
