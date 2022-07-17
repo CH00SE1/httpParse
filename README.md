@@ -97,4 +97,4 @@ func CreateFile() {
 }
 ```
 #### 数据展示
-![image](https://github.com/CH00SE1/httpParse/blob/prod/other/t_hs_info.PNG)
+![展示](https://github.com/CH00SE1/httpParse/blob/prod/other/t_hs_info.png)
