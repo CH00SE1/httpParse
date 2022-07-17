@@ -96,4 +96,5 @@ func CreateFile() {
 	}
 }
 ```
-![image](https://)
+#### 数据展示
+![image](https://github.com/CH00SE1/httpParse/blob/prod/other/t_hs_info.PNG)
