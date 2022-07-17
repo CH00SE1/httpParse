@@ -115,7 +115,6 @@ func ExampleScrape(tag, page int) {
 			if strings.Contains(url, li5Apuu7_url+"/vod/play") {
 				obj := getM3u8Obj(url)
 				m3u8url := M3u8UrlParse(obj)
-				fmt.Printf("\nli5apuu7 [第%d页 第%d个] [href:%s title:%s m3u8_url:%s]\n", page, i+1, href, title, m3u8url)
 				hsinfo := HsInfo{Title: utils.StringStrip(title),
 					Url:     utils.StringStrip(url),
 					M3u8Url: utils.StringStrip(m3u8url),
@@ -127,7 +126,7 @@ func ExampleScrape(tag, page int) {
 				db.Create(&hsinfo)
 			}
 		} else {
-			fmt.Printf("\nli5apuu7 [第%d页 第%d个] [href:%s title:%s row:%d]\n", page, i+1, href, title, row)
+			PrintfCommon(page, i+1, utils.StringStrip(url), title, row, "li5apuu7")
 		}
 	})
 }

@@ -117,7 +117,6 @@ func paoyouDataSave(newTitle, url, href, className string, page, i int) {
 		jid := getDataJid(url + href)
 		m3u8_url := getM3U8URl(jid)
 		// 获取输出
-		fmt.Printf("\npaoyou [第%d页,第%d个] [href:%s title:%s m3u8_url:%s]\n", page, i+1, href, newTitle, m3u8_url)
 		hsinfo := HsInfo{
 			Title:    newTitle,
 			Url:      utils.StringStrip(url + href),
@@ -130,7 +129,7 @@ func paoyouDataSave(newTitle, url, href, className string, page, i int) {
 		redis.SetKey(newTitle, marshal)
 		db.Create(&hsinfo)
 	} else {
-		fmt.Printf("\npaoyou [第%d页,第%d个] [href:%s title:%s row:%d]\n", page, i+1, href, newTitle, row)
+		PrintfCommon(page, i+1, utils.StringStrip(url+href), newTitle, row, "paoyou"+className)
 	}
 }
 

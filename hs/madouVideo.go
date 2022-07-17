@@ -20,7 +20,7 @@ import (
  */
 
 const (
-	Tv91_url, maodou_url, quanyuan_url = "https://nnp35.com/upload_json_live/", "https://jsonmdtv.md29.tv/upload_json_live/", "https://json.wtjfjil.cn/upload_json_live/"
+	Tv91_url, maodou_url, quanyuan_url = "https://nnp35.com/upload_json_live", "https://jsonmdtv.md29.tv/upload_json_live", "https://json.wtjfjil.cn/upload_json_live"
 )
 
 // madou视频接口返回对象
@@ -51,35 +51,6 @@ type MaDouDao struct {
 	} `json:"data"`
 }
 
-// 根据平台转发请求xxx.json
-func convertThreeUrl(urlType string, page int) (string, string) {
-
-	date := strings.Replace(time.Now().Format("2006-01-02"), "-", "", -1)
-
-	hour := time.Now().Hour() - 2
-
-	str_hour := ""
-
-	if hour < 10 {
-		str_hour += "0" + strconv.Itoa(hour)
-	} else {
-		str_hour += strconv.Itoa(hour)
-	}
-
-	var url string
-
-	switch urlType {
-	case Tv91_url:
-		url = Tv91_url + date + "/videolist_" + date + "_" + str_hour + "_2_-_-_100_" + strconv.Itoa(page) + ".json"
-	case maodou_url:
-		url = maodou_url + date + "/videolist_" + date + "_" + str_hour + "_2_-_-_100_" + strconv.Itoa(page) + ".json"
-	case quanyuan_url:
-		url = quanyuan_url + date + "/videolist_zh-cn_" + date + "_" + str_hour + "_-_-_-_50_" + strconv.Itoa(page) + ".json"
-	}
-
-	return url, urlType
-}
-
 // 区分平台
 func platform(Type string) string {
 	var platfrom string
@@ -94,10 +65,41 @@ func platform(Type string) string {
 	return platfrom
 }
 
-// ------------------------------------------------ madou ------------------------------------------------
-func MaodouReq(page int) ([]byte, string) {
+// 根据平台转发请求xxx.json
+func convertThreeUrl(urlType string, page int) (string, string) {
 
-	url, Type := convertThreeUrl(quanyuan_url, page)
+	date := strings.Replace(time.Now().Format("2006-01-02"), "-", "", -1)
+
+	hour := time.Now().Hour()
+
+	str_hour := ""
+
+	if hour < 10 {
+		str_hour += "0" + strconv.Itoa(hour)
+	} else {
+		str_hour += strconv.Itoa(hour)
+	}
+
+	var url string
+
+	switch urlType {
+	case Tv91_url:
+		url = Tv91_url + "/" + date + "/videolist_" + date + "_" + str_hour + "_2_-_-_100_" + strconv.Itoa(page) + ".json"
+	case maodou_url:
+		url = maodou_url + "/" + date + "/videolist_" + date + "_" + str_hour + "_2_-_-_100_" + strconv.Itoa(page) + ".json"
+	case quanyuan_url:
+		url = quanyuan_url + "/" + date + "/videolist_zh-cn_" + date + "_" + str_hour + "_-_-_-_50_" + strconv.Itoa(page) + ".json"
+	}
+
+	return url, urlType
+}
+
+// ------------------------------------------------ madou ------------------------------------------------
+func MaodouReq(page int) ([]byte, string, string) {
+
+	urlType := Tv91_url
+
+	url, Type := convertThreeUrl(urlType, page)
 
 	method := "GET"
 
@@ -127,11 +129,11 @@ func MaodouReq(page int) ([]byte, string) {
 			log.Fatal(err, page)
 		}
 	}
-	return body, Type
+	return body, Type, urlType
 }
 
 // 数据转化存储
-func DataParseSave(body []byte, Type string) {
+func DataParseSave(body []byte, Type, urlType string) {
 	var maDouDao MaDouDao
 	json.Unmarshal(body, &maDouDao)
 
@@ -141,10 +143,9 @@ func DataParseSave(body []byte, Type string) {
 	for i, data := range datas {
 		row := redis.KeyExists(data.Title)
 		if row != 1 {
-			fmt.Printf("\nmadou [第%d页 第%d个] [href:%s title:%s m3u8_url:%s]\n", maDouDao.CurrentPage, i+1, "https://uh2089he.com"+data.TestVideoUrl, data.Title, strings.Replace(data.VideoUrl, "\\/", "/", -1))
 			hsInfo := HsInfo{
 				Title:    data.Title,
-				Url:      "https://uh2089he.com" + data.TestVideoUrl,
+				Url:      urlType + data.TestVideoUrl,
 				M3u8Url:  strings.Replace(data.VideoUrl, "\\/", "/", -1),
 				ClassId:  maDouDao.CurrentPage,
 				Platform: platform(Type) + "*" + data.ComefromTitle,
@@ -155,9 +156,9 @@ func DataParseSave(body []byte, Type string) {
 				fmt.Println("hsInfo json 序列化失败")
 			}
 			redis.SetKey(data.Title, marshal)
-			db.Table("t_hs_info2").Create(&hsInfo).Callback()
+			db.Create(&hsInfo).Callback()
 		} else {
-			fmt.Printf("\nmadou [第%d页 第%d个] [href:%s title:%s row:%d]\n", maDouDao.CurrentPage, i+1, "https://uh2089he.com"+data.TestVideoUrl, data.Title, row)
+			PrintfCommon(maDouDao.CurrentPage, i+1, urlType+data.TestVideoUrl, data.Title, row, platform(Type))
 		}
 	}
 	// 创建文件

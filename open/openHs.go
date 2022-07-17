@@ -17,11 +17,11 @@ var wg sync.WaitGroup
 var lock sync.Mutex
 
 // 1907
-var tag = 21
+var tag = 20
 
 const (
 	platfrom_paoyou, platfrom_li5apuu7, platfrom_madou, platfrom_maomi, platfrom_G, platfrom_cape = "paoyou", "li5apuu7", "madou", "maomi", "G.", "cape"
-	className                                                                                     = "热门"
+	className                                                                                     = "日本"
 )
 
 // 多线程方法
@@ -77,8 +77,8 @@ func THs2(num1, num2 int) {
 // <----------------------------------------- madou ----------------------------------------->
 func THs3(num1, num2 int) {
 	for i := num1; i < num2; i++ {
-		maDouDao, Type := hs.MaodouReq(i)
-		hs.DataParseSave(maDouDao, Type)
+		maDouDao, Type, urlType := hs.MaodouReq(i)
+		hs.DataParseSave(maDouDao, Type, urlType)
 	}
 	defer wg.Done()
 }

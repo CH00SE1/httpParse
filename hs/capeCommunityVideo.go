@@ -180,7 +180,7 @@ const jinghua = "node/topics?type=3&nodeId=0&"
 const new = "node/topics?type=1&nodeId=0&"
 
 func RequestPageInfo(page int) {
-	url := cape_url + hot + "page=" + strconv.Itoa(page)
+	url := cape_url + jinghua + "page=" + strconv.Itoa(page)
 	method := "GET"
 
 	fmt.Printf("\nurl : %s\n", url)
@@ -288,7 +288,7 @@ func dataSave(capePageByIdInfo CapePageByIdInfo, url string, page int) {
 			db.Create(&hsInfo).Callback()
 		} else {
 			fmt.Printf("page:%d title:%s\n", page, title)
-
+			PrintfCommon(page, 1, url, title, row, "海角社区")
 		}
 	} else {
 		fmt.Printf("<============title:[<%s>] not obtained m3u8_url============>\n", title)
