@@ -1,5 +1,5 @@
-# 说明
-[作者主页](https://github.com/CH00SE1/)   
+# [作者](https://github.com/CH00SE1/)  说明 
+
 解析一些网站
 
 ## 技术选型
@@ -14,7 +14,7 @@ hs|gjyb|mysql|redis|golang|
 1. 基础hs网站(6个)
 2. 药品网站(4个)
 
-###表结构
+#### mysql 表名 t_hs_info
 ```aidl
 CREATE TABLE `t_hs_info` (
   `id` bigint unsigned NOT NULL AUTO_INCREMENT COMMENT '自增id',
@@ -36,7 +36,7 @@ CREATE TABLE `t_hs_info` (
   KEY `m3u8Url_Idx` (`m3u8_url`) USING BTREE
 ) ENGINE=InnoDB AUTO_INCREMENT=309181 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 ```
-###示例一（mysql数据同步redis）
+#### 示例一（mysql数据同步redis）
 ```
 // mysql数据同步redis
 func Mysql2Redis() {
@@ -55,7 +55,7 @@ func Mysql2Redis() {
 	}
 }
 ```
-###示例二（遍历redis数据保存mysql）
+#### 示例二（遍历redis数据保存mysql）
 ```
 // 同步redis数据 遍历redis数据
 func Redis2Mysql() {
@@ -74,7 +74,7 @@ func Redis2Mysql() {
 	mysql.CreateInBatches(infos, 15).Callback()
 }
 ```
-###示例三（生成文件小案例）
+#### 示例三（生成文件小案例）
 ```
 func CreateFile() {
 	content := capePageByIdInfo.Data.Content
@@ -97,4 +97,4 @@ func CreateFile() {
 }
 ```
 #### 数据展示
-![展示](https://github.com/CH00SE1/httpParse/blob/prod/other/t_hs_info.png)
+![image](https://github.com/CH00SE1/httpParse/blob/prod/other/t_hs_info.png)
