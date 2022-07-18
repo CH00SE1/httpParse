@@ -106,13 +106,13 @@ func getData(shopId int, dateTime string) ([]map[string]interface{}, string, str
 		data += " and TO_CHAR(CREDATE,'YYYY-MM-DD') = TO_CHAR(SYSDATE-1,'YYYY-MM-DD') "
 		Type = "昨天"
 	case "month":
-		data += " and CREDATE &gt;= trunc(sysdate,'MM') and CREDATE &lt;= last_day(sysdate) "
+		data += " and CREDATE >= trunc(sysdate,'MM') and CREDATE <= last_day(sysdate) "
 		Type = "当月"
 	case "lastmonth":
 		data += " and TO_CHAR(CREDATE,'YYYY-MM') = TO_CHAR(ADD_MONTHS(SYSDATE,-1),'YYYY-MM') "
 		Type = "上月"
 	case "year":
-		data += " and CREDATE &gt;= trunc(sysdate,'YYYY') and CREDATE &lt;= ADD_MONTHS(trunc(sysdate,'YYYY'),12) - 1 "
+		data += " and CREDATE >= trunc(sysdate,'YYYY') and CREDATE <= ADD_MONTHS(trunc(sysdate,'YYYY'),12) - 1 "
 		Type = "当年 "
 	}
 	fmt.Println("SQL:", data)
@@ -123,8 +123,10 @@ func getData(shopId int, dateTime string) ([]map[string]interface{}, string, str
 func getMap(key string, list []map[string]interface{}) []string {
 	maps := make(map[interface{}]interface{})
 	for _, datum := range list {
-		NAME := datum[key]
-		maps[NAME] = nil
+		if datum[key] != "" {
+			NAME := datum[key]
+			maps[NAME] = nil
+		}
 	}
 	return getArray(maps)
 }
