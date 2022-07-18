@@ -156,7 +156,7 @@ func GRequest(page int) {
 		// 图片下载
 		//savePhotoInfo(datum.MovieCover, datum.MovieName, num+1)
 	}
-	mysql.CreateInBatches(hsInfos, 50).Callback()
+	mysql.Table("t_hs_info2").CreateInBatches(hsInfos, 50).Callback()
 }
 
 // 获取video信息

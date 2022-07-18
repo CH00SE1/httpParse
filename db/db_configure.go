@@ -1,7 +1,9 @@
 package db
 
 import (
+	"database/sql"
 	"fmt"
+	_ "github.com/godror/godror"
 	"github.com/qmhball/db2gorm/gen"
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
@@ -10,19 +12,50 @@ import (
 	"time"
 )
 
+var db *sql.DB
+var ERP, DS = "erp", "ds"
+
+// 连接配置
+type connect struct {
+	HOST      string
+	PORT      string
+	DATABASE  string
+	USERNAME  string
+	PASSWORD  string
+	CHARSET   string
+	PARSETIME string
+	SID       string
+}
+
+var erp = connect{
+	HOST:     "192.168.191.212",
+	PORT:     "1521",
+	USERNAME: "dsjkldjl",
+	PASSWORD: "dhsjkahkdj",
+	SID:      "data",
+}
+
+var ds = connect{
+	HOST:     "192.168.191.41",
+	PORT:     "1521",
+	USERNAME: "djskjdl",
+	PASSWORD: "akjshdklhj",
+	SID:      "djskjdlks",
+}
+
 /**
  * @title 数据库配置
  * @author xiongshao
  * @date 2022-06-24 10:15:21
  */
-// 数据库夏添
+// 数据库1号
 const dsn1 = "root:xiAtiAn@djwk@tcp(192.168.10.142:3306)/djwk_test?charset=utf8mb4&parseTime=True&loc=Local"
 
 // localhost
-const dsn2 = "root:11098319@tcp(192.168.10.103:3306)/djwk_test?charset=utf8mb4&parseTime=True&loc=Local"
+const dsn = "root:11098319@tcp(192.168.10.103:3306)/djwk_test?charset=utf8mb4&parseTime=True&loc=Local"
 
 // gongsi
-const dsn = "root:11098319@tcp(192.168.10.87:3306)/djwk_test?charset=utf8mb4&parseTime=True&loc=Local"
+const dsn3 = "root:11098319@tcp(192.168.10.87:3306)/djwk_test?charset=utf8mb4&parseTime=True&loc=Local"
 
 // MySQL驱动高级配置
 func MysqlConfigure() (*gorm.DB, error) {
@@ -80,4 +113,28 @@ func MysqlGen(TableName string) {
 		Stdout:    false,
 		Overwrite: true,
 	}, TableName)
+}
+
+// erp连接
+func ErpOracleConfig() (baseDB *sql.DB, err error) {
+	db, err := sql.Open("godror", `user="`+erp.USERNAME+`" password="`+erp.PASSWORD+`" connectString="`+erp.HOST+`:`+erp.PORT+`/`+erp.SID+`"`)
+	if err != nil {
+		fmt.Printf("connect DB failed, err:%v\n", err)
+		return
+	}
+	db.SetMaxOpenConns(20)
+	db.SetMaxIdleConns(10)
+	return db, nil
+}
+
+//ds连接
+func DsOracleConfig() (baseDB *sql.DB, err error) {
+	db, err := sql.Open("godror", `user="`+ds.USERNAME+`" password="`+ds.PASSWORD+`" connectString="`+ds.HOST+`:`+ds.PORT+`/`+ds.SID+`"`)
+	if err != nil {
+		fmt.Printf("connect DB failed, err:%v\n", err)
+		return
+	}
+	db.SetMaxOpenConns(20)
+	db.SetMaxIdleConns(10)
+	return db, nil
 }

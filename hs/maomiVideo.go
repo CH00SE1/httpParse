@@ -26,7 +26,7 @@ const (
 // ------------------------------------------------ maomi ------------------------------------------------
 func MaomiRequest(page int) {
 
-	videoTitle := guochanjingpin
+	videoTitle := duanshipin
 
 	url := convertUrl(maomi_url, videoTitle, page)
 

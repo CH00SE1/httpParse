@@ -2,7 +2,6 @@ package main
 
 import (
 	"fmt"
-	"httpParse/hs"
 	"sync"
 )
 
@@ -14,16 +13,9 @@ import (
 
 var wg sync.WaitGroup
 
-func flush(tag int) {
-	defer wg.Done()
-	for i := 2; i < 20; i++ {
-		hs.ExampleScrape(tag, i)
-	}
-}
-
 func main() {
 	for i := 0; i < 2; i++ {
-		TestReq(100, 200)
+		TestReq(1, 21)
 		fmt.Println("--------------------------- 分隔 ---------------------------")
 	}
 }
