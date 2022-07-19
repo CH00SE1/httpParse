@@ -20,27 +20,27 @@ func T1001() {
 			if row.AuditAddTime.IsZero() {
 				row.AuditAddTime = time.Now()
 			}
-			configure.Table("t_drug1001_tmp").Create(&row)
+			configure.Create(&row)
 		}
 	}
 }
 
 func T1002() {
 	configure, _ := db.MysqlConfigure()
-	for i := 1; i < 44; i++ {
+	for i := 1; i < 50; i++ {
 		data1002 := guojiayibao.GetData1002(i)
 		for _, data := range data1002.Rows {
-			configure.Table("t_drug_info1002_tmp").Create(&data)
+			configure.Create(&data)
 		}
 	}
 }
 
 func T1003() {
 	configure, _ := db.MysqlConfigure()
-	for i := 3; i < 9; i++ {
+	for i := 1; i < 25; i++ {
 		data := guojiayibao.GetData1003(i)
 		for _, row := range data.Rows {
-			configure.Table("t_good_info1003").Create(&row)
+			configure.Create(&row)
 		}
 	}
 }

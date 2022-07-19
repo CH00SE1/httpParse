@@ -52,10 +52,10 @@ var ds = connect{
 const dsn1 = "root:xiAtiAn@djwk@tcp(192.168.10.142:3306)/djwk_test?charset=utf8mb4&parseTime=True&loc=Local"
 
 // localhost
-const dsn = "root:11098319@tcp(192.168.10.103:3306)/djwk_test?charset=utf8mb4&parseTime=True&loc=Local"
+const dsn3 = "root:11098319@tcp(192.168.10.103:3306)/djwk_test?charset=utf8mb4&parseTime=True&loc=Local"
 
 // gongsi
-const dsn3 = "root:11098319@tcp(192.168.10.87:3306)/djwk_test?charset=utf8mb4&parseTime=True&loc=Local"
+const dsn = "root:11098319@tcp(192.168.10.87:3306)/djwk_test?charset=utf8mb4&parseTime=True&loc=Local"
 
 // MySQL驱动高级配置
 func MysqlConfigure() (*gorm.DB, error) {
