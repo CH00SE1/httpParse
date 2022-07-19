@@ -4,7 +4,6 @@ import (
 	"fmt"
 	"io/ioutil"
 	"net/http"
-	"strconv"
 )
 
 /**
@@ -15,7 +14,10 @@ import (
 
 func req(num int) string {
 	defer wg.Done()
-	url := "http://localhost:8080/m3u8/list/" + strconv.Itoa(num)
+
+	//url := "http://localhost:8520/m3u8/list/" + strconv.Itoa(num)
+	url := "http://localhost:8520/sales/shop/month/32"
+
 	method := "GET"
 
 	client := &http.Client{}
@@ -37,7 +39,7 @@ func req(num int) string {
 		fmt.Println(err)
 		return "解析错误"
 	}
-	fmt.Printf("[%d] --> res : {%s}\n", num, string(body))
+	fmt.Printf("[%d] --> res : {%s}\n", num, "123")
 	return string(body)
 }
 
