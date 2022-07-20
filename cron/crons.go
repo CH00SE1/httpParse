@@ -20,12 +20,12 @@ func taskCape() {
 	platform := []string{"hot/topics?", "node/news?", "node/topics?type=1&nodeId=258&", "node/topics?type=7&", "node/topics?type=3&nodeId=0&", "node/topics?type=1&nodeId=0&"}
 	wg.Add(len(platform))
 	for _, pf := range platform {
-		go func() {
+		go func(str string) {
 			for i := 1; i <= 200; i++ {
-				new(hs.New).RequestPageInfo(i, pf)
+				new(hs.New).RequestPageInfo(i, str)
 			}
 			defer wg.Done()
-		}()
+		}(pf)
 	}
 	wg.Wait()
 }
@@ -35,7 +35,18 @@ func taskPaoyou() {
 }
 
 func taskLi5apuu7() {
-	open.GetHs(1, 21, 2, open.Platfrom_li5apuu7)
+	pages := []int{20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32}
+	wg.Add(len(pages))
+	for _, page := range pages {
+		go func(page int) {
+			for i := 21; i < 51; i++ {
+				hs.ExampleScrape(page, i)
+				time.Sleep(5 * time.Second)
+			}
+			defer wg.Done()
+		}(page)
+	}
+	wg.Wait()
 }
 
 func taskGdian() {
@@ -46,13 +57,13 @@ func taskMaodou() {
 	stringList := []string{"https://nnp35.com/upload_json_live", "https://jsonmdtv.md29.tv/upload_json_live", "https://json.wtjfjil.cn/upload_json_live"}
 	wg.Add(len(stringList))
 	for _, name := range stringList {
-		go func() {
-			for i := 1; i < 121; i++ {
-				maDouDao, Type, urlType := new(hs.New).MaodouReq(i, name)
+		go func(str string) {
+			for i := 1; i < 141; i++ {
+				maDouDao, Type, urlType := new(hs.New).MaodouReq(i, str)
 				hs.DataParseSave(maDouDao, Type, urlType)
 			}
-			defer wg.Done()
-		}()
+			wg.Done()
+		}(name)
 	}
 	wg.Wait()
 }
@@ -77,8 +88,9 @@ func taskgjyb() {
 // Hs定时器
 func CronStartHs() {
 	scheduler := gocron.NewScheduler(time.UTC)
-	scheduler.Every(30).Seconds().Do(taskCape)
+	//scheduler.Cron("0 */1 * * * ").Seconds().Do(taskCape)
 	//scheduler.Cron("*/5 * * * *").Do(taskMaodou)
+	scheduler.Every(30).Minutes().Do(taskMaodou)
 	scheduler.StartAsync()
 	scheduler.StartBlocking()
 }

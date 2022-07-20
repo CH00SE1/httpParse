@@ -91,5 +91,5 @@ func Mysql2Redis() {
 
 // redis查询包含数据打印
 func PrintfCommon(page, num int, href, title string, row int64, platform string) {
-	fmt.Printf("\nplatform:(%s)\nlocation:(%d,%d)\nhref:(%s)\ntitle:(%s)\nrow:(%d)\n", platform, page, num, href, title, row)
+	fmt.Printf("\nplatform:[%s]-location:[%d,%d]-row:[%d]\nhref:{%s}\ntitle:{%s}\n", platform, page, num, row, href, title)
 }

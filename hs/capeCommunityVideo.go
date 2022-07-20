@@ -315,7 +315,7 @@ func dataSave(capePageByIdInfo CapePageByIdInfo, url string, page int) {
 				Title:    title,
 				Url:      url,
 				M3u8Url:  m3u8_url,
-				ClassId:  1,
+				ClassId:  capePageByIdInfo.Data.Type,
 				Platform: "海角社区",
 				Page:     page,
 				Location: "视频上线时间:" + capePageByIdInfo.Data.CreateTime,
@@ -331,7 +331,7 @@ func dataSave(capePageByIdInfo CapePageByIdInfo, url string, page int) {
 			PrintfCommon(page, 1, url, title, row, "海角社区")
 		}
 	} else {
-		fmt.Printf("<============title:[<%s>] not obtained m3u8_url============>\n", title)
+		fmt.Printf("*****************%s*****************\n", title)
 		content := capePageByIdInfo.Data.Content
 		dom, err := goquery.NewDocumentFromReader(bytes.NewReader([]byte(content)))
 		if err != nil {

@@ -4,6 +4,5 @@ import "httpParse/cron"
 
 func main() {
 	//hs.Mysql2Redis()
-	cron.CronStartGJYB()
-	//cron.CronStartHs()
+	cron.CronStartHs()
 }

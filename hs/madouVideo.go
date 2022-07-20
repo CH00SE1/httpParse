@@ -70,10 +70,14 @@ func convertThreeUrl(urlType string, page int) (string, string) {
 
 	date := strings.Replace(time.Now().Format("2006-01-02"), "-", "", -1)
 
-	hour := time.Now().Hour()
+	var hour int
+	if time.Now().Hour()%2 == 1 {
+		hour = time.Now().Hour() - 1
+	} else {
+		hour = time.Now().Hour()
+	}
 
 	str_hour := ""
-
 	if hour < 10 {
 		str_hour += "0" + strconv.Itoa(hour)
 	} else {
@@ -81,7 +85,6 @@ func convertThreeUrl(urlType string, page int) (string, string) {
 	}
 
 	var url string
-
 	switch urlType {
 	case Tv91_url:
 		url = Tv91_url + "/" + date + "/videolist_" + date + "_" + str_hour + "_2_-_-_100_" + strconv.Itoa(page) + ".json"
