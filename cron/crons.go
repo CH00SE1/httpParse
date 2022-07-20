@@ -31,7 +31,17 @@ func taskCape() {
 }
 
 func taskPaoyou() {
-	open.GetHs(1, 20, 1, open.Platfrom_paoyou)
+	map1, array1 := hs.PaoyouFindClass()
+	wg.Add(len(array1))
+	for _, arr := range array1 {
+		go func(classname string) {
+			for i := 5; i < 11; i++ {
+				hs.Paoyou(i, classname, map1)
+			}
+			defer wg.Done()
+		}(arr)
+	}
+	wg.Wait()
 }
 
 func taskLi5apuu7() {
@@ -90,7 +100,7 @@ func CronStartHs() {
 	scheduler := gocron.NewScheduler(time.UTC)
 	//scheduler.Cron("0 */1 * * * ").Seconds().Do(taskCape)
 	//scheduler.Cron("*/5 * * * *").Do(taskMaodou)
-	scheduler.Every(30).Minutes().Do(taskMaodou)
+	scheduler.Every(30).Minutes().Do(taskPaoyou)
 	scheduler.StartAsync()
 	scheduler.StartBlocking()
 }

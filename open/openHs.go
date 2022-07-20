@@ -59,11 +59,11 @@ func GetHs(num1, num2, size int, funcName string) {
 
 // <----------------------------------------- Paoyou ----------------------------------------->
 func THs1(num1, num2 int) {
-	map1, map2 := hs.PaoyouFindClass()
-	for i := num1; i < num2; i++ {
-		hs.Paoyou(i, className, map1, map2)
-	}
-	defer wg.Done()
+	//map1 := hs.PaoyouFindClass()
+	//for i := num1; i < num2; i++ {
+	//	hs.Paoyou(i, className, map1)
+	//}
+	//defer wg.Done()
 }
 
 // <----------------------------------------- li5apuu7 ----------------------------------------->
