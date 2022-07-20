@@ -19,14 +19,14 @@ import (
  */
 
 const (
-	maomi_url                                             = "https://www.bb22z.com"
+	maomi_url                                             = "https://www.09055610ce81.com"
 	guochanjingpin, meinvzhubo, duanshipin, zhongwenzhimu = "国产精品", "美女主播", "短视频", "中文字幕"
 )
 
 // ------------------------------------------------ maomi ------------------------------------------------
 func MaomiRequest(page int) {
 
-	videoTitle := duanshipin
+	videoTitle := guochanjingpin
 
 	url := convertUrl(maomi_url, videoTitle, page)
 

@@ -95,7 +95,8 @@ func convertThreeUrl(urlType string, page int) (string, string) {
 }
 
 // ------------------------------------------------ madou ------------------------------------------------
-func MaodouReq(page int) ([]byte, string, string) {
+// 初始方法
+func (org Org) MaodouReq(page int) ([]byte, string, string) {
 
 	urlType := Tv91_url
 
@@ -130,6 +131,42 @@ func MaodouReq(page int) ([]byte, string, string) {
 		}
 	}
 	return body, Type, urlType
+}
+
+// 新方法
+func (new New) MaodouReq(page int, platform string) ([]byte, string, string) {
+
+	url, Type := convertThreeUrl(platform, page)
+
+	method := "GET"
+
+	fmt.Printf("\n请求 url : %s\n", url)
+
+	client := &http.Client{}
+	req, err := http.NewRequest(method, url, nil)
+
+	if err != nil {
+		log.Fatal(err, page)
+	}
+	req.Header.Add("sec-ch-ua", "\" Not;A Brand\";v=\"99\", \"Microsoft Edge\";v=\"103\", \"Chromium\";v=\"103\"")
+	req.Header.Add("Referer", "")
+	req.Header.Add("sec-ch-ua-mobile", "?0")
+	req.Header.Add("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/103.0.5060.66 Safari/537.36 Edg/103.0.1264.44")
+	req.Header.Add("sec-ch-ua-platform", "\"Windows\"")
+
+	res, err := client.Do(req)
+	if err != nil {
+		log.Fatal(err, page)
+	}
+	defer res.Body.Close()
+
+	body, err := ioutil.ReadAll(res.Body)
+	if err != nil {
+		if strings.Contains(err.Error(), "unexpected EOF") && len(body) != 0 {
+			log.Fatal(err, page)
+		}
+	}
+	return body, Type, platform
 }
 
 // 数据转化存储

@@ -77,7 +77,7 @@ func THs2(num1, num2 int) {
 // <----------------------------------------- madou ----------------------------------------->
 func THs3(num1, num2 int) {
 	for i := num1; i < num2; i++ {
-		maDouDao, Type, urlType := hs.MaodouReq(i)
+		maDouDao, Type, urlType := new(hs.Org).MaodouReq(i)
 		hs.DataParseSave(maDouDao, Type, urlType)
 	}
 	defer wg.Done()
@@ -102,7 +102,7 @@ func THs5(num1, num2 int) {
 // <----------------------------------------- cape ----------------------------------------->
 func THs6(num1, num2 int) {
 	for i := num1; i < num2; i++ {
-		hs.RequestPageInfo(i)
+		new(hs.Org).RequestPageInfo(i)
 	}
 	defer wg.Done()
 }

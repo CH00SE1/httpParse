@@ -179,8 +179,48 @@ const yuanchuan = "node/topics?type=7&"
 const jinghua = "node/topics?type=3&nodeId=0&"
 const new = "node/topics?type=1&nodeId=0&"
 
-func RequestPageInfo(page int) {
+func (org Org) RequestPageInfo(page int) {
 	url := cape_url + jinghua + "page=" + strconv.Itoa(page)
+	method := "GET"
+
+	fmt.Printf("\nurl : %s\n", url)
+
+	client := &http.Client{}
+	req, err := http.NewRequest(method, url, nil)
+
+	if err != nil {
+		fmt.Println(err)
+	}
+	req.Header.Add("authority", "hjf2d1.com")
+	req.Header.Add("accept", "application/json, text/plain, */*")
+	req.Header.Add("accept-language", "zh-CN,zh;q=0.9,en;q=0.8,en-GB;q=0.7,en-US;q=0.6")
+	req.Header.Add("cookie", "_ga=GA1.1.26407275.1657940574; NOTLOGIN=NOTLOGIN; _ga_H4G4E5X3FL=GS1.1.1657940573.1.1.1657942139.0")
+	req.Header.Add("pcver", "220708143229")
+	req.Header.Add("referer", "https://hjf2d1.com/")
+	req.Header.Add("sec-ch-ua", "\" Not;A Brand\";v=\"99\", \"Microsoft Edge\";v=\"103\", \"Chromium\";v=\"103\"")
+	req.Header.Add("sec-ch-ua-mobile", "?0")
+	req.Header.Add("sec-ch-ua-platform", "\"Windows\"")
+	req.Header.Add("sec-fetch-dest", "empty")
+	req.Header.Add("sec-fetch-mode", "cors")
+	req.Header.Add("sec-fetch-site", "same-origin")
+	req.Header.Add("user-agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/103.0.5060.114 Safari/537.36 Edg/103.0.1264.62")
+
+	res, err := client.Do(req)
+	if err != nil {
+		fmt.Println(err)
+	}
+	defer res.Body.Close()
+
+	body, err := ioutil.ReadAll(res.Body)
+	var capePageInfo CapePageInfo
+	json.Unmarshal(body, &capePageInfo)
+	for _, result := range capePageInfo.Data.Results {
+		requestPageByIdInfo(result.TopicId, page)
+	}
+}
+
+func (new New) RequestPageInfo(page int, status string) {
+	url := cape_url + status + "page=" + strconv.Itoa(page)
 	method := "GET"
 
 	fmt.Printf("\nurl : %s\n", url)
@@ -307,7 +347,7 @@ func dataSave(capePageByIdInfo CapePageByIdInfo, url string, page int) {
 			}
 		})
 		if num != 1 {
-			utils.CreateFile(&Text, "C:\\Users\\Administrator\\Desktop\\海角社区\\", title, ".txt")
+			utils.CreateFile(&Text, "D:\\海角社区\\", title, ".txt")
 		}
 	}
 }

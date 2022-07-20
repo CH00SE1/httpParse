@@ -31,6 +31,20 @@ type Title struct {
 	title string
 }
 
+// 实现一个接口 重载两个方法
+type Func interface {
+	MaodouReq(...interface{})
+	RequestPageInfo(...interface{})
+}
+
+// 旧方法实现
+type Org struct {
+}
+
+// 新方法实现
+type New struct {
+}
+
 func FindTitleList() {
 	mysql, err := db.MysqlConfigure()
 	if err != nil {

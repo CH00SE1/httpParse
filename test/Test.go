@@ -16,7 +16,7 @@ func req(num int) string {
 	defer wg.Done()
 
 	//url := "http://localhost:8520/m3u8/list/" + strconv.Itoa(num)
-	url := "http://localhost:8520/sales/shop/month/32"
+	url := "http://localhost:8520/sentinel_client_sale/sales/shop/day/32"
 
 	method := "GET"
 

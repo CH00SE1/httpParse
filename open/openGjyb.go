@@ -14,7 +14,7 @@ import (
 
 func T1001() {
 	configure, _ := db.MysqlConfigure()
-	for i := 1; i < 138; i++ {
+	for i := 1; i < 140; i++ {
 		data := guojiayibao.GetData1001(i)
 		for _, row := range data.Rows {
 			if row.AuditAddTime.IsZero() {
