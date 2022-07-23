@@ -11,6 +11,7 @@ import (
 	"net/http"
 	"strconv"
 	"strings"
+	"time"
 )
 
 /**
@@ -110,19 +111,25 @@ func Paoyou(page int, videoName string, map1 map[string]string) {
 	if err2 != nil {
 		log.Fatal(err2)
 	}
+	redis.InitClient()
+	db, _ := db.MysqlConfigure()
+	var HsInfos []*HsInfo
 	dom.Find("ul.stui-vodlist li.stui-vodlist__item a").Each(func(i int, s *goquery.Selection) {
 		href, _ := s.Attr("href")
-		text, _ := s.Attr("title")
-		redis.InitClient()
+		text1, _ := s.Attr("title")
+		text := utils.StringStrip(text1)
 		row := redis.KeyExists(text)
 		if row != 1 {
 			videoPage := requestPlayVideoPage(paoyou_url + href)
 			parse := scriptInfoParse(videoPage)
-			paoyouDataSave(parse, page, i)
+			hsInfo := paoyouDataSave(parse, page, i, text)
+			HsInfos = append(HsInfos, &hsInfo)
 		} else {
 			PrintfCommon(page, i, href, text, row, "paoyou*"+videoName)
 		}
 	})
+	db.Table("t_hs_info3").CreateInBatches(HsInfos, 500).Callback()
+	time.Sleep(8 * time.Second)
 }
 
 // 3.请求播放页面 拿到script标签var player_aaaa={} json对象
@@ -186,12 +193,10 @@ func scriptInfoParse(text string) PaoyouDao {
 }
 
 // 5.paoyou数据处理
-func paoyouDataSave(paoyouDao PaoyouDao, page, i int) {
-	videoName := paoyouDao.VodData.VodName
+func paoyouDataSave(paoyouDao PaoyouDao, page, i int, title string) HsInfo {
 	play_url := paoyou_url + paoyouDao.Link
-	db, _ := db.MysqlConfigure()
 	hsInfo := HsInfo{
-		Title:    videoName,
+		Title:    title,
 		Url:      play_url,
 		M3u8Url:  paoyouDao.Url,
 		ClassId:  page,
@@ -200,8 +205,8 @@ func paoyouDataSave(paoyouDao PaoyouDao, page, i int) {
 		Location: "[" + strconv.Itoa((i+1)/4+1) + "," + strconv.Itoa((i+1)%4+1) + "]",
 	}
 	marshal, _ := json.Marshal(hsInfo)
-	redis.SetKey(videoName, marshal)
-	db.Table("t_hs_info2").Create(&hsInfo)
+	redis.SetKey(title, marshal)
+	return hsInfo
 }
 
 // 查询平台分类

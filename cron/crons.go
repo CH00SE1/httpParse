@@ -35,7 +35,7 @@ func taskPaoyou() {
 	wg.Add(len(array1))
 	for _, arr := range array1 {
 		go func(classname string) {
-			for i := 5; i < 11; i++ {
+			for i := 1; i < 61; i++ {
 				hs.Paoyou(i, classname, map1)
 			}
 			defer wg.Done()
@@ -45,7 +45,8 @@ func taskPaoyou() {
 }
 
 func taskLi5apuu7() {
-	pages := []int{20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32}
+	// 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32
+	pages := []int{28, 29, 30, 31, 32}
 	wg.Add(len(pages))
 	for _, page := range pages {
 		go func(page int) {

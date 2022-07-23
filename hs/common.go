@@ -27,6 +27,14 @@ type HsInfo struct {
 	Location string
 }
 
+type User struct {
+	gorm.Model
+	Username string
+	Password string
+	Address  string
+	Phone    string
+}
+
 type Title struct {
 	title string
 }
