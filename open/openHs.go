@@ -86,7 +86,7 @@ func THs3(num1, num2 int) {
 // <----------------------------------------- maomi ----------------------------------------->
 func THs4(num1, num2 int) {
 	for i := num1; i <= num2; i++ {
-		hs.MaomiRequest(i)
+		new(hs.Org).MaomiRequest(i)
 	}
 	defer wg.Done()
 }

@@ -35,7 +35,7 @@ func taskPaoyou() {
 	wg.Add(len(array1))
 	for _, arr := range array1 {
 		go func(classname string) {
-			for i := 1; i < 61; i++ {
+			for i := 131; i < 141; i++ {
 				hs.Paoyou(i, classname, map1)
 			}
 			defer wg.Done()
@@ -46,14 +46,14 @@ func taskPaoyou() {
 
 func taskLi5apuu7() {
 	// 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32
-	pages := []int{28, 29, 30, 31, 32}
+	pages := []int{20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32}
 	wg.Add(len(pages))
 	for _, page := range pages {
 		go func(page int) {
-			for i := 21; i < 51; i++ {
+			for i := 1; i < 21; i++ {
 				hs.ExampleScrape(page, i)
-				time.Sleep(5 * time.Second)
 			}
+			time.Sleep(5 * time.Second)
 			defer wg.Done()
 		}(page)
 	}
@@ -62,6 +62,20 @@ func taskLi5apuu7() {
 
 func taskGdian() {
 	open.GetHs(1, 601, 10, open.Platfrom_G)
+}
+
+func taskMaomi() {
+	array := []string{"国产精品", "美女主播", "短视频", "中文字幕"}
+	wg.Add(len(array))
+	for _, name := range array {
+		go func(str string) {
+			for i := 1; i <= 30; i++ {
+				new(hs.New).MaomiRequest(i, str)
+			}
+			defer wg.Done()
+		}(name)
+	}
+	wg.Wait()
 }
 
 func taskMaodou() {
@@ -101,7 +115,7 @@ func CronStartHs() {
 	scheduler := gocron.NewScheduler(time.UTC)
 	//scheduler.Cron("0 */1 * * * ").Seconds().Do(taskCape)
 	//scheduler.Cron("*/5 * * * *").Do(taskMaodou)
-	scheduler.Every(30).Minutes().Do(taskPaoyou)
+	scheduler.Every(40).Minutes().Do(taskMaomi)
 	scheduler.StartAsync()
 	scheduler.StartBlocking()
 }

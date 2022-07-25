@@ -4,7 +4,6 @@ import (
 	"encoding/json"
 	"fmt"
 	"github.com/PuerkitoBio/goquery"
-	"httpParse/db"
 	"httpParse/redis"
 	"httpParse/utils"
 	"log"
@@ -112,8 +111,6 @@ func Paoyou(page int, videoName string, map1 map[string]string) {
 		log.Fatal(err2)
 	}
 	redis.InitClient()
-	db, _ := db.MysqlConfigure()
-	var HsInfos []*HsInfo
 	dom.Find("ul.stui-vodlist li.stui-vodlist__item a").Each(func(i int, s *goquery.Selection) {
 		href, _ := s.Attr("href")
 		text1, _ := s.Attr("title")
@@ -123,12 +120,11 @@ func Paoyou(page int, videoName string, map1 map[string]string) {
 			videoPage := requestPlayVideoPage(paoyou_url + href)
 			parse := scriptInfoParse(videoPage)
 			hsInfo := paoyouDataSave(parse, page, i, text)
-			HsInfos = append(HsInfos, &hsInfo)
+			fmt.Println("数据存储:", hsInfo)
 		} else {
 			PrintfCommon(page, i, href, text, row, "paoyou*"+videoName)
 		}
 	})
-	db.Table("t_hs_info3").CreateInBatches(HsInfos, 500).Callback()
 	time.Sleep(8 * time.Second)
 }
 

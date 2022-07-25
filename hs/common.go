@@ -70,14 +70,13 @@ func Redis2Mysql() {
 	if err != nil {
 		fmt.Println("connent datebase err:", err)
 	}
-	infos := []*HsInfo{}
-	for _, key := range keys {
+	for i, key := range keys {
 		values, _ := redis.GetKey(key)
-		var hsInfo HsInfo
+		hsInfo := HsInfo{}
 		json.Unmarshal(utils.String2Bytes(values), &hsInfo)
-		infos = append(infos, &hsInfo)
+		mysql.Create(&hsInfo)
+		fmt.Printf("第%d个\n", i+1)
 	}
-	mysql.CreateInBatches(infos, 15).Callback()
 }
 
 // mysql数据同步redis
