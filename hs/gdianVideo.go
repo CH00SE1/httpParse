@@ -3,7 +3,6 @@ package hs
 import (
 	"encoding/json"
 	"fmt"
-	"httpParse/db"
 	"httpParse/redis"
 	"httpParse/utils"
 	"io/ioutil"
@@ -19,7 +18,7 @@ import (
  */
 
 // 视频主页
-const g_url = "https://www.gdian169.com"
+const g_url = "https://www.gdian125.com"
 
 type PhotoDao struct {
 	Msg     string `json:"msg"`
@@ -144,9 +143,9 @@ func GRequest(page int) {
 	}
 	var photoDao PhotoDao
 	json.Unmarshal(body, &photoDao)
-	mysql, _ := db.MysqlConfigure()
+	//mysql, _ := db.MysqlConfigure()
 	var hsInfos []*HsInfo
-	for _, datum := range photoDao.Data.Data {
+	for num, datum := range photoDao.Data.Data {
 		// 数据保存
 		hsInfo := resultObejectInfo(datum.MovieName, datum.MovieId, page)
 		if hsInfo != nil {
@@ -154,9 +153,8 @@ func GRequest(page int) {
 			hsInfos = append(hsInfos, &info)
 		}
 		// 图片下载
-		//savePhotoInfo(datum.MovieCover, datum.MovieName, num+1)
+		savePhotoInfo(datum.MovieCover, datum.MovieName, num+1)
 	}
-	mysql.Table("t_hs_info2").CreateInBatches(hsInfos, 50).Callback()
 }
 
 // 获取video信息
@@ -225,8 +223,7 @@ func savePhotoInfo(url, fileName string, num int) {
 	}
 	bytes2String := utils.Bytes2String(body)
 	utils.CreateFile(&bytes2String, "C:\\Users\\Administrator\\Desktop\\photo_G\\",
-		"G"+time.Now().Format("[2006-01-02-15-04-05]-")+fileName+strconv.Itoa(num),
-		".jpg")
+		"G"+time.Now().Format("[2006-01-02-15-04-05]-")+fileName+strconv.Itoa(num), ".jpg")
 }
 
 // 数据保存mysql

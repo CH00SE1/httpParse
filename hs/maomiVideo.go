@@ -19,7 +19,7 @@ import (
  */
 
 const (
-	maomi_url                                             = "https://www.49e10d96ea15.com"
+	maomi_url                                             = "https://www.d43ab2003399.com"
 	guochanjingpin, meinvzhubo, duanshipin, zhongwenzhimu = "国产精品", "美女主播", "短视频", "中文字幕"
 )
 

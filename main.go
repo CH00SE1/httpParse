@@ -1,11 +1,12 @@
 package main
 
-import (
-	"httpParse/cron"
-)
+import "httpParse/hs"
 
 func main() {
 	//hs.Mysql2Redis()
-	cron.CronStartHs()
+	//cron.CronStartHs()
 	//hs.Redis2Mysql()
+	for i := 1; i < 227; i++ {
+		hs.Xyzrequest(i)
+	}
 }

@@ -7,6 +7,9 @@ import (
 	"httpParse/db"
 	"httpParse/redis"
 	"httpParse/utils"
+	"io/ioutil"
+	"net/http"
+	"strings"
 )
 
 /**
@@ -99,4 +102,38 @@ func Mysql2Redis() {
 // redis查询包含数据打印
 func PrintfCommon(page, num int, href, title string, row int64, platform string) {
 	fmt.Printf("\nplatform:[%s]-location:[%d,%d]-row:[%d]\nhref:{%s}\ntitle:{%s}\n", platform, page, num, row, href, title)
+}
+
+// 请求接口传输数据
+func RequestMysqlSave(hsInfo HsInfo) {
+	url := "http://localhost:8520/sentinel_client_sale/hsInfo/save"
+	method := "POST"
+
+	json, _ := json.Marshal(hsInfo)
+	fmt.Println(string(json))
+
+	payload := strings.NewReader(strings.ToUpper(string(json)))
+
+	client := &http.Client{}
+	req, err := http.NewRequest(method, url, payload)
+
+	if err != nil {
+		fmt.Println(err)
+		return
+	}
+	req.Header.Add("Content-Type", "application/json")
+
+	res, err := client.Do(req)
+	if err != nil {
+		fmt.Println(err)
+		return
+	}
+	defer res.Body.Close()
+
+	body, err := ioutil.ReadAll(res.Body)
+	if err != nil {
+		fmt.Println(err)
+		return
+	}
+	fmt.Println(string(body))
 }
