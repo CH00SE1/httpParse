@@ -1,15 +1,11 @@
 package hs
 
 import (
-	"bytes"
 	"encoding/json"
 	"fmt"
-	"github.com/PuerkitoBio/goquery"
 	"httpParse/db"
 	"httpParse/redis"
-	"httpParse/utils"
 	"io/ioutil"
-	"log"
 	"net/http"
 	"strconv"
 )
@@ -172,15 +168,15 @@ type CapePageByIdInfo struct {
 }
 
 // 主页 url
-const cape_url = "https://hjf2d1.com/api/topic/"
-const hot, news = "hot/topics?", "node/news?"
-const dashiji = "node/topics?type=1&nodeId=258&"
-const yuanchuan = "node/topics?type=7&"
-const jinghua = "node/topics?type=3&nodeId=0&"
-const new = "node/topics?type=1&nodeId=0&"
+const (
+	cape_url           = "https://hjf2d1.com/api/topic/"
+	hot, news          = "hot/topics?", "node/news?"
+	dashiji, yuanchuan = "node/topics?type=1&nodeId=258&", "node/topics?type=7&"
+	jinghua, new       = "node/topics?type=3&nodeId=0&", "node/topics?type=1&nodeId=0&"
+)
 
 func (org Org) RequestPageInfo(page int) {
-	url := cape_url + jinghua + "page=" + strconv.Itoa(page)
+	url := cape_url + dashiji + "page=" + strconv.Itoa(page)
 	method := "GET"
 
 	fmt.Printf("\nurl : %s\n", url)
@@ -332,7 +328,7 @@ func dataSave(capePageByIdInfo CapePageByIdInfo, url string, page int) {
 		}
 	} else {
 		fmt.Printf("*****************%s*****************\n", title)
-		content := capePageByIdInfo.Data.Content
+		/*content := capePageByIdInfo.Data.Content
 		dom, err := goquery.NewDocumentFromReader(bytes.NewReader([]byte(content)))
 		if err != nil {
 			log.Fatal(err)
@@ -348,6 +344,6 @@ func dataSave(capePageByIdInfo CapePageByIdInfo, url string, page int) {
 		})
 		if num != 1 {
 			utils.CreateFile(&Text, "D:\\海角社区\\", title, ".txt")
-		}
+		}*/
 	}
 }

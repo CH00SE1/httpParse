@@ -93,6 +93,12 @@ func taskMaodou() {
 	wg.Wait()
 }
 
+func taskXyzVideo() {
+	for i := 1; i < 227; i++ {
+		hs.Xyzrequest(i)
+	}
+}
+
 func taskgjyb() {
 	wg.Add(3)
 	go func() {
@@ -115,7 +121,7 @@ func CronStartHs() {
 	scheduler := gocron.NewScheduler(time.UTC)
 	//scheduler.Cron("0 */1 * * * ").Seconds().Do(taskCape)
 	//scheduler.Cron("*/5 * * * *").Do(taskMaodou)
-	scheduler.Every(40).Minutes().Do(taskLi5apuu7)
+	scheduler.Every(40).Minutes().Do(taskCape)
 	scheduler.StartAsync()
 	scheduler.StartBlocking()
 }
