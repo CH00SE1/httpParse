@@ -127,7 +127,7 @@ func ErpOracleConfig() (baseDB *sql.DB, err error) {
 	return db, nil
 }
 
-//ds连接
+// ds连接
 func DsOracleConfig() (baseDB *sql.DB, err error) {
 	db, err := sql.Open("godror", `user="`+ds.USERNAME+`" password="`+ds.PASSWORD+`" connectString="`+ds.HOST+`:`+ds.PORT+`/`+ds.SID+`"`)
 	if err != nil {

@@ -83,7 +83,7 @@ func taskMaodou() {
 	wg.Add(len(stringList))
 	for _, name := range stringList {
 		go func(str string) {
-			for i := 1; i < 141; i++ {
+			for i := 1; i < 140; i++ {
 				maDouDao, Type, urlType := new(hs.New).MaodouReq(i, str)
 				hs.DataParseSave(maDouDao, Type, urlType)
 			}
@@ -121,7 +121,7 @@ func CronStartHs() {
 	scheduler := gocron.NewScheduler(time.UTC)
 	//scheduler.Cron("0 */1 * * * ").Seconds().Do(taskCape)
 	//scheduler.Cron("*/5 * * * *").Do(taskMaodou)
-	scheduler.Every(40).Minutes().Do(taskCape)
+	scheduler.Every(40).Minutes().Do(taskXyzVideo)
 	scheduler.StartAsync()
 	scheduler.StartBlocking()
 }

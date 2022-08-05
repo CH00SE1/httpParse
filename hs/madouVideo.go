@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"httpParse/db"
 	"httpParse/redis"
-	"io/ioutil"
+	"io"
 	"log"
 	"net/http"
 	"strconv"
@@ -127,7 +127,7 @@ func (org Org) MaodouReq(page int) ([]byte, string, string) {
 	}
 	defer res.Body.Close()
 
-	body, err := ioutil.ReadAll(res.Body)
+	body, err := io.ReadAll(res.Body)
 	if err != nil {
 		if strings.Contains(err.Error(), "unexpected EOF") && len(body) != 0 {
 			log.Fatal(err, page)
@@ -163,7 +163,7 @@ func (new New) MaodouReq(page int, platform string) ([]byte, string, string) {
 	}
 	defer res.Body.Close()
 
-	body, err := ioutil.ReadAll(res.Body)
+	body, err := io.ReadAll(res.Body)
 	if err != nil {
 		if strings.Contains(err.Error(), "unexpected EOF") && len(body) != 0 {
 			log.Fatal(err, page)

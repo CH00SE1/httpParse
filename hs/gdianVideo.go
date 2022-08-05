@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"httpParse/redis"
 	"httpParse/utils"
+	"io"
 	"io/ioutil"
 	"net/http"
 	"strconv"
@@ -137,7 +138,7 @@ func GRequest(page int) {
 	}
 	defer res.Body.Close()
 
-	body, err := ioutil.ReadAll(res.Body)
+	body, err := io.ReadAll(res.Body)
 	if err != nil {
 		fmt.Println(err)
 	}
@@ -189,7 +190,7 @@ func m3u8VideoInfo(movie_id int) (string, GM3u8VideoRes) {
 	}
 	defer res.Body.Close()
 
-	body, err := ioutil.ReadAll(res.Body)
+	body, err := io.ReadAll(res.Body)
 	if err != nil {
 		fmt.Println(err)
 	}

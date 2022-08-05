@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"httpParse/db"
 	"httpParse/redis"
-	"io/ioutil"
+	"io"
 	"net/http"
 	"strconv"
 )
@@ -207,7 +207,7 @@ func (org Org) RequestPageInfo(page int) {
 	}
 	defer res.Body.Close()
 
-	body, err := ioutil.ReadAll(res.Body)
+	body, err := io.ReadAll(res.Body)
 	var capePageInfo CapePageInfo
 	json.Unmarshal(body, &capePageInfo)
 	for _, result := range capePageInfo.Data.Results {
@@ -247,7 +247,7 @@ func (new New) RequestPageInfo(page int, status string) {
 	}
 	defer res.Body.Close()
 
-	body, err := ioutil.ReadAll(res.Body)
+	body, err := io.ReadAll(res.Body)
 	var capePageInfo CapePageInfo
 	json.Unmarshal(body, &capePageInfo)
 	for _, result := range capePageInfo.Data.Results {
@@ -287,7 +287,7 @@ func requestPageByIdInfo(page_id, page int) {
 	}
 	defer res.Body.Close()
 
-	body, err := ioutil.ReadAll(res.Body)
+	body, err := io.ReadAll(res.Body)
 	var capePageByIdInfo CapePageByIdInfo
 	json.Unmarshal(body, &capePageByIdInfo)
 	dataSave(capePageByIdInfo, url, page)

@@ -3,7 +3,7 @@ package guojiayibao
 import (
 	"encoding/json"
 	"fmt"
-	"io/ioutil"
+	"io"
 	"log"
 	"net/http"
 	"strconv"
@@ -118,7 +118,7 @@ func GetData1001(page int) Drug1001 {
 	}
 	defer res.Body.Close()
 
-	body, err := ioutil.ReadAll(res.Body)
+	body, err := io.ReadAll(res.Body)
 	if err != nil {
 		fmt.Println("ioutil error:", err)
 	}
@@ -166,7 +166,7 @@ func GetData1002(page int) DurgInfo1002 {
 	}
 	defer res.Body.Close()
 
-	body, err := ioutil.ReadAll(res.Body)
+	body, err := io.ReadAll(res.Body)
 	if err != nil {
 		fmt.Println(err)
 		return DurgInfo1002{}
@@ -214,7 +214,7 @@ func GetData1003(page int) GjybInfo {
 	}
 	defer res.Body.Close()
 
-	body, err := ioutil.ReadAll(res.Body)
+	body, err := io.ReadAll(res.Body)
 	if err != nil {
 		if strings.Contains(err.Error(), "unexpected EOF") && len(body) != 0 {
 			log.Fatal(err, page)

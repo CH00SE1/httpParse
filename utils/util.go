@@ -4,9 +4,11 @@ import (
 	"encoding/base64"
 	"fmt"
 	"golang.org/x/text/encoding/simplifiedchinese"
+	"io"
 	"io/ioutil"
 	"log"
 	"net/http"
+	"net/url"
 	"os"
 	"reflect"
 	"strconv"
@@ -94,14 +96,35 @@ func ConvertGBK2Str(gbkStr string) string {
 }
 
 // 图片保存
-func SaveFile(url string, i int) {
+func SavePhoto(url, fileName string, i int) {
 	log.Println("url : " + url)
 	response, _ := http.Get(url)
 	defer response.Body.Close()
 	bytes, _ := ioutil.ReadAll(response.Body)
-	path := "D:\\photo11\\" + strconv.Itoa(i) + ".jpg"
-	log.Println("path : " + path)
-	ioutil.WriteFile(path, bytes, 0755)
+	basePath := "C:\\Users\\Administrator\\Desktop\\photo_lilin\\"
+	pathExists(basePath)
+	name := basePath + strconv.Itoa(i+1) + "[学校照片]" + UrlDecode(fileName)
+	if !strings.Contains(name, ".jpg") {
+		name += ".jpg"
+	}
+	log.Println("path : " + name)
+	WriteFile(name, bytes, 0755)
+}
+
+// 写入文件
+func WriteFile(filename string, data []byte, perm os.FileMode) error {
+	f, err := os.OpenFile(filename, os.O_WRONLY|os.O_CREATE|os.O_TRUNC, perm)
+	if err != nil {
+		return err
+	}
+	n, err := f.Write(data)
+	if err == nil && n < len(data) {
+		err = io.ErrShortWrite
+	}
+	if err1 := f.Close(); err == nil {
+		err = err1
+	}
+	return err
 }
 
 // 解密base64str
@@ -114,4 +137,15 @@ func Base64ToStr(str string) {
 		fmt.Println("Error", err)
 	}
 	CreateFile(text, "", "login", ".txt")
+}
+
+func UrlEncode(str string) string {
+	return url.QueryEscape(str)
+}
+func UrlDecode(str string) string {
+	res, err := url.QueryUnescape(str)
+	if err != nil {
+		return ""
+	}
+	return res
 }
