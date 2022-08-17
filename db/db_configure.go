@@ -3,7 +3,6 @@ package db
 import (
 	"database/sql"
 	"fmt"
-	_ "github.com/godror/godror"
 	"github.com/qmhball/db2gorm/gen"
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"

@@ -139,9 +139,12 @@ func Base64ToStr(str string) {
 	CreateFile(text, "", "login", ".txt")
 }
 
+// Unicode加密
 func UrlEncode(str string) string {
 	return url.QueryEscape(str)
 }
+
+// Unicode解密
 func UrlDecode(str string) string {
 	res, err := url.QueryUnescape(str)
 	if err != nil {

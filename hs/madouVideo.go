@@ -190,7 +190,9 @@ func DataParseSave(body []byte, Type, urlType string) {
 				ClassId:  maDouDao.CurrentPage,
 				Platform: platform(Type) + "*" + data.ComefromTitle,
 				Page:     maDouDao.CurrentPage,
-				Location: "[" + strconv.Itoa((i+1)/6+1) + "," + strconv.Itoa((i+1)%6+1) + "]"}
+				Location: "[" + strconv.Itoa((i+1)/6+1) + "," + strconv.Itoa((i+1)%6+1) + "]",
+				PhotoUrl: data.Panorama,
+			}
 			marshal, err := json.Marshal(hsInfo)
 			if err != nil {
 				fmt.Println("hsInfo json 序列化失败")

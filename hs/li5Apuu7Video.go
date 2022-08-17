@@ -108,6 +108,7 @@ func ExampleScrape(tag, page int) {
 	doc.Find("div.item a").Each(func(i int, s *goquery.Selection) {
 		title, _ := s.Attr("title")
 		href, _ := s.Attr("href")
+		photo_url, _ := s.Find("div.img img.thumb").Attr("data-original")
 		url := "http://li5.apuu7.top" + utils.StringStrip(href)
 		newTitle := utils.StringStrip(title)
 		row := redis.KeyExists(newTitle)
@@ -115,12 +116,15 @@ func ExampleScrape(tag, page int) {
 			if strings.Contains(url, li5Apuu7_url+"/vod/play") {
 				obj := getM3u8Obj(url)
 				m3u8url := M3u8UrlParse(obj)
-				hsinfo := HsInfo{Title: utils.StringStrip(title),
+				hsinfo := HsInfo{
+					Title:   utils.StringStrip(title),
 					Url:     utils.StringStrip(url),
 					M3u8Url: utils.StringStrip(m3u8url),
 					ClassId: tag, Platform: "li5apuu7",
+					PhotoUrl: photo_url,
 					Page:     page,
-					Location: "[" + strconv.Itoa(i/6+1) + "," + strconv.Itoa(i%6+1) + "]"}
+					Location: "[" + strconv.Itoa(i/6+1) + "," + strconv.Itoa(i%6+1) + "]",
+				}
 				marshal, _ := json.Marshal(hsinfo)
 				redis.SetKey(newTitle, marshal)
 				db.Create(&hsinfo)

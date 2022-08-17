@@ -46,11 +46,11 @@ func taskPaoyou() {
 
 func taskLi5apuu7() {
 	// 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32
-	pages := []int{20, 28}
+	pages := []int{28}
 	wg.Add(len(pages))
 	for _, page := range pages {
 		go func(page int) {
-			for i := 1; i < 11; i++ {
+			for i := 100; i < 250; i++ {
 				hs.ExampleScrape(page, i)
 			}
 			time.Sleep(5 * time.Second)
@@ -119,9 +119,7 @@ func taskgjyb() {
 // Hs定时器
 func CronStartHs() {
 	scheduler := gocron.NewScheduler(time.UTC)
-	//scheduler.Cron("0 */1 * * * ").Seconds().Do(taskCape)
-	//scheduler.Cron("*/5 * * * *").Do(taskMaodou)
-	scheduler.Every(40).Minutes().Do(taskXyzVideo)
+	scheduler.Every(40).Minutes().Do(taskLi5apuu7)
 	scheduler.StartAsync()
 	scheduler.StartBlocking()
 }
@@ -129,7 +127,6 @@ func CronStartHs() {
 // 国家医保数据目录
 func CronStartGJYB() {
 	scheduler := gocron.NewScheduler(time.UTC)
-	//scheduler.Cron("*/10 * * * *").Do(open.T1001)
 	scheduler.Every(1).Hour().Do(taskgjyb)
 	scheduler.StartAsync()
 	scheduler.StartBlocking()

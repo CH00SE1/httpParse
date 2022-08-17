@@ -27,6 +27,7 @@ type HsInfo struct {
 	Platform string
 	ClassId  int
 	Page     int
+	PhotoUrl string
 	Location string
 }
 

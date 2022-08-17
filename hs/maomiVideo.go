@@ -19,7 +19,7 @@ import (
  */
 
 const (
-	maomi_url                                             = "https://www.6d1c5fac3739.com"
+	maomi_url                                             = "https://www.bb33m.com"
 	guochanjingpin, meinvzhubo, duanshipin, zhongwenzhimu = "国产精品", "美女主播", "短视频", "中文字幕"
 )
 
@@ -154,7 +154,8 @@ func (new New) MaomiRequest(page int, videoTitle string) {
 				ClassId:  page,
 				Platform: "maomi*" + videoTitle,
 				Page:     page,
-				Location: "[" + strconv.Itoa((i+1)/4+1) + "," + strconv.Itoa((i+1)%4+1) + "]"}
+				Location: "[" + strconv.Itoa((i+1)/4+1) + "," + strconv.Itoa((i+1)%4+1) + "]",
+			}
 			marshal, _ := json.Marshal(hsInfo)
 			redis.SetKey(title, marshal)
 			db.Create(&hsInfo)
