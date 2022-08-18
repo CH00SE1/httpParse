@@ -116,12 +116,13 @@ func Paoyou(page int, videoName string, map1 map[string]string) {
 	dom.Find("ul.stui-vodlist li.stui-vodlist__item a").Each(func(i int, s *goquery.Selection) {
 		href, _ := s.Attr("href")
 		text1, _ := s.Attr("title")
+		photoUrl, _ := s.Attr("data-original")
 		text := utils.StringStrip(text1)
 		row := redis.KeyExists(text)
 		if row != 1 {
 			videoPage := requestPlayVideoPage(paoyou_url + href)
 			parse := scriptInfoParse(videoPage)
-			hsInfo := paoyouDataSave(parse, page, i, text)
+			hsInfo := paoyouDataSave(parse, page, i, text, photoUrl)
 			db.Create(&hsInfo).Callback()
 		} else {
 			PrintfCommon(page, i, href, text, row, "paoyou*"+videoName)
@@ -191,7 +192,7 @@ func scriptInfoParse(text string) PaoyouDao {
 }
 
 // 5.paoyou数据处理
-func paoyouDataSave(paoyouDao PaoyouDao, page, i int, title string) HsInfo {
+func paoyouDataSave(paoyouDao PaoyouDao, page, i int, title, photoUrl string) HsInfo {
 	play_url := paoyou_url + paoyouDao.Link
 	hsInfo := HsInfo{
 		Title:    title,
@@ -201,6 +202,7 @@ func paoyouDataSave(paoyouDao PaoyouDao, page, i int, title string) HsInfo {
 		Platform: "paoyou*" + paoyouDao.VodData.VodClass,
 		Page:     page,
 		Location: "[" + strconv.Itoa((i+1)/4+1) + "," + strconv.Itoa((i+1)%4+1) + "]",
+		PhotoUrl: photoUrl,
 	}
 	marshal, _ := json.Marshal(hsInfo)
 	redis.SetKey(title, marshal)

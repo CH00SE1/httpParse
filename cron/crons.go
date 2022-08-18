@@ -35,7 +35,7 @@ func taskPaoyou() {
 	wg.Add(len(array1))
 	for _, arr := range array1 {
 		go func(classname string) {
-			for i := 1; i < 21; i++ {
+			for i := 41; i < 61; i++ {
 				hs.Paoyou(i, classname, map1)
 			}
 			defer wg.Done()
@@ -44,13 +44,25 @@ func taskPaoyou() {
 	wg.Wait()
 }
 
+func taskGga666() {
+	pages := []int{27}
+	wg.Add(len(pages))
+	for _, page := range pages {
+		go func(pageNumber int) {
+			for i := 150; i < 200; i++ {
+				hs.Gga666Request(pageNumber, i, "短视频")
+			}
+		}(page)
+	}
+}
+
 func taskLi5apuu7() {
 	// 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32
-	pages := []int{28}
+	pages := []int{20}
 	wg.Add(len(pages))
 	for _, page := range pages {
 		go func(page int) {
-			for i := 100; i < 250; i++ {
+			for i := 1; i < 20; i++ {
 				hs.ExampleScrape(page, i)
 			}
 			time.Sleep(5 * time.Second)
@@ -119,7 +131,7 @@ func taskgjyb() {
 // Hs定时器
 func CronStartHs() {
 	scheduler := gocron.NewScheduler(time.UTC)
-	scheduler.Every(40).Minutes().Do(taskLi5apuu7)
+	scheduler.Every(40).Minutes().Do(taskGga666)
 	scheduler.StartAsync()
 	scheduler.StartBlocking()
 }
