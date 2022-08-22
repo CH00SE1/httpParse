@@ -23,7 +23,7 @@ func InitClient() (err error) {
 	rdb = redis.NewClient(&redis.Options{
 		Addr:     "localhost:6379",
 		Password: "", // no password set
-		DB:       10, // use default DB
+		DB:       8,  // use default DB
 	})
 
 	_, cancel := context.WithTimeout(context.Background(), 5*time.Second)

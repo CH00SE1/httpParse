@@ -13,36 +13,18 @@ import (
 )
 
 /**
- * @title 玖爱视频
+ * @title 撸久久视频
  * @author xiongshao
- * @date 2022-08-18 14:31:06
+ * @date 2022-08-22 14:29:27
  */
 
-type Ggg666 struct {
-	Flag     string `json:"flag"`
-	Encrypt  int    `json:"encrypt"`
-	Trysee   int    `json:"trysee"`
-	Points   int    `json:"points"`
-	Link     string `json:"link"`
-	LinkNext string `json:"link_next"`
-	LinkPre  string `json:"link_pre"`
-	Url      string `json:"url"`
-	UrlNext  string `json:"url_next"`
-	From     string `json:"from"`
-	Server   string `json:"server"`
-	Note     string `json:"note"`
-}
+const org_url = "https://lu99av1.xyz"
 
-const org_g66_url = "https://gga996.com"
+func LujiujiuRequest(classId, page int, className string) {
 
-// 请求数据
-func Gga666Request(classId, page int, className string) {
-
-	oldUrl := org_g66_url + "/index.php/vod/type/id/" + strconv.Itoa(classId) + ".html"
+	oldUrl := org_url + "/index.php/vod/type/id/" + strconv.Itoa(classId) + ".html"
 
 	url := ConvertUrl(oldUrl, page)
-
-	fmt.Println(url)
 
 	method := "GET"
 
@@ -56,10 +38,11 @@ func Gga666Request(classId, page int, className string) {
 	req.Header.Add("user-agent", "Mozilla/5.0 (Linux; Android............ecko) Chrome/92.0.4515.105 HuaweiBrowser/12.0.4.300 Mobile Safari/537.36")
 
 	res, err := client.Do(req)
-
 	if err != nil {
 		fmt.Println(err)
 	}
+	defer res.Body.Close()
+
 	defer res.Body.Close()
 
 	if res.StatusCode != 200 {
@@ -72,37 +55,36 @@ func Gga666Request(classId, page int, className string) {
 	db, _ := db.MysqlConfigure()
 	redis.InitClient()
 
-	reader.Find("ul.thumbnail-group li").Each(func(i int, selection *goquery.Selection) {
-		href, _ := selection.Find("a.thumbnail").Attr("href")
-		photoUrl, _ := selection.Find("a.thumbnail img").Attr("data-original")
-		title := selection.Find("div.video-info a").Text()
-		location := selection.Find("div.video-info p").Text()
+	reader.Find("ul.stui-vodlist li.stui-vodlist__item").Each(func(i int, selection *goquery.Selection) {
+		href, _ := selection.Find("a").Attr("href")
+		title, _ := selection.Find("a").Attr("title")
+		photoUrl, _ := selection.Find("a").Attr("data-original")
 		row := redis.KeyExists(title)
 		if row != 1 {
-			playUrl := Display2Video(org_g66_url, href)
-			m3u8Url := playVideoM3u8Info(playUrl)
+			playVideoUrl := Display2Video(org_url, href)
+			m3u8Url := playVideoRequest(playVideoUrl)
 			hsInfo := HsInfo{
 				Title:    title,
-				Url:      playUrl,
+				Url:      playVideoUrl,
 				M3u8Url:  m3u8Url,
 				ClassId:  classId,
 				PhotoUrl: photoUrl,
-				Platform: "玖爱视频-" + className,
+				Platform: "撸久久-" + className,
 				Page:     page,
-				Location: "[" + strconv.Itoa(i/4+1) + "," + strconv.Itoa(i%4+1) + "]观看信息:" + location,
+				Location: "[" + strconv.Itoa(i/4+1) + "," + strconv.Itoa(i%4+1) + "]",
 			}
 			marshal, _ := json.Marshal(hsInfo)
 			redis.SetKey(title, marshal)
 			db.Create(&hsInfo)
 		} else {
-			fmt.Println(title)
+			fmt.Println(title + " --> 存在数据")
 		}
 	})
 
 }
 
-// 请求播放页面拿到m3u8url
-func playVideoM3u8Info(url string) string {
+// 请求播放页面
+func playVideoRequest(url string) string {
 
 	method := "GET"
 
@@ -112,13 +94,11 @@ func playVideoM3u8Info(url string) string {
 	if err != nil {
 		fmt.Println(err)
 	}
-
-	req.Header.Add("user-agent", "Mozilla/5.0 (Linux; Android............ecko) Chrome/92.0.4515.105 HuaweiBrowser/12.0.4.300 Mobile Safari/537.36")
-
 	res, err := client.Do(req)
 	if err != nil {
 		fmt.Println(err)
 	}
+
 	defer res.Body.Close()
 
 	reader, _ := goquery.NewDocumentFromReader(res.Body)
@@ -138,5 +118,4 @@ func playVideoM3u8Info(url string) string {
 	})
 
 	return m3u8_url
-
 }

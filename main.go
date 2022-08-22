@@ -1,12 +1,9 @@
 package main
 
-import (
-	"httpParse/cron"
-)
+import "httpParse/cron"
 
 func main() {
 	//hs.Mysql2Redis()
 	cron.CronStartHs()
 	//hs.Redis2Mysql()
-	//hs.Gga666Request();
 }

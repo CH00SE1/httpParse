@@ -44,13 +44,25 @@ func taskPaoyou() {
 	wg.Wait()
 }
 
-func taskGga666() {
-	pages := []int{27}
+func taskLujiujin() {
+	pages := []int{11}
 	wg.Add(len(pages))
 	for _, page := range pages {
 		go func(pageNumber int) {
-			for i := 150; i < 200; i++ {
-				hs.Gga666Request(pageNumber, i, "短视频")
+			for i := 82; i < 250; i++ {
+				hs.LujiujiuRequest(pageNumber, i, "国产原创")
+			}
+		}(page)
+	}
+}
+
+func taskGga666() {
+	pages := []int{23}
+	wg.Add(len(pages))
+	for _, page := range pages {
+		go func(pageNumber int) {
+			for i := 1; i < 20; i++ {
+				hs.Gga666Request(pageNumber, i, "福利嫩妹")
 			}
 		}(page)
 	}
@@ -58,7 +70,7 @@ func taskGga666() {
 
 func taskLi5apuu7() {
 	// 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32
-	pages := []int{20}
+	pages := []int{20, 28}
 	wg.Add(len(pages))
 	for _, page := range pages {
 		go func(page int) {
@@ -131,7 +143,7 @@ func taskgjyb() {
 // Hs定时器
 func CronStartHs() {
 	scheduler := gocron.NewScheduler(time.UTC)
-	scheduler.Every(40).Minutes().Do(taskGga666)
+	scheduler.Every(40).Minutes().Do(taskLujiujin)
 	scheduler.StartAsync()
 	scheduler.StartBlocking()
 }

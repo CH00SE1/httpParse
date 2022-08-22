@@ -7,8 +7,9 @@ import (
 	"httpParse/db"
 	"httpParse/redis"
 	"httpParse/utils"
-	"io/ioutil"
+	"io"
 	"net/http"
+	"strconv"
 	"strings"
 )
 
@@ -131,10 +132,34 @@ func RequestMysqlSave(hsInfo HsInfo) {
 	}
 	defer res.Body.Close()
 
-	body, err := ioutil.ReadAll(res.Body)
+	body, err := io.ReadAll(res.Body)
 	if err != nil {
 		fmt.Println(err)
 		return
 	}
 	fmt.Println(string(body))
+}
+
+// 视频展示页面转为播放页面
+func Display2Video(url_org, url_new string) string {
+	//展示页面
+	//https://gga996.com/index.php/vod/detail/id/5792.html
+	//播放页面
+	//https://gga996.com/index.php/vod/play/id/5792/sid/1/nid/1.html
+	// https://gga996.com/index.php/vod/play/id/121152/sid/1/nid/1.html
+	html := ".html"
+	index := strings.LastIndex(url_new, "/")
+	s1 := url_new[index:]
+	s2 := strings.Replace(s1, html, "", -1)
+	return url_org + "/index.php/vod/play/id" + s2 + "/sid/1/nid/1" + html
+}
+
+// 根据页面转换请求url
+func ConvertUrl(url string, page int) string {
+	html := ".html"
+	if page == 1 {
+		return url
+	}
+	index := strings.Index(url, html)
+	return url[:index] + "/page/" + strconv.Itoa(page) + html
 }
