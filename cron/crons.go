@@ -44,12 +44,26 @@ func taskPaoyou() {
 	wg.Wait()
 }
 
+// 42--网爆流出 24--国产精品 41--短视频
+func taskJinrijp() {
+	pages := []int{41}
+	wg.Add(len(pages))
+	for _, page := range pages {
+		go func(pageNumber int) {
+			for i := 1; i < 100; i++ {
+				hs.JinrijpRequest(pageNumber, i, "短视频")
+			}
+		}(page)
+	}
+}
+
+// 11-国产原创
 func taskLujiujin() {
 	pages := []int{11}
 	wg.Add(len(pages))
 	for _, page := range pages {
 		go func(pageNumber int) {
-			for i := 82; i < 250; i++ {
+			for i := 1; i < 20; i++ {
 				hs.LujiujiuRequest(pageNumber, i, "国产原创")
 			}
 		}(page)
@@ -143,7 +157,7 @@ func taskgjyb() {
 // Hs定时器
 func CronStartHs() {
 	scheduler := gocron.NewScheduler(time.UTC)
-	scheduler.Every(40).Minutes().Do(taskLujiujin)
+	scheduler.Every(40).Minutes().Do(taskJinrijp)
 	scheduler.StartAsync()
 	scheduler.StartBlocking()
 }

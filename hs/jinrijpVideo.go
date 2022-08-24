@@ -12,21 +12,21 @@ import (
 )
 
 /**
- * @title 玖爱视频
+ * @title jinrijp 今日精品
  * @author xiongshao
- * @date 2022-08-18 14:31:06
+ * @date 2022-08-24 08:37:46
  */
 
-const org_g66_url = "https://gga996.com"
+const org_jinrijp_url = "https://www.jinrijp.top"
 
-// 请求数据
-func Gga666Request(classId, page int, className string) {
+// 请求视频页面
+func JinrijpRequest(classId, page int, className string) {
 
-	oldUrl := org_g66_url + "/index.php/vod/type/id/" + strconv.Itoa(classId) + ".html"
+	oldUrl := org_jinrijp_url + "/index.php/vod/type/id/" + strconv.Itoa(classId) + ".html"
 
 	url := ConvertUrl(oldUrl, page)
 
-	fmt.Println(url)
+	fmt.Println("\n" + url)
 
 	method := "GET"
 
@@ -56,30 +56,29 @@ func Gga666Request(classId, page int, className string) {
 	db, _ := db.MysqlConfigure()
 	redis.InitClient()
 
-	reader.Find("ul.thumbnail-group li").Each(func(i int, selection *goquery.Selection) {
-		href, _ := selection.Find("a.thumbnail").Attr("href")
-		photoUrl, _ := selection.Find("a.thumbnail img").Attr("data-original")
-		title := selection.Find("div.video-info a").Text()
-		location := selection.Find("div.video-info p").Text()
+	reader.Find("div.remove-18 div.col-sm-4").Each(func(i int, selection *goquery.Selection) {
+		photoUrl, _ := selection.Find("img").Attr("src")
+		href, _ := selection.Find("a").Attr("href")
+		title, _ := selection.Find("a").Attr("title")
 		row := redis.KeyExists(title)
 		if row != 1 {
-			playUrl := Display2Video(org_g66_url, href)
-			m3u8Url := PlayVideoM3u8Info(playUrl, 8)
+			playVideoUrl := Display2Video(org_jinrijp_url, href)
+			m3u8Url := PlayVideoM3u8Info(playVideoUrl, 7)
 			hsInfo := HsInfo{
 				Title:    title,
-				Url:      playUrl,
+				Url:      playVideoUrl,
 				M3u8Url:  m3u8Url,
 				ClassId:  classId,
 				PhotoUrl: photoUrl,
-				Platform: "玖爱视频-" + className,
+				Platform: "今日精品-" + className,
 				Page:     page,
-				Location: "[" + strconv.Itoa(i/4+1) + "," + strconv.Itoa(i%4+1) + "]观看信息:" + location,
+				Location: "[" + strconv.Itoa(i/4+1) + "," + strconv.Itoa(i%4+1) + "]",
 			}
 			marshal, _ := json.Marshal(hsInfo)
 			redis.SetKey(title, marshal)
 			db.Create(&hsInfo)
 		} else {
-			fmt.Println(title)
+			fmt.Println(title + " --> 存在数据")
 		}
 	})
 

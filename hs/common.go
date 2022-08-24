@@ -3,6 +3,7 @@ package hs
 import (
 	"encoding/json"
 	"fmt"
+	"github.com/PuerkitoBio/goquery"
 	"gorm.io/gorm"
 	"httpParse/db"
 	"httpParse/redis"
@@ -30,6 +31,22 @@ type HsInfo struct {
 	Page     int
 	PhotoUrl string
 	Location string
+}
+
+// 返回视频对象信息
+type VideoInfo struct {
+	Flag     string `json:"flag"`
+	Encrypt  int    `json:"encrypt"`
+	Trysee   int    `json:"trysee"`
+	Points   int    `json:"points"`
+	Link     string `json:"link"`
+	LinkNext string `json:"link_next"`
+	LinkPre  string `json:"link_pre"`
+	Url      string `json:"url"`
+	UrlNext  string `json:"url_next"`
+	From     string `json:"from"`
+	Server   string `json:"server"`
+	Note     string `json:"note"`
 }
 
 type User struct {
@@ -142,11 +159,6 @@ func RequestMysqlSave(hsInfo HsInfo) {
 
 // 视频展示页面转为播放页面
 func Display2Video(url_org, url_new string) string {
-	//展示页面
-	//https://gga996.com/index.php/vod/detail/id/5792.html
-	//播放页面
-	//https://gga996.com/index.php/vod/play/id/5792/sid/1/nid/1.html
-	// https://gga996.com/index.php/vod/play/id/121152/sid/1/nid/1.html
 	html := ".html"
 	index := strings.LastIndex(url_new, "/")
 	s1 := url_new[index:]
@@ -162,4 +174,44 @@ func ConvertUrl(url string, page int) string {
 	}
 	index := strings.Index(url, html)
 	return url[:index] + "/page/" + strconv.Itoa(page) + html
+}
+
+// 请求播放页面拿到m3u8url
+func PlayVideoM3u8Info(url string, location int) string {
+
+	method := "GET"
+
+	client := &http.Client{}
+	req, err := http.NewRequest(method, url, nil)
+
+	if err != nil {
+		fmt.Println(err)
+	}
+
+	req.Header.Add("user-agent", "Mozilla/5.0 (Linux; Android............ecko) Chrome/92.0.4515.105 HuaweiBrowser/12.0.4.300 Mobile Safari/537.36")
+
+	res, err := client.Do(req)
+	if err != nil {
+		fmt.Println(err)
+	}
+	defer res.Body.Close()
+
+	reader, _ := goquery.NewDocumentFromReader(res.Body)
+
+	var m3u8_url string
+
+	reader.Find("script").Each(func(i int, selection *goquery.Selection) {
+		title := selection.Text()
+		if i == location {
+			s2 := strings.Replace(title, "\\/", "/", -1)
+			index := strings.Index(s2, "=")
+			s3 := s2[index+1:]
+			var videoInfo VideoInfo
+			json.Unmarshal([]byte(s3), &videoInfo)
+			m3u8_url = videoInfo.Url
+		}
+	})
+
+	return m3u8_url
+
 }

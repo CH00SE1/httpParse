@@ -9,7 +9,6 @@ import (
 	"log"
 	"net/http"
 	"strconv"
-	"strings"
 )
 
 /**
@@ -62,7 +61,7 @@ func LujiujiuRequest(classId, page int, className string) {
 		row := redis.KeyExists(title)
 		if row != 1 {
 			playVideoUrl := Display2Video(org_url, href)
-			m3u8Url := playVideoRequest(playVideoUrl)
+			m3u8Url := PlayVideoM3u8Info(playVideoUrl, 8)
 			hsInfo := HsInfo{
 				Title:    title,
 				Url:      playVideoUrl,
@@ -81,41 +80,4 @@ func LujiujiuRequest(classId, page int, className string) {
 		}
 	})
 
-}
-
-// 请求播放页面
-func playVideoRequest(url string) string {
-
-	method := "GET"
-
-	client := &http.Client{}
-	req, err := http.NewRequest(method, url, nil)
-
-	if err != nil {
-		fmt.Println(err)
-	}
-	res, err := client.Do(req)
-	if err != nil {
-		fmt.Println(err)
-	}
-
-	defer res.Body.Close()
-
-	reader, _ := goquery.NewDocumentFromReader(res.Body)
-
-	var m3u8_url string
-
-	reader.Find("script").Each(func(i int, selection *goquery.Selection) {
-		title := selection.Text()
-		if i == 8 {
-			s2 := strings.Replace(title, "\\/", "/", -1)
-			index := strings.Index(s2, "=")
-			s3 := s2[index+1:]
-			var ggg666 Ggg666
-			json.Unmarshal([]byte(s3), &ggg666)
-			m3u8_url = ggg666.Url
-		}
-	})
-
-	return m3u8_url
 }
