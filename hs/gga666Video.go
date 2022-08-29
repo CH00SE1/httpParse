@@ -79,7 +79,7 @@ func Gga666Request(classId, page int, className string) {
 			redis.SetKey(title, marshal)
 			db.Create(&hsInfo)
 		} else {
-			fmt.Println(title)
+			PrintfCommon(page, i, href, title, 1, className)
 		}
 	})
 

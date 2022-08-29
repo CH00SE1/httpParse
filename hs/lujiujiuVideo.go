@@ -76,7 +76,7 @@ func LujiujiuRequest(classId, page int, className string) {
 			redis.SetKey(title, marshal)
 			db.Create(&hsInfo)
 		} else {
-			fmt.Println(title + " --> 存在数据")
+			PrintfCommon(page, i, href, title, 1, className)
 		}
 	})
 

@@ -19,7 +19,7 @@ import (
  */
 
 const (
-	maomi_url                                             = "https://www.bb33m.com"
+	maomi_url                                             = "https://www.bb26b.com"
 	guochanjingpin, meinvzhubo, duanshipin, zhongwenzhimu = "国产精品", "美女主播", "短视频", "中文字幕"
 )
 
