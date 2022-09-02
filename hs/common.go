@@ -120,7 +120,7 @@ func Mysql2Redis() {
 
 // redis查询包含数据打印
 func PrintfCommon(page, num int, href, title string, row int64, platform string) {
-	fmt.Printf("###-> platform:[ %s ]-location:[ %d,%d ]-row:[ %d ]-href:{ %s }-title:{ %s } <-###\n", platform, page, num, row, href, title)
+	fmt.Printf("###-> platform:[ %s ]-location:[ %d,%d ]-row:[ %d ]-href:{ %s }-title:{ %s } <-###\n", platform, page, num+1, row, href, title)
 }
 
 // 请求接口传输数据

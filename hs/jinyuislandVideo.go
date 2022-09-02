@@ -7,7 +7,6 @@ import (
 	"httpParse/db"
 	"httpParse/redis"
 	"httpParse/utils"
-	"io"
 	"log"
 	"net/http"
 	"strconv"
@@ -15,23 +14,18 @@ import (
 )
 
 /**
- * @title tyms74.xyz 桃颜蜜色
+ * @title https://www.jinyuisland.net
  * @author xiongshao
- * @date 2022-08-29 10:05:51
+ * @date 2022-08-30 14:24:16
  */
 
-const (
-	orgTymsUrl = "https://tyms74.xyz"
-)
+const orgJyUrl = "https://www.jinyuisland.net"
 
-// 请求视频页面
-func Tyms74Request(classId, page int, className string) {
+func JinyuislandRequest(classId, page int, className string) {
 
-	oldUrl := orgTymsUrl + "/index.php/vod/type/id/" + strconv.Itoa(classId) + ".html"
+	oldUrl := orgJyUrl + "/index.php/vod/type/id/" + strconv.Itoa(classId) + ".html"
 
 	url := ConvertUrl(oldUrl, page)
-
-	fmt.Println("\n" + url)
 
 	method := "GET"
 
@@ -49,6 +43,7 @@ func Tyms74Request(classId, page int, className string) {
 	if err != nil {
 		fmt.Println(err)
 	}
+
 	defer res.Body.Close()
 
 	if res.StatusCode != 200 {
@@ -61,14 +56,16 @@ func Tyms74Request(classId, page int, className string) {
 	db, _ := db.MysqlConfigure()
 	redis.InitClient()
 
-	reader.Find("li a.vodlist_thumb").Each(func(i int, selection *goquery.Selection) {
-		href, _ := selection.Attr("href")
-		title, _ := selection.Attr("title")
-		photoUrl, _ := selection.Attr("data-original")
+	reader.Find("div.colVideoList div.video-elem").Each(func(i int, selection *goquery.Selection) {
+		href, _ := selection.Find("a.display").Attr("href")
+		photoUrl1, _ := selection.Find("a.display div.img").Attr("style")
+		title := selection.Find("a.title").Text()
+		replace1 := strings.Replace(photoUrl1, "background-image: url('", "", -1)
+		photoUrl := strings.Replace(replace1, "')", "", -1)
 		row := redis.KeyExists(title)
 		if row != 1 {
-			playVideoUrl := Display2Video(orgTymsUrl, href)
-			m3u8UrlFalse := PlayVideoM3u8Info(playVideoUrl, 9)
+			playVideoUrl := orgJyUrl + href
+			m3u8UrlFalse := jyM3u8Url(playVideoUrl)
 			m3u8UrlTrue := M3u8Request(m3u8UrlFalse)
 			hsInfo := HsInfo{
 				Title:    title,
@@ -76,9 +73,9 @@ func Tyms74Request(classId, page int, className string) {
 				M3u8Url:  m3u8UrlTrue,
 				ClassId:  classId,
 				PhotoUrl: photoUrl,
-				Platform: "桃颜蜜色-" + className,
+				Platform: "茎淫-" + className,
 				Page:     page,
-				Location: strconv.Itoa(i),
+				Location: strconv.Itoa(page) + "-" + strconv.Itoa(i+1),
 			}
 			marshal, _ := json.Marshal(hsInfo)
 			redis.SetKey(title, marshal)
@@ -87,13 +84,9 @@ func Tyms74Request(classId, page int, className string) {
 			PrintfCommon(page, i, href, title, 1, className)
 		}
 	})
-
 }
 
-// 拿到真实的m3u8的下载地址
-func M3u8Request(url1 string) string {
-
-	url := utils.StringStrip(url1)
+func jyM3u8Url(url string) string {
 
 	method := "GET"
 
@@ -107,44 +100,27 @@ func M3u8Request(url1 string) string {
 	req.Header.Add("user-agent", "Mozilla/5.0 (Linux; Android............ecko) Chrome/92.0.4515.105 HuaweiBrowser/12.0.4.300 Mobile Safari/537.36")
 
 	res, err := client.Do(req)
-
-	if res == nil {
-		return "nil pointer"
-	}
-
 	if err != nil {
 		fmt.Println(err)
 	}
-
 	defer res.Body.Close()
 
-	body, err := io.ReadAll(res.Body)
-	if err != nil {
-		fmt.Println(err)
-	}
+	reader, _ := goquery.NewDocumentFromReader(res.Body)
 
-	s := string(body)
+	var m3u8_url string
 
-	if strings.Contains(s, ".ts") {
-		return url
-	}
+	reader.Find("script").Each(func(i int, selection *goquery.Selection) {
+		title := selection.Text()
+		if i == 10 {
+			s2 := strings.Replace(title, "\\/", "/", -1)
+			index := strings.Index(s2, "=")
+			s3 := s2[index+1:]
+			var videoInfo VideoInfo
+			json.Unmarshal([]byte(s3), &videoInfo)
+			m3u8_url = utils.UrlDecode(videoInfo.Url)
+		}
+	})
 
-	if !strings.Contains(s, "/") {
-		return s
-	}
-
-	if strings.Contains(s, ".m3u8") {
-
-		index := strings.Index(s, "/")
-
-		s2 := s[index:]
-
-		urlPrefix := url[:strings.Index(url, "/2")]
-
-		return urlPrefix + utils.StringStrip(s2)
-
-	}
-
-	return "nil"
+	return m3u8_url
 
 }

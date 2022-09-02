@@ -45,8 +45,22 @@ func taskPaoyou() {
 }
 
 func taskTyms() {
-	for i := 1; i < 50; i++ {
-		hs.Tyms74Request(1, i, "精品自拍")
+	className := "优选短视频"
+	classId := 3
+	start, end, num := 1, 81, 10
+	count := end - start
+	if count > 0 {
+		wg.Add(num)
+		for i := 1; i <= num; i++ {
+			n1, n2 := start+count/num*(i-1), start+count/num*i
+			go func(num1, num2 int) {
+				for i := num1; i < num2; i++ {
+					hs.Tyms74Request(classId, i, className)
+				}
+				defer wg.Done()
+			}(n1, n2)
+		}
+		wg.Wait()
 	}
 }
 
@@ -163,7 +177,7 @@ func taskgjyb() {
 // Hs定时器
 func CronStartHs() {
 	scheduler := gocron.NewScheduler(time.UTC)
-	scheduler.Every(55).Minutes().Do(taskTyms)
+	scheduler.Every(55).Minutes().Do(taskLi5apuu7)
 	scheduler.StartAsync()
 	scheduler.StartBlocking()
 }
