@@ -54,7 +54,6 @@ func JinrijpRequest(classId, page int, className string) {
 
 	// 引入数据库连接
 	db, _ := db.MysqlConfigure()
-	redis.InitClient()
 
 	reader.Find("div.remove-18 div.col-sm-4").Each(func(i int, selection *goquery.Selection) {
 		photoUrl, _ := selection.Find("img").Attr("src")

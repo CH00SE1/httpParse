@@ -35,7 +35,7 @@ func taskPaoyou() {
 	wg.Add(len(array1))
 	for _, arr := range array1 {
 		go func(classname string) {
-			for i := 1; i < 5; i++ {
+			for i := 1; i < 16; i++ {
 				hs.Paoyou(i, classname, map1)
 			}
 			defer wg.Done()
@@ -66,12 +66,12 @@ func taskTyms() {
 
 // 42--网爆流出 24--国产精品 41--短视频(目前39) 38--自拍偷拍 25--直播主播
 func taskJinrijp() {
-	pages := []int{41}
+	pages := []int{24}
 	wg.Add(len(pages))
 	for _, page := range pages {
 		go func(pageNumber int) {
-			for i := 39; i < 100; i++ {
-				hs.JinrijpRequest(pageNumber, i, "短视频")
+			for i := 1; i < 20; i++ {
+				hs.JinrijpRequest(pageNumber, i, "国产精品")
 			}
 		}(page)
 	}
@@ -83,7 +83,7 @@ func taskLujiujin() {
 	wg.Add(len(pages))
 	for _, page := range pages {
 		go func(pageNumber int) {
-			for i := 10; i > 0; i-- {
+			for i := 1; i < 40; i++ {
 				hs.LujiujiuRequest(pageNumber, i, "国产原创")
 			}
 		}(page)

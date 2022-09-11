@@ -103,7 +103,6 @@ func Redis2Mysql() {
 
 // mysql数据同步redis
 func Mysql2Redis() {
-	redis.InitClient()
 	db, err := db.MysqlConfigure()
 	if err != nil {
 		fmt.Println(err)

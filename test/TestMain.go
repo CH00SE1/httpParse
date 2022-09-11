@@ -15,11 +15,11 @@ var wg sync.WaitGroup
 
 func main() {
 
-	// 测试方法
-	//for i := 1; i < 100; i++ {
-	//	hs.JinyuislandRequest(10, i, "AV中文视频")
+	//// 测试方法 10-AV中文视频 3-经典国产 2-国产传媒
+	//for i := 11; i < 100; i++ {
+	//	hs.JinyuislandRequest(2, i, "国产传媒")
 	//}
-	for i := 100; i < 200; i++ {
+	for i := 1; i < 100; i++ {
 		hs.RedCross88Request(91, i, "经典国产")
 	}
 

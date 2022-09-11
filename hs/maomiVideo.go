@@ -19,7 +19,7 @@ import (
  */
 
 const (
-	maomi_url                                             = "https://www.bb26b.com"
+	maomi_url                                             = "https://www.bb62z.com"
 	guochanjingpin, meinvzhubo, duanshipin, zhongwenzhimu = "国产精品", "美女主播", "短视频", "中文字幕"
 )
 
@@ -70,7 +70,6 @@ func (org Org) MaomiRequest(page int) {
 	}
 
 	db, _ := db.MysqlConfigure()
-	redis.InitClient()
 
 	dom.Find("a.video-pic").Each(func(i int, selection *goquery.Selection) {
 		href, _ := selection.Attr("href")
@@ -139,11 +138,12 @@ func (new New) MaomiRequest(page int, videoTitle string) {
 	}
 
 	db, _ := db.MysqlConfigure()
-	redis.InitClient()
 
-	dom.Find("a.video-pic").Each(func(i int, selection *goquery.Selection) {
-		href, _ := selection.Attr("href")
-		title, _ := selection.Attr("title")
+	dom.Find("div#tpl-img-content li").Each(func(i int, selection *goquery.Selection) {
+		href, _ := selection.Find("a").Attr("href")
+		title, _ := selection.Find("a").Attr("title")
+		PhotoUrl, _ := selection.Find("img").Attr("data-original")
+		selection.Find("")
 		row := redis.KeyExists(title)
 		if row != 1 {
 			m3u8_url := parseMaomiViderPlay(maomi_url + href)
@@ -154,6 +154,7 @@ func (new New) MaomiRequest(page int, videoTitle string) {
 				ClassId:  page,
 				Platform: "maomi*" + videoTitle,
 				Page:     page,
+				PhotoUrl: PhotoUrl,
 				Location: "[" + strconv.Itoa((i+1)/4+1) + "," + strconv.Itoa((i+1)%4+1) + "]",
 			}
 			marshal, _ := json.Marshal(hsInfo)

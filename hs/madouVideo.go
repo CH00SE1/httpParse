@@ -179,7 +179,6 @@ func DataParseSave(body []byte, Type, urlType string) {
 
 	datas := maDouDao.Data
 	db, _ := db.MysqlConfigure()
-	redis.InitClient()
 	for i, data := range datas {
 		row := redis.KeyExists(data.Title)
 		if row != 1 {

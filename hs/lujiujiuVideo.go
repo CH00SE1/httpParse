@@ -52,7 +52,6 @@ func LujiujiuRequest(classId, page int, className string) {
 
 	// 引入数据库连接
 	db, _ := db.MysqlConfigure()
-	redis.InitClient()
 
 	reader.Find("ul.stui-vodlist li.stui-vodlist__item").Each(func(i int, selection *goquery.Selection) {
 		href, _ := selection.Find("a").Attr("href")

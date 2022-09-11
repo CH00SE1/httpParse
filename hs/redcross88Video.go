@@ -53,7 +53,6 @@ func RedCross88Request(classId, page int, className string) {
 
 	// 引入数据库连接
 	db, _ := db.MysqlConfigure()
-	redis.InitClient()
 
 	reader.Find("div.colVideoList div.video-elem").Each(func(i int, selection *goquery.Selection) {
 		href, _ := selection.Find("a.display").Attr("href")

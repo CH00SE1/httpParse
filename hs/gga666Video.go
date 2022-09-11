@@ -54,7 +54,6 @@ func Gga666Request(classId, page int, className string) {
 
 	// 引入数据库连接
 	db, _ := db.MysqlConfigure()
-	redis.InitClient()
 
 	reader.Find("ul.thumbnail-group li").Each(func(i int, selection *goquery.Selection) {
 		href, _ := selection.Find("a.thumbnail").Attr("href")

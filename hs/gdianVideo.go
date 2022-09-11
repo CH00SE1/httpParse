@@ -229,7 +229,6 @@ func savePhotoInfo(url, fileName string, num int) {
 
 // 数据保存mysql
 func resultObejectInfo(MovieName string, MovieId, page int) interface{} {
-	redis.InitClient()
 	row := redis.KeyExists(MovieName)
 	if row != 1 {
 		watchUrl, videoInfo := m3u8VideoInfo(MovieId)

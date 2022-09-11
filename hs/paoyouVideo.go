@@ -111,7 +111,6 @@ func Paoyou(page int, videoName string, map1 map[string]string) {
 	if err2 != nil {
 		log.Fatal(err2)
 	}
-	redis.InitClient()
 	db, _ := db.MysqlConfigure()
 	dom.Find("ul.stui-vodlist li.stui-vodlist__item a").Each(func(i int, s *goquery.Selection) {
 		href, _ := s.Attr("href")

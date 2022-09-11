@@ -59,7 +59,6 @@ func Tyms74Request(classId, page int, className string) {
 
 	// 引入数据库连接
 	db, _ := db.MysqlConfigure()
-	redis.InitClient()
 
 	reader.Find("li a.vodlist_thumb").Each(func(i int, selection *goquery.Selection) {
 		href, _ := selection.Attr("href")
@@ -125,6 +124,8 @@ func M3u8Request(url1 string) string {
 
 	s := string(body)
 
+	fmt.Println(s)
+
 	if strings.Contains(s, ".ts") {
 		return url
 	}
@@ -139,9 +140,19 @@ func M3u8Request(url1 string) string {
 
 		s2 := s[index:]
 
-		urlPrefix := url[:strings.Index(url, "/2")]
+		if strings.Contains(url, "/2") {
 
-		return urlPrefix + utils.StringStrip(s2)
+			urlPrefix := url[:strings.Index(url, "/2")]
+
+			return urlPrefix + utils.StringStrip(s2)
+
+		} else {
+
+			urlPrefix := url[:strings.Index(url, "/")]
+
+			return urlPrefix + utils.StringStrip(s2)
+
+		}
 
 	}
 

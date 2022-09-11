@@ -102,7 +102,6 @@ func ExampleScrape(tag, page int) {
 
 	// 引入数据库连接
 	db, _ := db.MysqlConfigure()
-	redis.InitClient()
 
 	// Find the review items
 	doc.Find("div.item a").Each(func(i int, s *goquery.Selection) {

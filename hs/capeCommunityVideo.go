@@ -304,7 +304,6 @@ func dataSave(capePageByIdInfo CapePageByIdInfo, url string, page int) {
 	}
 	if len(m3u8_url) != 0 {
 		db, _ := db.MysqlConfigure()
-		redis.InitClient()
 		row := redis.KeyExists(title)
 		if row != 1 {
 			hsInfo := HsInfo{

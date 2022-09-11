@@ -54,7 +54,6 @@ func JinyuislandRequest(classId, page int, className string) {
 
 	// 引入数据库连接
 	db, _ := db.MysqlConfigure()
-	redis.InitClient()
 
 	reader.Find("div.colVideoList div.video-elem").Each(func(i int, selection *goquery.Selection) {
 		href, _ := selection.Find("a.display").Attr("href")
@@ -77,9 +76,9 @@ func JinyuislandRequest(classId, page int, className string) {
 				Page:     page,
 				Location: strconv.Itoa(page) + "-" + strconv.Itoa(i+1),
 			}
+			db.Create(&hsInfo).Callback()
 			marshal, _ := json.Marshal(hsInfo)
 			redis.SetKey(title, marshal)
-			db.Create(&hsInfo)
 		} else {
 			PrintfCommon(page, i, href, title, 1, className)
 		}
