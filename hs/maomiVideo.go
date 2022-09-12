@@ -19,7 +19,7 @@ import (
  */
 
 const (
-	maomi_url                                             = "https://www.bb62z.com"
+	maomi_url                                             = "https://www.bf8564115bee.com"
 	guochanjingpin, meinvzhubo, duanshipin, zhongwenzhimu = "国产精品", "美女主播", "短视频", "中文字幕"
 )
 
@@ -139,7 +139,7 @@ func (new New) MaomiRequest(page int, videoTitle string) {
 
 	db, _ := db.MysqlConfigure()
 
-	dom.Find("div#tpl-img-content li").Each(func(i int, selection *goquery.Selection) {
+	dom.Find("ul.content-list li.content-item").Each(func(i int, selection *goquery.Selection) {
 		href, _ := selection.Find("a").Attr("href")
 		title, _ := selection.Find("a").Attr("title")
 		PhotoUrl, _ := selection.Find("img").Attr("data-original")
@@ -155,11 +155,11 @@ func (new New) MaomiRequest(page int, videoTitle string) {
 				Platform: "maomi*" + videoTitle,
 				Page:     page,
 				PhotoUrl: PhotoUrl,
-				Location: "[" + strconv.Itoa((i+1)/4+1) + "," + strconv.Itoa((i+1)%4+1) + "]",
+				Location: strconv.Itoa(page) + "-" + strconv.Itoa(i+1),
 			}
+			db.Create(&hsInfo)
 			marshal, _ := json.Marshal(hsInfo)
 			redis.SetKey(title, marshal)
-			db.Create(&hsInfo)
 		} else {
 			PrintfCommon(page, i+1, title, href, row, "maomi"+videoTitle)
 		}

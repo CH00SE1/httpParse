@@ -77,14 +77,14 @@ func taskJinrijp() {
 	}
 }
 
-// 11--国产原创 27--变态另类 24--制服黑丝 25--亚洲有码 10--精彩时刻-105
+// 11--国产原创 27--变态另类 24--制服黑丝 25--亚洲有码 10--精彩时刻-105 21-热门事件 8-自拍偷拍 6-国产情色
 func taskLujiujin() {
-	pages := []int{11}
+	pages := []int{10}
 	wg.Add(len(pages))
 	for _, page := range pages {
 		go func(pageNumber int) {
-			for i := 1; i < 40; i++ {
-				hs.LujiujiuRequest(pageNumber, i, "国产原创")
+			for i := 80; i > 0; i-- {
+				hs.LujiujiuRequest(pageNumber, i, "精彩时刻")
 			}
 		}(page)
 	}
@@ -111,7 +111,6 @@ func taskLi5apuu7() {
 			for i := 1; i < 20; i++ {
 				hs.ExampleScrape(page, i)
 			}
-			time.Sleep(5 * time.Second)
 			defer wg.Done()
 		}(page)
 	}
@@ -123,7 +122,8 @@ func taskGdian() {
 }
 
 func taskMaomi() {
-	array := []string{"国产精品", "美女主播", "短视频", "中文字幕"}
+	//, "中文字幕", "亚洲无码"
+	array := []string{"国产精品", "美女主播", "短视频"}
 	wg.Add(len(array))
 	for _, name := range array {
 		go func(str string) {
@@ -177,7 +177,7 @@ func taskgjyb() {
 // Hs定时器
 func CronStartHs() {
 	scheduler := gocron.NewScheduler(time.UTC)
-	scheduler.Every(55).Minutes().Do(taskLi5apuu7)
+	scheduler.Every(55).Minutes().Do(taskMaomi)
 	scheduler.StartAsync()
 	scheduler.StartBlocking()
 }

@@ -124,8 +124,6 @@ func M3u8Request(url1 string) string {
 
 	s := string(body)
 
-	fmt.Println(s)
-
 	if strings.Contains(s, ".ts") {
 		return url
 	}

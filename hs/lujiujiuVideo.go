@@ -69,11 +69,11 @@ func LujiujiuRequest(classId, page int, className string) {
 				PhotoUrl: photoUrl,
 				Platform: "撸久久-" + className,
 				Page:     page,
-				Location: "[" + strconv.Itoa(i/4+1) + "," + strconv.Itoa(i%4+1) + "]",
+				Location: strconv.Itoa(page) + "-" + strconv.Itoa(i+1),
 			}
+			db.Create(&hsInfo)
 			marshal, _ := json.Marshal(hsInfo)
 			redis.SetKey(title, marshal)
-			db.Create(&hsInfo)
 		} else {
 			PrintfCommon(page, i, href, title, 1, className)
 		}
