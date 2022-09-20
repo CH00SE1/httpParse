@@ -61,6 +61,7 @@ func JinrijpRequest(classId, page int, className string) {
 		title, _ := selection.Find("a").Attr("title")
 		row := redis.KeyExists(title)
 		if row != 1 {
+			fmt.Println(className + " - " + strconv.Itoa(page) + "页")
 			playVideoUrl := Display2Video(org_jinrijp_url, href)
 			m3u8Url := PlayVideoM3u8Info(playVideoUrl, 7)
 			hsInfo := HsInfo{

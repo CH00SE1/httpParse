@@ -2,7 +2,7 @@ package main
 
 import (
 	"fmt"
-	"io/ioutil"
+	"io"
 	"net/http"
 )
 
@@ -15,8 +15,7 @@ import (
 func req(num int) string {
 	defer wg.Done()
 
-	//url := "http://localhost:8520/m3u8/list/" + strconv.Itoa(num)
-	url := "http://localhost:8520/sentinel_client_sale/sales/shop/day/32"
+	url := "http://localhost:8562/order/flowThread"
 
 	method := "GET"
 
@@ -34,12 +33,12 @@ func req(num int) string {
 	}
 	defer res.Body.Close()
 
-	body, err := ioutil.ReadAll(res.Body)
+	body, err := io.ReadAll(res.Body)
 	if err != nil {
 		fmt.Println(err)
 		return "解析错误"
 	}
-	fmt.Printf("[%d] --> res : {%s}\n", num, "123")
+	fmt.Printf("[%d] --> res : {%s}\n", num, string(body))
 	return string(body)
 }
 

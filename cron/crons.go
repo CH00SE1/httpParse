@@ -10,6 +10,7 @@ import (
 	"github.com/go-co-op/gocron"
 	"httpParse/hs"
 	"httpParse/open"
+	"strconv"
 	"sync"
 	"time"
 )
@@ -66,28 +67,85 @@ func taskTyms() {
 
 // 42--网爆流出 24--国产精品 41--短视频(目前39) 38--自拍偷拍 25--直播主播
 func taskJinrijp() {
-	pages := []int{24}
-	wg.Add(len(pages))
-	for _, page := range pages {
-		go func(pageNumber int) {
+	contentsMap := make(map[string]string)
+	contentsMap["42"] = "网爆流出"
+	contentsMap["24"] = "国产精品"
+	contentsMap["41"] = "短视频"
+	contentsMap["38"] = "自拍偷拍"
+	contentsMap["25"] = "直播主播"
+	wg.Add(len(contentsMap))
+	for content := range contentsMap {
+		go func(pageNumber string) {
 			for i := 1; i < 20; i++ {
-				hs.JinrijpRequest(pageNumber, i, "国产精品")
+				id, _ := strconv.Atoi(pageNumber)
+				hs.JinrijpRequest(id, i, contentsMap[pageNumber])
 			}
-		}(page)
+			defer wg.Done()
+		}(content)
 	}
+	wg.Wait()
 }
 
 // 11--国产原创 27--变态另类 24--制服黑丝 25--亚洲有码 10--精彩时刻-105 21-热门事件 8-自拍偷拍 6-国产情色
 func taskLujiujin() {
-	pages := []int{10}
-	wg.Add(len(pages))
-	for _, page := range pages {
-		go func(pageNumber int) {
-			for i := 80; i > 0; i-- {
-				hs.LujiujiuRequest(pageNumber, i, "精彩时刻")
+	contentsMap := make(map[string]string)
+	contentsMap["11"] = "国产原创"
+	contentsMap["27"] = "变态另类"
+	contentsMap["24"] = "制服黑丝"
+	contentsMap["21"] = "热门事件"
+	contentsMap["10"] = "精彩时刻"
+	contentsMap["8"] = "自拍偷拍"
+	contentsMap["6"] = "国产情色"
+	wg.Add(len(contentsMap))
+	for content := range contentsMap {
+		go func(pageNumber string) {
+			id, _ := strconv.Atoi(pageNumber)
+			for i := 1; i < 20; i++ {
+				hs.LujiujiuRequest(id, i, contentsMap[pageNumber])
 			}
-		}(page)
+			defer wg.Done()
+		}(content)
 	}
+	wg.Wait()
+}
+
+// 茎淫
+func taskJinyuisland() {
+	contentsMap := make(map[string]string)
+	contentsMap["10"] = "AV中文视频"
+	contentsMap["3"] = "经典国产"
+	contentsMap["2"] = "国产传媒"
+	wg.Add(len(contentsMap))
+	for content := range contentsMap {
+		go func(pageNumber string) {
+			id, _ := strconv.Atoi(pageNumber)
+			for i := 1; i < 20; i++ {
+				hs.JinyuislandRequest(id, i, contentsMap[pageNumber])
+			}
+			defer wg.Done()
+		}(content)
+	}
+	wg.Wait()
+}
+
+// 红会所
+func taskRedCross88() {
+	contentsMap := make(map[string]string)
+	contentsMap["91"] = "经典国产"
+	contentsMap["75"] = "传媒原创"
+	contentsMap["98"] = "另类视频"
+	contentsMap["1"] = "视频"
+	wg.Add(len(contentsMap))
+	for content := range contentsMap {
+		go func(pageNumber string) {
+			id, _ := strconv.Atoi(pageNumber)
+			for i := 1; i < 20; i++ {
+				hs.RedCross88Request(id, i, contentsMap[pageNumber])
+			}
+			defer wg.Done()
+		}(content)
+	}
+	wg.Wait()
 }
 
 func taskGga666() {
@@ -98,8 +156,10 @@ func taskGga666() {
 			for i := 1; i < 20; i++ {
 				hs.Gga666Request(pageNumber, i, "福利嫩妹")
 			}
+			defer wg.Done()
 		}(page)
 	}
+	wg.Wait()
 }
 
 func taskLi5apuu7() {
@@ -174,15 +234,15 @@ func taskgjyb() {
 	wg.Wait()
 }
 
-// Hs定时器
+// CronStartHs Hs定时器
 func CronStartHs() {
 	scheduler := gocron.NewScheduler(time.UTC)
-	scheduler.Every(55).Minutes().Do(taskMaomi)
+	scheduler.Every(55).Minutes().Do(taskJinyuisland)
 	scheduler.StartAsync()
 	scheduler.StartBlocking()
 }
 
-// 国家医保数据目录
+// CronStartGJYB 国家医保数据目录
 func CronStartGJYB() {
 	scheduler := gocron.NewScheduler(time.UTC)
 	scheduler.Every(1).Hour().Do(taskgjyb)

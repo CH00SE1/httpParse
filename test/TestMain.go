@@ -1,7 +1,6 @@
 package main
 
 import (
-	"httpParse/hs"
 	"sync"
 )
 
@@ -18,7 +17,8 @@ func main() {
 	//for i := 1; i < 20; i++ {
 	//	hs.JinyuislandRequest(2, i, "国产传媒")
 	//}
-	for i := 1; i < 100; i++ {
-		hs.RedCross88Request(91, i, "经典国产")
-	}
+	//for i := 1; i < 100; i++ {
+	//	hs.RedCross88Request(91, i, "经典国产")
+	//}
+	TestReq(100, 200)
 }

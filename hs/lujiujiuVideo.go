@@ -59,6 +59,7 @@ func LujiujiuRequest(classId, page int, className string) {
 		photoUrl, _ := selection.Find("a").Attr("data-original")
 		row := redis.KeyExists(title)
 		if row != 1 {
+			fmt.Println(className + " - " + strconv.Itoa(page) + "页")
 			playVideoUrl := Display2Video(org_url, href)
 			m3u8Url := PlayVideoM3u8Info(playVideoUrl, 8)
 			hsInfo := HsInfo{
