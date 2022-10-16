@@ -46,22 +46,21 @@ func taskPaoyou() {
 }
 
 func taskTyms() {
-	className := "优选短视频"
-	classId := 3
-	start, end, num := 1, 81, 10
-	count := end - start
-	if count > 0 {
-		wg.Add(num)
-		for i := 1; i <= num; i++ {
-			n1, n2 := start+count/num*(i-1), start+count/num*i
-			go func(num1, num2 int) {
-				for i := num1; i < num2; i++ {
-					hs.Tyms74Request(classId, i, className)
-				}
-				defer wg.Done()
-			}(n1, n2)
-		}
-		wg.Wait()
+	contentsMap := make(map[string]string)
+	contentsMap["1"] = "精品自拍"
+	contentsMap["2"] = "国产偷拍"
+	contentsMap["3"] = "优选短视频"
+	contentsMap["4"] = "主播大秀"
+	contentsMap["5"] = "网爆事件"
+	wg.Add(len(contentsMap))
+	for content := range contentsMap {
+		go func(pageNumber string) {
+			for i := 1; i < 20; i++ {
+				id, _ := strconv.Atoi(pageNumber)
+				hs.Tyms74Request(id, i, contentsMap[pageNumber])
+			}
+			defer wg.Done()
+		}(content)
 	}
 }
 
@@ -119,7 +118,7 @@ func taskJinyuisland() {
 	for content := range contentsMap {
 		go func(pageNumber string) {
 			id, _ := strconv.Atoi(pageNumber)
-			for i := 1; i < 20; i++ {
+			for i := 1; i < 40; i++ {
 				hs.JinyuislandRequest(id, i, contentsMap[pageNumber])
 			}
 			defer wg.Done()
@@ -134,7 +133,7 @@ func taskRedCross88() {
 	contentsMap["91"] = "经典国产"
 	contentsMap["75"] = "传媒原创"
 	contentsMap["98"] = "另类视频"
-	contentsMap["1"] = "视频"
+	//contentsMap["1"] = "视频"
 	wg.Add(len(contentsMap))
 	for content := range contentsMap {
 		go func(pageNumber string) {
@@ -237,7 +236,7 @@ func taskgjyb() {
 // CronStartHs Hs定时器
 func CronStartHs() {
 	scheduler := gocron.NewScheduler(time.UTC)
-	scheduler.Every(55).Minutes().Do(taskJinyuisland)
+	scheduler.Every(55).Minutes().Do(taskTyms)
 	scheduler.StartAsync()
 	scheduler.StartBlocking()
 }

@@ -21,7 +21,7 @@ import (
  */
 
 const (
-	orgTymsUrl = "https://tyms74.xyz"
+	orgTymsUrl = "https://tyms81.xyz"
 )
 
 // 请求视频页面
