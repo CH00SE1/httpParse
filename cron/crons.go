@@ -31,18 +31,20 @@ func taskCape() {
 	wg.Wait()
 }
 
-func taskPaoyou() {
-	map1, array1 := hs.PaoyouFindClass()
-	wg.Add(len(array1))
-	for _, arr := range array1 {
-		go func(classname string) {
-			for i := 1; i < 16; i++ {
-				hs.Paoyou(i, classname, map1)
+// paoyou第二版
+func taskPaoYou2() {
+	contentsMap := make(map[string]string)
+	//contentsMap["1"] = "日本"
+	contentsMap["2"] = "国产"
+	//contentsMap["3"] = "其他"
+	wg.Add(len(contentsMap))
+	for content := range contentsMap {
+		go func(pageNumber string) {
+			for i := 1; i < 20; i++ {
+				hs.RequestPaoyou2(i, pageNumber)
 			}
-			defer wg.Done()
-		}(arr)
+		}(content)
 	}
-	wg.Wait()
 }
 
 func taskTyms() {
@@ -236,7 +238,7 @@ func taskgjyb() {
 // CronStartHs Hs定时器
 func CronStartHs() {
 	scheduler := gocron.NewScheduler(time.UTC)
-	scheduler.Every(55).Minutes().Do(taskTyms)
+	scheduler.Every(55).Minutes().Do(taskPaoYou2)
 	scheduler.StartAsync()
 	scheduler.StartBlocking()
 }
@@ -244,7 +246,7 @@ func CronStartHs() {
 // CronStartGJYB 国家医保数据目录
 func CronStartGJYB() {
 	scheduler := gocron.NewScheduler(time.UTC)
-	scheduler.Every(1).Hour().Do(taskgjyb)
+	scheduler.Every(1).Hour().Do(taskLujiujin)
 	scheduler.StartAsync()
 	scheduler.StartBlocking()
 }
