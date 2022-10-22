@@ -11,6 +11,7 @@ import (
 	"httpParse/hs"
 	"httpParse/open"
 	"strconv"
+	"strings"
 	"sync"
 	"time"
 )
@@ -40,7 +41,7 @@ func taskPaoYou2() {
 	wg.Add(len(contentsMap))
 	for content := range contentsMap {
 		go func(pageNumber string) {
-			for i := 1; i < 20; i++ {
+			for i := 1; i < 30; i++ {
 				hs.RequestPaoyou2(i, pageNumber)
 			}
 		}(content)
@@ -149,6 +150,22 @@ func taskRedCross88() {
 	wg.Wait()
 }
 
+func task69YW() {
+	contentsMap := hs.ParseClassInfo(hs.Url69yw)
+	wg.Add(len(contentsMap))
+	for content := range contentsMap {
+		go func(pageNumber string) {
+			for i := 150; i < 200; i++ {
+				text := strings.ReplaceAll(pageNumber, "/", "")
+				classId, _ := strconv.Atoi(text)
+				hs.ParseListVideoInfo(hs.GetHtml(hs.IsPage(i, pageNumber)), classId, i, contentsMap[pageNumber])
+			}
+			defer wg.Done()
+		}(content)
+	}
+	wg.Wait()
+}
+
 func taskGga666() {
 	pages := []int{23}
 	wg.Add(len(pages))
@@ -238,7 +255,7 @@ func taskgjyb() {
 // CronStartHs Hs定时器
 func CronStartHs() {
 	scheduler := gocron.NewScheduler(time.UTC)
-	scheduler.Every(55).Minutes().Do(taskPaoYou2)
+	scheduler.Every(55).Minutes().Do(task69YW)
 	scheduler.StartAsync()
 	scheduler.StartBlocking()
 }
@@ -246,7 +263,7 @@ func CronStartHs() {
 // CronStartGJYB 国家医保数据目录
 func CronStartGJYB() {
 	scheduler := gocron.NewScheduler(time.UTC)
-	scheduler.Every(1).Hour().Do(taskLujiujin)
+	scheduler.Every(1).Hour().Do(taskCape)
 	scheduler.StartAsync()
 	scheduler.StartBlocking()
 }

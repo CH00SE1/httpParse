@@ -152,3 +152,25 @@ func UrlDecode(str string) string {
 	}
 	return res
 }
+
+// 拿到正式m3u8视频下载地址
+//func IsM3u8Ture(url string) string {
+//	response, _ := http.Get(url)
+//	buf := new(bytes.Buffer)
+//	buf.ReadFrom(response.Body)
+//	newStr := buf.String()
+//	if buf == nil {
+//		return url
+//	}
+//	if strings.Contains(newStr, ".ts") {
+//		return url
+//	}
+//	index := strings.Index(url, "/20")
+//	url1 := url[:index]
+//	if strings.Contains(newStr, "/") {
+//		index2 := strings.Index(newStr, "/")
+//		openUrl := url1 + newStr[index2:]
+//		return openUrl
+//	}
+//	return url
+//}
